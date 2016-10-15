@@ -17,8 +17,9 @@ import static okhttp3.internal.Internal.instance;
 public class BaseApplication extends Application implements
         Thread.UncaughtExceptionHandler {
 
-    private static Context appContext;// 全局Context
-    private static int appStartCount;// app启动次数
+
+    public static Context appContext;// 全局Context
+    public static int appStartCount;// app启动次数
     private final String APP_START_COUNT = "APP_START_COUNT";
 
 

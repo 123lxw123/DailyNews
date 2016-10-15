@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lxw.dailynews">
-
+    <!--glide配置-->
+    <meta-data
+        android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
+        android:value="http://blog.csdn.net/wyb112233/article/details/GlideModule" />
     <!--访问网络-->
     <uses-permission android:name="android.permission.INTERNET"/>
     <!--往sdcard中写入数据的权限 -->

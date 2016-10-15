@@ -1,5 +1,6 @@
 package com.lxw.dailynews.framework.common.base;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -7,6 +8,7 @@ import android.os.PersistableBundle;
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
 import com.hannesdorfmann.mosby.mvp.MvpPresenter;
 import com.hannesdorfmann.mosby.mvp.MvpView;
+import com.lxw.dailynews.R;
 import com.lxw.dailynews.framework.common.Config.Constant;
 import com.lxw.dailynews.framework.common.activitystack.ActivityStack;
 import com.lxw.dailynews.framework.log.LoggerHelper;
@@ -41,10 +43,19 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends MvpPresenter<
     }
 
     @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        //activity跳转动画
+        overridePendingTransition(R.anim.in_right_to_left, R.anim.out_right_to_left);
+    }
+
+    @Override
     public void finish() {
         super.finish();
         //移除activity
         ActivityStack.create().finishActivity(this);
+        //activity移除动画
+        overridePendingTransition(R.anim.in_left_to_right, R.anim.out_left_to_right);
     }
 
     public abstract void findView();
