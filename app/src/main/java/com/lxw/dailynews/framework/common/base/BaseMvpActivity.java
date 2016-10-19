@@ -38,8 +38,8 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends MvpPresenter<
         }
 
         findView();
-        initView();
         initData();
+        initView();
     }
 
     @Override
@@ -59,8 +59,8 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends MvpPresenter<
     }
 
     public abstract void findView();
-    public abstract void initView();
     public abstract void initData();
+    public abstract void initView();
 
     //为activity添加一个标签
     public void initActivityTag(String activityTag){

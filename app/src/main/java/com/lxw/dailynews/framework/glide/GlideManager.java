@@ -314,7 +314,7 @@ public class GlideManager {
             NORMAL,//默认
             LOW, priority, //最低
         }
-    
+
     磁盘缓存的策略：
 
         all:缓存源资源和转换后的资源
