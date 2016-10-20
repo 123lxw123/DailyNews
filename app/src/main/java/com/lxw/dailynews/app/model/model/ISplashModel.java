@@ -8,6 +8,7 @@ import com.lxw.dailynews.app.bean.SplashPictureInfoBean;
  */
 
 public interface ISplashModel {
-    public SplashPictureInfoBean getSplashPictureInfo(String url);
-    public LatestNewsBean getLatestNews(String url);
+    SplashPictureInfoBean getSplashPictureInfo();
+
+    LatestNewsBean getLatestNews();
 }

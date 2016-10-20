@@ -1,4 +1,4 @@
-package com.lxw.dailynews.framework.glide;
+package com.lxw.dailynews.framework.image;
 
 import android.content.Context;
 
@@ -15,7 +15,7 @@ import com.bumptech.glide.load.engine.cache.LruResourceCache;
  * Created by Zion on 2016/10/15.
  */
 
-public class GlideModelConfig extends OkHttpGlideModule {
+public class ImageModelConfig extends OkHttpGlideModule {
     int diskSize = 1024 * 1024 * 250;//磁盘缓存空间，如果不设置，默认是：250 * 1024 * 1024 即250MB
     int memorySize = (int) (Runtime.getRuntime().maxMemory()) / 4;  // 取1/4最大内存作为最大缓存
 

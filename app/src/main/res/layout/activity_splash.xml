@@ -28,14 +28,14 @@
 
     </RelativeLayout>
     <LinearLayout
-        android:id="@+id/ll_footview"
+        android:id="@+id/layout_footview"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_80">
+        android:layout_height="@dimen/dp_70">
         <ImageView
             android:id="@+id/img_icon"
-            android:layout_marginLeft="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_20"
             android:background="@drawable/bg_rounded_frame"
             android:layout_width="50dp"
             android:layout_height="50dp" />
@@ -49,7 +49,7 @@
                 android:id="@+id/txt_title"
                 android:text="@string/app_name"
                 android:textColor="@color/color_FFFFFF"
-                android:textSize="@dimen/sp_24"
+                android:textSize="@dimen/sp_20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
@@ -57,7 +57,7 @@
                 android:layout_marginTop="@dimen/dp_5"
                 android:text="@string/splash_slogan"
                 android:textColor="@color/color_FFFFFF"
-                android:textSize="@dimen/sp_16"
+                android:textSize="@dimen/sp_12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>

@@ -1,4 +1,4 @@
-package com.lxw.dailynews.framework.glide;
+package com.lxw.dailynews.framework.image;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -20,18 +20,18 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
  * @描述 : Glide加载图片的封装，圆形、圆角，模糊等处理操作用到了jp.wasabeef:glide-transformations:2.0.1
  * Glide默认使用httpurlconnection协议，可以配置为OkHttp
  */
-public class GlideManager {
+public class ImageManager {
 
-    private static GlideManager mInstance;
+    private static ImageManager mInstance;
 
-    private GlideManager() {
+    private ImageManager() {
     }
 
-    public static GlideManager getInstance() {
+    public static ImageManager getInstance() {
         if (mInstance == null) {
-            synchronized (GlideManager.class) {
+            synchronized (ImageManager.class) {
                 if (mInstance == null) {
-                    mInstance = new GlideManager();
+                    mInstance = new ImageManager();
                 }
             }
         }
@@ -71,6 +71,35 @@ public class GlideManager {
             Glide.with(context)
                     .load(imgUrl)
                     .error(R.mipmap.image_loading_error)
+                    .into(imageView);
+        }
+    }
+
+    /**
+     * 常规加载图片
+     *
+     * @param context
+     * @param imageView 图片容器
+     * @param imgUrl    图片地址
+     * @param isFade    是否需要动画
+     * @param errorImgId    加载错误显示图片资源id
+     */
+    public void loadImage(Context context, ImageView imageView,
+                          String imgUrl, boolean isFade, int errorImgId) {
+        if (isFade) {
+            Glide.with(context)
+                    .load(imgUrl)
+                    .error(errorImgId)
+                    .crossFade()
+                    .priority(Priority.NORMAL) //下载的优先级
+                    //all:缓存源资源和转换后的资源 none:不作任何磁盘缓存
+                    //source:缓存源资源   result：缓存转换后的资源
+                    .diskCacheStrategy(DiskCacheStrategy.ALL) //缓存策略
+                    .into(imageView);
+        } else {
+            Glide.with(context)
+                    .load(imgUrl)
+                    .error(errorImgId)
                     .into(imageView);
         }
     }

@@ -36,10 +36,6 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends MvpPresenter<
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
-
-        findView();
-        initData();
-        initView();
     }
 
     @Override
@@ -57,10 +53,6 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends MvpPresenter<
         //activity移除动画
         overridePendingTransition(R.anim.in_left_to_right, R.anim.out_left_to_right);
     }
-
-    public abstract void findView();
-    public abstract void initData();
-    public abstract void initView();
 
     //为activity添加一个标签
     public void initActivityTag(String activityTag){
