@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
@@ -38,7 +39,8 @@ dependencies {
     //gson
     compile 'com.google.code.gson:gson:2.6.2'
     //butterknife
-    compile 'com.jakewharton:butterknife:8.0.1'
+    compile 'com.jakewharton:butterknife:8.1.0'
+    apt 'com.jakewharton:butterknife-compiler:8.1.0'
     //logger
     compile 'com.orhanobut:logger:1.15'
     //glide

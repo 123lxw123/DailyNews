@@ -13,8 +13,10 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-public class StringUtils {
+/**
+ * Created by lxw9047 on 2016/10/11.
+ */
+public class StringUtil {
 
 	public static boolean isNull(String str) {
 		boolean b = false;
@@ -60,7 +62,7 @@ public class StringUtils {
 	}
 
 	public static boolean str2Boolean(String s, boolean defaultV) {
-		if (StringUtils.isNull(s))
+		if (StringUtil.isNull(s))
 			return defaultV;
 		if (s != null && s.equalsIgnoreCase("true")) {
 			return true;
@@ -258,7 +260,7 @@ public class StringUtils {
     }
 
     public static boolean isNotEmpty(String str) {
-        return !StringUtils.isEmpty(str);
+        return !StringUtil.isEmpty(str);
     }
 
     public static boolean isBlank(CharSequence str) {
@@ -275,7 +277,7 @@ public class StringUtils {
     }
 
     public static boolean isNotBlank(String str) {
-        return !StringUtils.isBlank(str);
+        return !StringUtil.isBlank(str);
     }
 
     public static boolean isNumeric(CharSequence cs) {

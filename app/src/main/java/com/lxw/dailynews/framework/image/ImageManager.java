@@ -8,11 +8,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.lxw.dailynews.R;
+
+import java.io.File;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
+import static android.R.attr.path;
 
 /**
  * Created by Zion on 2016/10/15.
@@ -101,6 +106,24 @@ public class ImageManager {
                     .load(imgUrl)
                     .error(errorImgId)
                     .into(imageView);
+        }
+    }
+
+    /**
+     * 常规下载图片
+     * @param context
+     * @param imgUrl    图片地址
+     * @param path      图片保存路径
+     */
+    public void downloadImage(Context context, String imgUrl, String path) {
+        File file = null;
+            try{
+            file = Glide.with(context)
+                    .load(imgUrl)
+                    .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .get();
+            }catch(Exception e){
+            e.printStackTrace();
         }
     }
 

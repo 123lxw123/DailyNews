@@ -2,13 +2,14 @@ package com.lxw.dailynews.app.model.model;
 
 import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.app.bean.SplashPictureInfoBean;
+import com.lxw.dailynews.framework.http.HttpListener;
 
 /**
  * Created by Zion on 2016/10/16.
  */
 
 public interface ISplashModel {
-    SplashPictureInfoBean getSplashPictureInfo();
+    void getSplashPictureInfo(HttpListener<SplashPictureInfoBean> httpListener);
 
-    LatestNewsBean getLatestNews();
+    void getLatestNews(HttpListener<LatestNewsBean> httpListener);
 }

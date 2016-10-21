@@ -1,6 +1,7 @@
-package com.lxw.dailynews.framework.http;
+package com.lxw.dailynews.app.api;
 
-import com.lxw.dailynews.app.service.HttpService;
+import com.lxw.dailynews.app.bean.LatestNewsBean;
+import com.lxw.dailynews.app.bean.SplashPictureInfoBean;
 
 import java.util.concurrent.TimeUnit;
 
@@ -9,9 +10,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import rx.Observable;
 
 /**
  * Created by lxw9047 on 2016/10/20.
@@ -23,7 +22,7 @@ public class HttpHelper {
     private static final int DEFAULT_TIMEOUT = 5;
     private  Retrofit retrofit;
     public static HttpService httpService;
-    public HttpHelper httpHelper = new HttpHelper();
+    public static HttpHelper httpHelper = new HttpHelper();
 
     private HttpHelper(){
         //手动创建一个OkHttpClient并设置超时时间
@@ -37,5 +36,12 @@ public class HttpHelper {
                 .baseUrl(BASE_URL)
                 .build();
         httpService = retrofit.create(HttpService.class);
+    }
+
+    public static Observable<SplashPictureInfoBean> getSplashPictureInfo(){
+        return httpService.getSplashPictureInfo();
+    }
+    public static Observable<LatestNewsBean> getLatestNews(){
+        return httpService.getLatestNews();
     }
 }

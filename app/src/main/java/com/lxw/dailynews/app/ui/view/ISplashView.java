@@ -11,9 +11,11 @@ public interface ISplashView extends MvpView {
 
     void getSplashPictureInfo();
 
-    void getLatestNews();
+    void setSplashPicture(String imgUrl, String author);
 
-    void loadSplashPicture();
+    void setSplashPicture();
+
+    void getLatestNews();
 
     void jumpToNext();
 }

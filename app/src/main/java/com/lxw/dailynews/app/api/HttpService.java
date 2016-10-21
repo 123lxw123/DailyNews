@@ -1,9 +1,9 @@
-package com.lxw.dailynews.app.service;
+package com.lxw.dailynews.app.api;
 
+import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.app.bean.SplashPictureInfoBean;
 
 import retrofit2.http.GET;
-import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -11,6 +11,9 @@ import rx.Observable;
  */
 
 public interface HttpService {
-    @GET("4/news/latest")
+    @GET("4/start-image/720*1280")
     Observable<SplashPictureInfoBean> getSplashPictureInfo();
+
+    @GET("4/news/latest")
+    Observable<LatestNewsBean> getLatestNews();
 }

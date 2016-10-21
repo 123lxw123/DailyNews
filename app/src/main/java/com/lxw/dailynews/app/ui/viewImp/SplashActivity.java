@@ -2,12 +2,12 @@ package com.lxw.dailynews.app.ui.viewImp;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hannesdorfmann.mosby.mvp.MvpPresenter;
 import com.lxw.dailynews.R;
 import com.lxw.dailynews.app.presenter.SplashPresenter;
 import com.lxw.dailynews.app.ui.view.ISplashView;
@@ -19,8 +19,6 @@ import com.lxw.dailynews.framework.utils.FileUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.lxw.dailynews.R.id.img_icon;
-
 public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter> implements ISplashView {
 
 
@@ -28,7 +26,7 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
     ImageView imgPicture;
     @BindView(R.id.txt_author)
     TextView txtAuthor;
-    @BindView(img_icon)
+    @BindView(R.id.img_icon)
     ImageView imgIcon;
     @BindView(R.id.txt_title)
     TextView txtTitle;
@@ -40,6 +38,9 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //取消状态栏
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         initActivityTag("启动页");
@@ -50,7 +51,7 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
 
     @NonNull
     @Override
-    public MvpPresenter createPresenter() {
+    public SplashPresenter createPresenter() {
         return new SplashPresenter();
     }
 
@@ -62,32 +63,50 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
             public void run() {
                 imgIcon.setImageResource(R.mipmap.icon_logo);
             }
-        }, 500);
+        }, 1000);
+    }
+
+    //获取启动页图片信息
+    @Override
+    public void getSplashPictureInfo() {
+        if (isNetworkAvailable()) {
+            getPresenter().getSplashPictureInfo();
+        } else {
+            setSplashPicture();
+        }
+    }
+
+    //加载本地图片
+    @Override
+    public void setSplashPicture() {
+
         imgPicture.postDelayed(new Runnable() {
             @Override
             public void run() {
-                //启动页图片下载在sd卡里，如果图片不存在，则加载app自带的默认图片
-                if(FileUtil.isFileExists(Constant.PATH_SPLASH_PICTURE_PNG)){
+                if (FileUtil.isFileExists(Constant.PATH_SPLASH_PICTURE_PNG)) {
                     ImageManager.getInstance().loadImage(SplashActivity.this, imgPicture, Constant.PATH_SPLASH_PICTURE_PNG, true, R.mipmap.default_splash_picture);
-                }else{
+                } else {
                     imgPicture.setImageResource(R.mipmap.default_splash_picture);
                 }
             }
         }, 2000);
     }
 
+    //加载网络图片和显示版权作者
     @Override
-    public void getSplashPictureInfo() {
+    public void setSplashPicture(final String imgUrl, String author) {
 
+        imgPicture.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //加载网络图片URL 启动页图片则加载app自带的默认图片
+                ImageManager.getInstance().loadImage(SplashActivity.this, imgPicture, imgUrl, true, R.mipmap.default_splash_picture);
+            }
+        }, 2000);
     }
 
     @Override
     public void getLatestNews() {
-
-    }
-
-    @Override
-    public void loadSplashPicture() {
 
     }
 

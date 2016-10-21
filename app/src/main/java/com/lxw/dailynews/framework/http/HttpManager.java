@@ -1,15 +1,10 @@
 package com.lxw.dailynews.framework.http;
 
-import android.app.AlertDialog;
-import android.content.Context;
+import com.lxw.dailynews.framework.log.LoggerHelper;
 
-import com.lxw.dailynews.framework.common.application.BaseApplication;
-
-import dmax.dialog.SpotsDialog;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 /**
@@ -19,60 +14,46 @@ import rx.schedulers.Schedulers;
 public abstract class HttpManager<T> {
     private Observable<T> observable;
     private Subscriber<T> subscriber;
-    private AlertDialog dialog;
-    public HttpManager(){
-        this(null);
-    }
-    public HttpManager(Context context){
-        if(context != null ){
-            dialog = new SpotsDialog(context);
-        }
-        createObservable();
+    private  HttpListener<T> httpListener;
+
+    public HttpManager(HttpListener<T> httpListener){
+        HttpManager.this.httpListener = httpListener;
+        observable = createObservable();
         subscriber = new Subscriber<T>(){
 
             @Override
             public void onCompleted() {
-                if(dialog != null && dialog.isShowing()){
-                    dialog.dismiss();
-                }
+
             }
 
             @Override
-            public void onError(Throwable e) {
-                if(dialog != null && dialog.isShowing()){
-                    dialog.dismiss();
-                }
-                onFailure();
+            public void onError(Throwable error) {
+                LoggerHelper.info("HttpManager-onError-->>",error.getMessage());
+                HttpManager.this.httpListener.onFailure(error);
             }
 
             @Override
-            public void onNext(T t) {
-                if(dialog != null && dialog.isShowing()){
-                    dialog.dismiss();
-                }
-                onSuccess();
+            public void onNext(T response) {
+                LoggerHelper.info("HttpManager-onError-->>",response.toString());
+                HttpManager.this.httpListener.onSuccess(response);
             }
         };
-        doSubscribe(observable, subscriber);
+        doSubscribe();
     }
-    public abstract void createObservable();
-    public abstract void onSuccess();
-    public abstract void onFailure();
 
-    public void doSubscribe(Observable observable, Subscriber subscriber){
-        observable.subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Action0(){
+    public abstract Observable<T> createObservable();
 
-                    @Override
-                    public void call() {
-                        if(dialog != null && !dialog.isShowing()){
-                            dialog.show();
-                        }
-                    }
-                })
-                .unsubscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber);
+    public void doSubscribe(){
+        if(observable != null && subscriber != null){
+            observable.subscribeOn(Schedulers.io())
+                    .unsubscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(subscriber);
+        }
+    }
+
+    public void unSubscribe(){
+        if(subscriber != null && !subscriber.isUnsubscribed())
+        subscriber.unsubscribe();
     }
 }

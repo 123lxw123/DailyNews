@@ -1,5 +1,6 @@
 package com.lxw.dailynews.app.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  * Created by Zion on 2016/10/19.
  */
 
-public class LatestNewsBean {
+public class LatestNewsBean implements Serializable {
 
 /*
     date : 日期
@@ -106,6 +107,18 @@ public class LatestNewsBean {
         public void setImages(List<String> images) {
             this.images = images;
         }
+
+        @Override
+        public String toString() {
+            return "StoriesBean{" +
+                    "title='" + title + '\'' +
+                    ", ga_prefix='" + ga_prefix + '\'' +
+                    ", multipic=" + multipic +
+                    ", type=" + type +
+                    ", id=" + id +
+                    ", images=" + images +
+                    '}';
+        }
     }
 
     public static class TopStoriesBean {
@@ -154,5 +167,25 @@ public class LatestNewsBean {
         public void setTitle(String title) {
             this.title = title;
         }
+
+        @Override
+        public String toString() {
+            return "TopStoriesBean{" +
+                    "image='" + image + '\'' +
+                    ", type=" + type +
+                    ", id=" + id +
+                    ", ga_prefix='" + ga_prefix + '\'' +
+                    ", title='" + title + '\'' +
+                    '}';
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "LatestNewsBean{" +
+                "date='" + date + '\'' +
+                ", stories=" + stories +
+                ", top_stories=" + top_stories +
+                '}';
     }
 }
