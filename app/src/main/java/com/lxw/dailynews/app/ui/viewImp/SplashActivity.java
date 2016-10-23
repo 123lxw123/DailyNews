@@ -1,5 +1,6 @@
 package com.lxw.dailynews.app.ui.viewImp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.WindowManager;
@@ -9,12 +10,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lxw.dailynews.R;
+import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.app.presenter.SplashPresenter;
 import com.lxw.dailynews.app.ui.view.ISplashView;
 import com.lxw.dailynews.framework.common.Config.Constant;
 import com.lxw.dailynews.framework.common.base.BaseMvpActivity;
 import com.lxw.dailynews.framework.image.ImageManager;
+import com.lxw.dailynews.framework.log.LoggerHelper;
 import com.lxw.dailynews.framework.utils.FileUtil;
+import com.lxw.dailynews.framework.utils.SharePreferencesUtil;
+import com.lxw.dailynews.framework.utils.StringUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,12 +40,12 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
     @BindView(R.id.layout_footview)
     LinearLayout layoutFootview;
 
+    private final String SPLASH_AUTHOR = "SPLASH_AUTHOR";
+    private LatestNewsBean latestNewsBean;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //取消状态栏
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         initActivityTag("启动页");
@@ -85,6 +90,11 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
             public void run() {
                 if (FileUtil.isFileExists(Constant.PATH_SPLASH_PICTURE_PNG)) {
                     ImageManager.getInstance().loadImage(SplashActivity.this, imgPicture, Constant.PATH_SPLASH_PICTURE_PNG, true, R.mipmap.default_splash_picture);
+                    String author = SharePreferencesUtil.getStringSharePreferences(SplashActivity.this, SPLASH_AUTHOR, "");
+                    if(!StringUtil.isEmpty(author)){
+                        txtAuthor.setText(author);
+                        SharePreferencesUtil.setStringSharePreferences(SplashActivity.this, SPLASH_AUTHOR, author);
+                    }
                 } else {
                     imgPicture.setImageResource(R.mipmap.default_splash_picture);
                 }
@@ -94,24 +104,34 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
 
     //加载网络图片和显示版权作者
     @Override
-    public void setSplashPicture(final String imgUrl, String author) {
+    public void setSplashPicture(final String imgUrl, final String author) {
 
         imgPicture.postDelayed(new Runnable() {
             @Override
             public void run() {
                 //加载网络图片URL 启动页图片则加载app自带的默认图片
                 ImageManager.getInstance().loadImage(SplashActivity.this, imgPicture, imgUrl, true, R.mipmap.default_splash_picture);
+                if(!StringUtil.isEmpty(author)){
+                    txtAuthor.setText(author);
+                    SharePreferencesUtil.setStringSharePreferences(SplashActivity.this, SPLASH_AUTHOR, author);
+                }
             }
         }, 2000);
     }
 
+    //获取最新消息传给主页
     @Override
     public void getLatestNews() {
-
+        latestNewsBean = getPresenter().getLatestNews();
     }
 
+    //跳转到主页
     @Override
     public void jumpToNext() {
-
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("latestNewsBean", latestNewsBean);
+        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

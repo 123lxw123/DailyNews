@@ -13,7 +13,7 @@ final public class ActivityStack {
     private ActivityStack() {
     }
 
-    public static ActivityStack create() {
+    public static ActivityStack getInstance() {
         return instance;
     }
 

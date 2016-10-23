@@ -18,17 +18,12 @@ public class Constant {
 
 
     /** 内置SD卡路径**/
-    public static String PATH__SD_CARD = "";
+    public static String PATH__SD_CARD = Environment.getExternalStorageDirectory().toString() + "/";
     /** APP文件夹路径**/
-    public static String PATH_APP = PATH__SD_CARD + "/DailyNews";
+    public static String PATH_APP = PATH__SD_CARD + "DailyNews/";
     /** 启动页图片文件夹路径**/
-    public static String PATH_SPLASH_PICTURE = PATH_APP + "/picture";
+    public static String PATH_SPLASH_PICTURE = PATH_APP + "picture/";
     /** 启动页图片路径**/
-    public static String PATH_SPLASH_PICTURE_PNG = PATH_SPLASH_PICTURE + "/splash_picture.png";
+    public static String PATH_SPLASH_PICTURE_PNG = "splash_picture.png";
 
-    static {
-        if(Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
-            PATH__SD_CARD =  Environment.getExternalStorageDirectory().toString();
-        }
-    }
 }

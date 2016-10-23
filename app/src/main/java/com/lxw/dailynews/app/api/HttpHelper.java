@@ -37,11 +37,14 @@ public class HttpHelper {
                 .build();
         httpService = retrofit.create(HttpService.class);
     }
+    public static HttpHelper getInstance(){
+        return httpHelper;
+    }
 
-    public static Observable<SplashPictureInfoBean> getSplashPictureInfo(){
+    public Observable<SplashPictureInfoBean> getSplashPictureInfo(){
         return httpService.getSplashPictureInfo();
     }
-    public static Observable<LatestNewsBean> getLatestNews(){
+    public Observable<LatestNewsBean> getLatestNews(){
         return httpService.getLatestNews();
     }
 }

@@ -3,8 +3,10 @@ package com.lxw.dailynews.framework.common.application;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 
 import com.lxw.dailynews.app.ui.viewImp.MainActivity;
+import com.lxw.dailynews.framework.common.Config.Constant;
 import com.lxw.dailynews.framework.log.LoggerHelper;
 import com.lxw.dailynews.framework.utils.SharePreferencesUtil;
 
@@ -30,7 +32,6 @@ public class BaseApplication extends Application implements
         appStartCount = SharePreferencesUtil.getIntSharePreferences(appContext, APP_START_COUNT, 0);
         appStartCount = appStartCount + 1;
         SharePreferencesUtil.setIntSharePreferences(appContext, APP_START_COUNT, appStartCount);
-
     }
 
     public static Context getappContext() {

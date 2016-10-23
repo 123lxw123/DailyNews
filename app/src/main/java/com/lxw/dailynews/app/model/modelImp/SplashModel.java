@@ -23,7 +23,7 @@ public class SplashModel implements ISplashModel {
         new HttpManager<SplashPictureInfoBean>(httpListener) {
             @Override
             public Observable<SplashPictureInfoBean> createObservable() {
-                return HttpHelper.getSplashPictureInfo();
+                return HttpHelper.getInstance().getSplashPictureInfo();
             }
         };
     }
@@ -35,7 +35,7 @@ public class SplashModel implements ISplashModel {
 
             @Override
             public Observable<LatestNewsBean> createObservable() {
-                return HttpHelper.getLatestNews();
+                return HttpHelper.getInstance().getLatestNews();
             }
         };
     }

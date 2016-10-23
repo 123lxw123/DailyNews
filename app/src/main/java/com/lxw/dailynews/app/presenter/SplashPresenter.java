@@ -24,11 +24,10 @@ import rx.schedulers.Schedulers;
  */
 
 public class SplashPresenter extends BaseMvpPresenter<ISplashView> {
-    private ISplashView splashView;
     private ISplashModel splashModel;
+    private LatestNewsBean latestNewsBean;
 
     public SplashPresenter() {
-        splashView = getView();
         splashModel = new SplashModel();
     }
 
@@ -38,18 +37,19 @@ public class SplashPresenter extends BaseMvpPresenter<ISplashView> {
             @Override
             public void onSuccess(final SplashPictureInfoBean response) {
                 if (response != null) {
-                    splashView.setSplashPicture(response.img, response.text);
+                    //显示图片和版权作者
+                    getView().setSplashPicture(response.img, response.text);
                     // 使用IO线程下载更新本地保存的启动页图片
                     Observable.create(new Observable.OnSubscribe<String>() {
                         @Override
                         public void call(Subscriber<? super String> subscriber) {
-                            ImageManager.getInstance().downloadImage(BaseApplication.appContext, response.img, Constant.PATH_SPLASH_PICTURE_PNG);
+                            ImageManager.getInstance().downloadImage(BaseApplication.appContext, response.img,Constant.PATH_SPLASH_PICTURE, Constant.PATH_SPLASH_PICTURE_PNG);
                         }
                     }).subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                     .subscribe();
                 } else {
-                    splashView.setSplashPicture();
+                    getView().setSplashPicture();
                 }
             }
 
@@ -60,13 +60,13 @@ public class SplashPresenter extends BaseMvpPresenter<ISplashView> {
         });
     }
 
-    public void getLatestNews() {
+    public LatestNewsBean getLatestNews() {
         splashModel.getLatestNews(new HttpListener<LatestNewsBean>() {
 
             @Override
             public void onSuccess(LatestNewsBean response) {
                 if (response != null) {
-
+                    latestNewsBean = response;
                 }
             }
 
@@ -75,5 +75,6 @@ public class SplashPresenter extends BaseMvpPresenter<ISplashView> {
 
             }
         });
+        return latestNewsBean;
     }
 }

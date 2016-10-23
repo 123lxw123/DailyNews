@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
 import com.hannesdorfmann.mosby.mvp.MvpPresenter;
 import com.hannesdorfmann.mosby.mvp.MvpView;
+import com.hannesdorfmann.mosby.mvp.delegate.ActivityMvpDelegateCallback;
 import com.lxw.dailynews.R;
 import com.lxw.dailynews.framework.common.Config.Constant;
 import com.lxw.dailynews.framework.common.activitystack.ActivityStack;
@@ -22,9 +24,9 @@ import dmax.dialog.SpotsDialog;
  * Created by lxw9047 on 2016/10/12.
  */
 
-public abstract class BaseMvpActivity<V extends MvpView, P extends BaseMvpPresenter<V>> extends MvpActivity<V, P>{
+public abstract class BaseMvpActivity<V extends MvpView, P extends BaseMvpPresenter<V>> extends MvpActivity<V, P> {
 
-    /** 是否禁止旋转屏幕 **/
+    /** 是否旋转屏幕 **/
     private boolean isAllowScreenRoate = Constant.isAllowScreenRoate;
     /** activity 加载中进度条 **/
     private SpotsDialog progressBar;
@@ -32,17 +34,22 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends BaseMvpPresen
     private String activityTag = "";
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         //添加activity到activity栈
-        ActivityStack.create().addActivity(this);
+        ActivityStack.getInstance().addActivity(this);
 
-        //是否禁止旋转屏幕
-        if (!isAllowScreenRoate) {
+        //是否旋转屏幕
+        if (isAllowScreenRoate) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
+        //隐藏虚拟按键
+        if (android.os.Build.VERSION.SDK_INT >= 14) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
     }
 
@@ -57,7 +64,7 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends BaseMvpPresen
     public void finish() {
         super.finish();
         //移除activity
-        ActivityStack.create().finishActivity(this);
+        ActivityStack.getInstance().finishActivity(this);
         //activity移除动画
         overridePendingTransition(R.anim.in_left_to_right, R.anim.out_left_to_right);
     }

@@ -13,16 +13,17 @@
         android:layout_height="match_parent">
         <ImageView
             android:id="@+id/img_picture"
+            android:scaleType="centerCrop"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
         <TextView
             android:id="@+id/txt_author"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_10"
             tools:text="@string/splash_author"
             android:textColor="@color/color_85888C"
-            android:textSize="@dimen/sp_16"
+            android:textSize="@dimen/sp_14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -32,13 +33,13 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_80">
+        android:layout_height="@dimen/dp_70">
         <ImageView
             android:id="@+id/img_icon"
             android:layout_marginLeft="@dimen/dp_20"
             android:background="@drawable/bg_rounded_frame"
-            android:layout_width="50dp"
-            android:layout_height="50dp" />
+            android:layout_width="45dp"
+            android:layout_height="45dp" />
         <LinearLayout
             android:orientation="vertical"
             android:gravity="center_vertical"
@@ -49,7 +50,7 @@
                 android:id="@+id/txt_title"
                 android:text="@string/app_name"
                 android:textColor="@color/color_CDD1D8"
-                android:textSize="@dimen/sp_20"
+                android:textSize="@dimen/sp_18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView

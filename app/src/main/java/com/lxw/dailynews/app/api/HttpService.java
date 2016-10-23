@@ -11,7 +11,7 @@ import rx.Observable;
  */
 
 public interface HttpService {
-    @GET("4/start-image/720*1280")
+    @GET("4/start-image/1080*1776")
     Observable<SplashPictureInfoBean> getSplashPictureInfo();
 
     @GET("4/news/latest")

@@ -10,8 +10,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.lxw.dailynews.R;
+import com.lxw.dailynews.framework.utils.FileUtil;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
@@ -115,13 +117,28 @@ public class ImageManager {
      * @param imgUrl    图片地址
      * @param path      图片保存路径
      */
-    public void downloadImage(Context context, String imgUrl, String path) {
-        File file = null;
+    public void downloadImage(Context context, String imgUrl, String path, String fileName) {
             try{
-            file = Glide.with(context)
+            File file = new File(path + fileName);
+            Bitmap bitmap = Glide.with(context)
                     .load(imgUrl)
-                    .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .asBitmap()
+                    .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .get();
+                if(bitmap != null){
+                    if(FileUtil.isFileExists(path + fileName)){
+                        file.delete();
+                    }else{
+                        if(!FileUtil.isFileExists(path)){
+                            new File(path).mkdirs();
+                        }
+                    }
+                    file.createNewFile();
+                    FileOutputStream fos = new FileOutputStream(file);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                    fos.flush();
+                    fos.close();
+                }
             }catch(Exception e){
             e.printStackTrace();
         }
