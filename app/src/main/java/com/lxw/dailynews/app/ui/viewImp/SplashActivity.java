@@ -1,12 +1,14 @@
 package com.lxw.dailynews.app.ui.viewImp;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.WindowManager;
+import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lxw.dailynews.R;
@@ -16,13 +18,21 @@ import com.lxw.dailynews.app.ui.view.ISplashView;
 import com.lxw.dailynews.framework.common.Config.Constant;
 import com.lxw.dailynews.framework.common.base.BaseMvpActivity;
 import com.lxw.dailynews.framework.image.ImageManager;
-import com.lxw.dailynews.framework.log.LoggerHelper;
 import com.lxw.dailynews.framework.utils.FileUtil;
 import com.lxw.dailynews.framework.utils.SharePreferencesUtil;
 import com.lxw.dailynews.framework.utils.StringUtil;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.MainThreadSubscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+
+import static android.R.attr.author;
 
 public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter> implements ISplashView {
 
@@ -39,6 +49,8 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
     TextView txtSlogan;
     @BindView(R.id.layout_footview)
     LinearLayout layoutFootview;
+    @BindView(R.id.layout_picture)
+    RelativeLayout layoutPicture;
 
     private final String SPLASH_AUTHOR = "SPLASH_AUTHOR";
     private LatestNewsBean latestNewsBean;
@@ -52,6 +64,7 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
         initView();
         getSplashPictureInfo();
         getLatestNews();
+        jumpToNext();
     }
 
     @NonNull
@@ -63,12 +76,15 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
     @Override
     public void initView() {
         layoutFootview.startAnimation(AnimationUtils.loadAnimation(SplashActivity.this, R.anim.in_bottom_to_top));
-        imgIcon.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                imgIcon.setImageResource(R.mipmap.icon_logo);
-            }
-        }, 1000);
+        Observable.timer(1200, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long along) {
+                        imgIcon.setImageResource(R.mipmap.icon_logo);
+                    }
+                });
     }
 
     //获取启动页图片信息
@@ -84,39 +100,45 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
     //加载本地图片
     @Override
     public void setSplashPicture() {
-
-        imgPicture.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (FileUtil.isFileExists(Constant.PATH_SPLASH_PICTURE_PNG)) {
-                    ImageManager.getInstance().loadImage(SplashActivity.this, imgPicture, Constant.PATH_SPLASH_PICTURE_PNG, true, R.mipmap.default_splash_picture);
-                    String author = SharePreferencesUtil.getStringSharePreferences(SplashActivity.this, SPLASH_AUTHOR, "");
-                    if(!StringUtil.isEmpty(author)){
-                        txtAuthor.setText(author);
-                        SharePreferencesUtil.setStringSharePreferences(SplashActivity.this, SPLASH_AUTHOR, author);
-                    }
-                } else {
-                    imgPicture.setImageResource(R.mipmap.default_splash_picture);
-                }
+        if (FileUtil.isFileExists(Constant.PATH_SPLASH_PICTURE_PNG)) {
+            ImageManager.getInstance().loadImage(SplashActivity.this, imgPicture, Constant.PATH_SPLASH_PICTURE_PNG, true, R.mipmap.default_splash_picture);
+            String author = SharePreferencesUtil.getStringSharePreferences(SplashActivity.this, SPLASH_AUTHOR, "");
+            if (!StringUtil.isEmpty(author)) {
+                txtAuthor.setText(author);
+                SharePreferencesUtil.setStringSharePreferences(SplashActivity.this, SPLASH_AUTHOR, author);
             }
-        }, 2000);
+        } else {
+            imgPicture.setImageResource(R.mipmap.default_splash_picture);
+        }
+        Observable.timer(2000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long along) {
+                        layoutPicture.setVisibility(View.VISIBLE);
+                    }
+                });
     }
 
     //加载网络图片和显示版权作者
     @Override
     public void setSplashPicture(final String imgUrl, final String author) {
-
-        imgPicture.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //加载网络图片URL 启动页图片则加载app自带的默认图片
-                ImageManager.getInstance().loadImage(SplashActivity.this, imgPicture, imgUrl, true, R.mipmap.default_splash_picture);
-                if(!StringUtil.isEmpty(author)){
-                    txtAuthor.setText(author);
-                    SharePreferencesUtil.setStringSharePreferences(SplashActivity.this, SPLASH_AUTHOR, author);
-                }
-            }
-        }, 2000);
+        //加载网络图片URL 启动页图片则加载app自带的默认图片
+        ImageManager.getInstance().loadImage(SplashActivity.this, imgPicture, imgUrl, true, R.mipmap.default_splash_picture);
+        if (!StringUtil.isEmpty(author)) {
+            txtAuthor.setText(author);
+            SharePreferencesUtil.setStringSharePreferences(SplashActivity.this, SPLASH_AUTHOR, author);
+        }
+        Observable.timer(2000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long along) {
+                        layoutPicture.setVisibility(View.VISIBLE);
+                    }
+                });
     }
 
     //获取最新消息传给主页
@@ -130,8 +152,16 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
     public void jumpToNext() {
         Bundle bundle = new Bundle();
         bundle.putSerializable("latestNewsBean", latestNewsBean);
-        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+        final Intent intent = new Intent(SplashActivity.this, MainActivity.class);
         intent.putExtras(bundle);
-        startActivity(intent);
+        Observable.timer(3000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long along) {
+                        startActivity(intent);
+                    }
+                });
     }
 }

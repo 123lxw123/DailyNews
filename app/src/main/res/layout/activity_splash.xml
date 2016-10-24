@@ -8,6 +8,8 @@
     tools:context="com.lxw.dailynews.app.ui.viewImp.SplashActivity">
 
     <RelativeLayout
+        android:id="@+id/layout_picture"
+        android:visibility="invisible"
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
