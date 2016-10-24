@@ -31,7 +31,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".app.ui.viewImp.MainActivity"></activity>
+        <activity android:name=".app.ui.viewImp.MainActivity"
+            android:theme="@style/ImageTranslucentTheme">
+        </activity>
 
     </application>
 

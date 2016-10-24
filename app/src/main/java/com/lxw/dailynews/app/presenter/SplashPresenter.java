@@ -25,7 +25,6 @@ import rx.schedulers.Schedulers;
 
 public class SplashPresenter extends BaseMvpPresenter<ISplashView> {
     private ISplashModel splashModel;
-    private LatestNewsBean latestNewsBean;
 
     public SplashPresenter() {
         splashModel = new SplashModel();
@@ -60,13 +59,13 @@ public class SplashPresenter extends BaseMvpPresenter<ISplashView> {
         });
     }
 
-    public LatestNewsBean getLatestNews() {
+    public void getLatestNews() {
         splashModel.getLatestNews(new HttpListener<LatestNewsBean>() {
 
             @Override
             public void onSuccess(LatestNewsBean response) {
                 if (response != null) {
-                    latestNewsBean = response;
+                    getView().setLatestNewsBean(response);
                 }
             }
 
@@ -75,6 +74,5 @@ public class SplashPresenter extends BaseMvpPresenter<ISplashView> {
 
             }
         });
-        return latestNewsBean;
     }
 }

@@ -144,22 +144,27 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
     //获取最新消息传给主页
     @Override
     public void getLatestNews() {
-        latestNewsBean = getPresenter().getLatestNews();
+        getPresenter().getLatestNews();
+    }
+
+    public void setLatestNewsBean(LatestNewsBean latestNewsBean) {
+        this.latestNewsBean = latestNewsBean;
     }
 
     //跳转到主页
     @Override
     public void jumpToNext() {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("latestNewsBean", latestNewsBean);
-        final Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-        intent.putExtras(bundle);
-        Observable.timer(3000, TimeUnit.MILLISECONDS)
+
+        Observable.timer(4000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long along) {
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("latestNewsBean", latestNewsBean);
+                        final Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                        intent.putExtras(bundle);
                         startActivity(intent);
                     }
                 });

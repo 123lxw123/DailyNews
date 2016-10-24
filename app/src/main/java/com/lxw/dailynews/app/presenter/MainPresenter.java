@@ -1,0 +1,42 @@
+package com.lxw.dailynews.app.presenter;
+
+import com.lxw.dailynews.app.bean.LatestNewsBean;
+import com.lxw.dailynews.app.model.model.IMainModel;
+import com.lxw.dailynews.app.model.modelImp.MainModel;
+import com.lxw.dailynews.app.model.modelImp.SplashModel;
+import com.lxw.dailynews.app.ui.view.IMainView;
+import com.lxw.dailynews.framework.common.base.BaseMvpPresenter;
+import com.lxw.dailynews.framework.http.HttpListener;
+
+/**
+ * Created by lxw9047 on 2016/10/24.
+ */
+
+public class MainPresenter extends BaseMvpPresenter<IMainView> {
+    private IMainModel mainModel;
+    private LatestNewsBean latestNewsBean;
+
+    public MainPresenter(){
+        mainModel = new MainModel();
+    }
+    public void getLatestNews() {
+        new SplashModel().getLatestNews(new HttpListener<LatestNewsBean>() {
+
+            @Override
+            public void onSuccess(LatestNewsBean response) {
+                if (response != null) {
+                    getView().setLatestNewsBean(response);
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+
+            }
+        });
+    }
+
+    public void setLatestNewsBean(LatestNewsBean latestNewsBean) {
+        this.latestNewsBean = latestNewsBean;
+    }
+}

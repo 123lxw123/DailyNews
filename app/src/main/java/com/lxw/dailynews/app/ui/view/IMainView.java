@@ -4,22 +4,13 @@ import com.hannesdorfmann.mosby.mvp.MvpView;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.framework.common.base.BaseMvpView;
 
+import java.util.Map;
+
 /**
- * Created by Zion on 2016/10/19.
+ * Created by lxw9047 on 2016/10/24.
  */
 
-public interface ISplashView extends BaseMvpView {
-    void initView();
-
-    void getSplashPictureInfo();
-
-    void setSplashPicture(String imgUrl, String author);
-
-    void setSplashPicture();
-
+public interface IMainView extends BaseMvpView {
     void getLatestNews();
-
     void setLatestNewsBean(LatestNewsBean latestNewsBean);
-
-    void jumpToNext();
 }
