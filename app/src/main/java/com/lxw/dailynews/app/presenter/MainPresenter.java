@@ -16,24 +16,29 @@ public class MainPresenter extends BaseMvpPresenter<IMainView> {
     private IMainModel mainModel;
     private LatestNewsBean latestNewsBean;
 
-    public MainPresenter(){
+    public MainPresenter() {
         mainModel = new MainModel();
     }
+
     public void getLatestNews() {
-        new SplashModel().getLatestNews(new HttpListener<LatestNewsBean>() {
+        if (isNetworkAvailable()) {
+            new SplashModel().getLatestNews(new HttpListener<LatestNewsBean>() {
 
-            @Override
-            public void onSuccess(LatestNewsBean response) {
-                if (response != null) {
-                    getView().setLatestNewsBean(response);
+                @Override
+                public void onSuccess(LatestNewsBean response) {
+                    if (response != null) {
+                        getView().setLatestNewsBean(response);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Throwable error) {
-
-            }
-        });
+                @Override
+                public void onFailure(Throwable error) {
+                    //展示上次加载的消息
+                }
+            });
+        } else {
+            //展示上次加载的消息
+        }
     }
 
     public void setLatestNewsBean(LatestNewsBean latestNewsBean) {

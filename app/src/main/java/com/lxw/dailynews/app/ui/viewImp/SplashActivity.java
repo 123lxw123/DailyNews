@@ -90,11 +90,7 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
     //获取启动页图片信息
     @Override
     public void getSplashPictureInfo() {
-        if (isNetworkAvailable()) {
             getPresenter().getSplashPictureInfo();
-        } else {
-            setSplashPicture();
-        }
     }
 
     //加载本地图片
@@ -166,6 +162,7 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
                         final Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                         intent.putExtras(bundle);
                         startActivity(intent);
+                        finish();
                     }
                 });
     }

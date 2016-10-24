@@ -57,7 +57,7 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends BaseMvpPresen
     public void startActivity(Intent intent) {
         super.startActivity(intent);
         //activity跳转动画
-        overridePendingTransition(R.anim.in_right_to_left, R.anim.out_right_to_left);
+        overridePendingTransition(R.anim.in_left_to_right, R.anim.out_left_to_right);
     }
 
     @Override
@@ -66,23 +66,13 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends BaseMvpPresen
         //移除activity
         ActivityStack.getInstance().finishActivity(this);
         //activity移除动画
-        overridePendingTransition(R.anim.in_left_to_right, R.anim.out_left_to_right);
+        overridePendingTransition(R.anim.in_right_to_left, R.anim.out_right_to_left);
     }
 
     //为activity添加一个标签
     public void initActivityTag(String activityTag){
         this.activityTag = activityTag;
         LoggerHelper.info("ActivityTag", activityTag);
-    }
-
-    //判断手机是否联网，联网失败toast提示
-    public boolean checkNetword(){
-        return NetUtil.note_Intent(BaseMvpActivity.this);
-    }
-
-    //判断手机是否联网，联网失败toast提示
-    public boolean isNetworkAvailable(){
-        return NetUtil.isNetworkAvailable(BaseMvpActivity.this);
     }
 
     //显示加载中进度条

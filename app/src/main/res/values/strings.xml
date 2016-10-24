@@ -2,4 +2,8 @@
     <string name="app_name">知乎日报</string>
     <string name="splash_author">picture_author</string>
     <string name="splash_slogan">每日三次，每次七分钟</string>
+    <string name="menu_notifications">menu_notifications</string>
+    <string name="menu_styles_night">夜间模式</string>
+    <string name="menu_setting_option">设置选项</string>
+    <string name="toolbar_title">首页</string>
 </resources>

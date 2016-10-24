@@ -8,8 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="titleTextAppearance">@dimen/sp_18</item>
+        <item name="colorPrimaryDark">@color/color_1875D1</item>
+    </style>
+
     <!--启动页状态栏颜色和启动页图片适配-->
     <style name="ImageTranslucentTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!--在Android 4.4之前的版本上运行，直接跟随系统主题-->
     </style>
+
 </resources>

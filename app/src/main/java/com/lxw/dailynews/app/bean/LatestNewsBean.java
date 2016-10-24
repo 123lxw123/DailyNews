@@ -52,7 +52,7 @@ public class LatestNewsBean implements Serializable {
         this.top_stories = top_stories;
     }
 
-    public static class StoriesBean {
+    public static class StoriesBean implements Serializable{
         private String title;
         private String ga_prefix;
         private boolean multipic;
@@ -121,7 +121,7 @@ public class LatestNewsBean implements Serializable {
         }
     }
 
-    public static class TopStoriesBean {
+    public static class TopStoriesBean implements Serializable{
         private String image;
         private int type;
         private int id;

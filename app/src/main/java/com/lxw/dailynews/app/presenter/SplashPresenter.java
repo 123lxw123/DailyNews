@@ -31,32 +31,36 @@ public class SplashPresenter extends BaseMvpPresenter<ISplashView> {
     }
 
     public void getSplashPictureInfo() {
-        splashModel.getSplashPictureInfo(new HttpListener<SplashPictureInfoBean>() {
+        if (isNetworkAvailable()) {
+            splashModel.getSplashPictureInfo(new HttpListener<SplashPictureInfoBean>() {
 
-            @Override
-            public void onSuccess(final SplashPictureInfoBean response) {
-                if (response != null) {
-                    //显示图片和版权作者
-                    getView().setSplashPicture(response.img, response.text);
-                    // 使用IO线程下载更新本地保存的启动页图片
-                    Observable.create(new Observable.OnSubscribe<String>() {
-                        @Override
-                        public void call(Subscriber<? super String> subscriber) {
-                            ImageManager.getInstance().downloadImage(BaseApplication.appContext, response.img,Constant.PATH_SPLASH_PICTURE, Constant.PATH_SPLASH_PICTURE_PNG);
-                        }
-                    }).subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe();
-                } else {
-                    getView().setSplashPicture();
+                @Override
+                public void onSuccess(final SplashPictureInfoBean response) {
+                    if (response != null) {
+                        //显示图片和版权作者
+                        getView().setSplashPicture(response.img, response.text);
+                        // 使用IO线程下载更新本地保存的启动页图片
+                        Observable.create(new Observable.OnSubscribe<String>() {
+                            @Override
+                            public void call(Subscriber<? super String> subscriber) {
+                                ImageManager.getInstance().downloadImage(BaseApplication.appContext, response.img, Constant.PATH_SPLASH_PICTURE, Constant.PATH_SPLASH_PICTURE_PNG);
+                            }
+                        }).subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe();
+                    } else {
+                        getView().setSplashPicture();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Throwable error) {
+                @Override
+                public void onFailure(Throwable error) {
 
-            }
-        });
+                }
+            });
+        }else{
+            getView().setSplashPicture();
+        }
     }
 
     public void getLatestNews() {
