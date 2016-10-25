@@ -47,17 +47,14 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends BaseMvpPresen
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
-        //隐藏虚拟按键
-        if (android.os.Build.VERSION.SDK_INT >= 14) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        }
     }
 
     @Override
     public void startActivity(Intent intent) {
         super.startActivity(intent);
         //activity跳转动画
-        overridePendingTransition(R.anim.in_left_to_right, R.anim.out_left_to_right);
+        overridePendingTransition(R.anim.in_bottom_to_top,R.anim.translate_do_nothing);
+//        overridePendingTransition(R.anim.in_left_to_right, R.anim.out_left_to_right);
     }
 
     @Override
@@ -66,7 +63,8 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends BaseMvpPresen
         //移除activity
         ActivityStack.getInstance().finishActivity(this);
         //activity移除动画
-        overridePendingTransition(R.anim.in_right_to_left, R.anim.out_right_to_left);
+        overridePendingTransition(R.anim.translate_do_nothing,R.anim.out_top_to_bottom);
+//        overridePendingTransition(R.anim.in_right_to_left, R.anim.out_right_to_left);
     }
 
     //为activity添加一个标签

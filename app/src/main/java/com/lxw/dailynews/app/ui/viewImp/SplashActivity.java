@@ -58,6 +58,12 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //隐藏虚拟按键
+        if (android.os.Build.VERSION.SDK_INT >= 14) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        }
+
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         initActivityTag("启动页");
