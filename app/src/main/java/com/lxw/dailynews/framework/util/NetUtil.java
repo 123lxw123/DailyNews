@@ -1,4 +1,4 @@
-package com.lxw.dailynews.framework.utils;
+package com.lxw.dailynews.framework.util;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;

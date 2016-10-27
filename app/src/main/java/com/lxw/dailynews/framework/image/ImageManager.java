@@ -10,7 +10,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.lxw.dailynews.R;
-import com.lxw.dailynews.framework.utils.FileUtil;
+import com.lxw.dailynews.framework.util.FileUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,8 +18,6 @@ import java.io.FileOutputStream;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-
-import static android.R.attr.path;
 
 /**
  * Created by Zion on 2016/10/15.

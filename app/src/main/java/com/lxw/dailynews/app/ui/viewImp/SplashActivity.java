@@ -1,6 +1,5 @@
 package com.lxw.dailynews.app.ui.viewImp;
 
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,21 +17,17 @@ import com.lxw.dailynews.app.ui.view.ISplashView;
 import com.lxw.dailynews.framework.common.Config.Constant;
 import com.lxw.dailynews.framework.common.base.BaseMvpActivity;
 import com.lxw.dailynews.framework.image.ImageManager;
-import com.lxw.dailynews.framework.utils.FileUtil;
-import com.lxw.dailynews.framework.utils.SharePreferencesUtil;
-import com.lxw.dailynews.framework.utils.StringUtil;
+import com.lxw.dailynews.framework.util.FileUtil;
+import com.lxw.dailynews.framework.util.SharePreferencesUtil;
+import com.lxw.dailynews.framework.util.StringUtil;
 
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
-import rx.Subscriber;
-import rx.android.MainThreadSubscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-
-import static android.R.attr.author;
 
 public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter> implements ISplashView {
 

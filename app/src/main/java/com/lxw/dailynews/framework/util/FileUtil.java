@@ -1,6 +1,5 @@
-package com.lxw.dailynews.framework.utils;
+package com.lxw.dailynews.framework.util;
 
-import android.os.Environment;
 import android.text.TextUtils;
 
 import com.lxw.dailynews.framework.common.Config.Constant;

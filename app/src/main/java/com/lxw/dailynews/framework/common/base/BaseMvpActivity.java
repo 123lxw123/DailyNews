@@ -1,22 +1,16 @@
 package com.lxw.dailynews.framework.common.base;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.view.View;
 import android.widget.Toast;
 
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
-import com.hannesdorfmann.mosby.mvp.MvpPresenter;
 import com.hannesdorfmann.mosby.mvp.MvpView;
-import com.hannesdorfmann.mosby.mvp.delegate.ActivityMvpDelegateCallback;
 import com.lxw.dailynews.R;
 import com.lxw.dailynews.framework.common.Config.Constant;
 import com.lxw.dailynews.framework.common.activitystack.ActivityStack;
 import com.lxw.dailynews.framework.log.LoggerHelper;
-import com.lxw.dailynews.framework.utils.NetUtil;
 
 import dmax.dialog.SpotsDialog;
 

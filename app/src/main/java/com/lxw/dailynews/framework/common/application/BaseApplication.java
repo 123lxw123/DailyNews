@@ -3,14 +3,10 @@ package com.lxw.dailynews.framework.common.application;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Environment;
 
 import com.lxw.dailynews.app.ui.viewImp.MainActivity;
-import com.lxw.dailynews.framework.common.Config.Constant;
 import com.lxw.dailynews.framework.log.LoggerHelper;
-import com.lxw.dailynews.framework.utils.SharePreferencesUtil;
-
-import static okhttp3.internal.Internal.instance;
+import com.lxw.dailynews.framework.util.SharePreferencesUtil;
 
 /**
  * Created by lxw9047 on 2016/10/12.
