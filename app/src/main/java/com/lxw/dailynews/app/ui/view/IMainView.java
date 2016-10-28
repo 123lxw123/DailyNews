@@ -1,10 +1,7 @@
 package com.lxw.dailynews.app.ui.view;
 
-import com.hannesdorfmann.mosby.mvp.MvpView;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
-import com.lxw.dailynews.framework.common.base.BaseMvpView;
-
-import java.util.Map;
+import com.lxw.dailynews.framework.base.BaseMvpView;
 
 /**
  * Created by lxw9047 on 2016/10/24.

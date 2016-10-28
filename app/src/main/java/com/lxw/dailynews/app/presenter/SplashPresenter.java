@@ -1,16 +1,13 @@
 package com.lxw.dailynews.app.presenter;
 
-import com.bumptech.glide.module.GlideModule;
-import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
-import com.hannesdorfmann.mosby.mvp.MvpView;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.app.bean.SplashPictureInfoBean;
 import com.lxw.dailynews.app.model.model.ISplashModel;
 import com.lxw.dailynews.app.model.modelImp.SplashModel;
 import com.lxw.dailynews.app.ui.view.ISplashView;
-import com.lxw.dailynews.framework.common.Config.Constant;
-import com.lxw.dailynews.framework.common.application.BaseApplication;
-import com.lxw.dailynews.framework.common.base.BaseMvpPresenter;
+import com.lxw.dailynews.framework.config.Constant;
+import com.lxw.dailynews.framework.application.BaseApplication;
+import com.lxw.dailynews.framework.base.BaseMvpPresenter;
 import com.lxw.dailynews.framework.http.HttpListener;
 import com.lxw.dailynews.framework.image.ImageManager;
 

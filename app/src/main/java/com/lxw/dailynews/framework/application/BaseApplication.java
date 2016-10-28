@@ -1,4 +1,4 @@
-package com.lxw.dailynews.framework.common.application;
+package com.lxw.dailynews.framework.application;
 
 import android.app.Application;
 import android.content.Context;

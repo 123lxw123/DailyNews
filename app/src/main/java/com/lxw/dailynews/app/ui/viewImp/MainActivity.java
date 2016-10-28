@@ -9,7 +9,7 @@ import com.lxw.dailynews.R;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.app.presenter.MainPresenter;
 import com.lxw.dailynews.app.ui.view.IMainView;
-import com.lxw.dailynews.framework.common.base.BaseMvpActivity;
+import com.lxw.dailynews.framework.base.BaseMvpActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

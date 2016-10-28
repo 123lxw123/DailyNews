@@ -1,6 +1,6 @@
 package com.lxw.dailynews.framework.log;
 
-import com.lxw.dailynews.framework.common.Config.Constant;
+import com.lxw.dailynews.framework.config.Constant;
 import com.orhanobut.logger.Logger;
 
 /**

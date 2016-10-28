@@ -1,4 +1,4 @@
-package com.lxw.dailynews.framework.common.base;
+package com.lxw.dailynews.framework.base;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -8,8 +8,8 @@ import android.widget.Toast;
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
 import com.hannesdorfmann.mosby.mvp.MvpView;
 import com.lxw.dailynews.R;
-import com.lxw.dailynews.framework.common.Config.Constant;
-import com.lxw.dailynews.framework.common.activitystack.ActivityStack;
+import com.lxw.dailynews.framework.config.Constant;
+import com.lxw.dailynews.framework.activitystack.ActivityStack;
 import com.lxw.dailynews.framework.log.LoggerHelper;
 
 import dmax.dialog.SpotsDialog;

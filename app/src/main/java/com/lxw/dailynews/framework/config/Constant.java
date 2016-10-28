@@ -1,4 +1,4 @@
-package com.lxw.dailynews.framework.common.Config;
+package com.lxw.dailynews.framework.config;
 
 import android.os.Environment;
 

@@ -1,8 +1,8 @@
-package com.lxw.dailynews.framework.common.base;
+package com.lxw.dailynews.framework.base;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.hannesdorfmann.mosby.mvp.MvpView;
-import com.lxw.dailynews.framework.common.application.BaseApplication;
+import com.lxw.dailynews.framework.application.BaseApplication;
 import com.lxw.dailynews.framework.util.NetUtil;
 
 /**

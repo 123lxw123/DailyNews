@@ -2,7 +2,7 @@ package com.lxw.dailynews.framework.util;
 
 import android.text.TextUtils;
 
-import com.lxw.dailynews.framework.common.Config.Constant;
+import com.lxw.dailynews.framework.config.Constant;
 
 import java.io.File;
 

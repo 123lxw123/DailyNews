@@ -1,4 +1,4 @@
-package com.lxw.dailynews.framework.common.base;
+package com.lxw.dailynews.framework.base;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
 

@@ -5,7 +5,7 @@ import com.lxw.dailynews.app.model.model.IMainModel;
 import com.lxw.dailynews.app.model.modelImp.MainModel;
 import com.lxw.dailynews.app.model.modelImp.SplashModel;
 import com.lxw.dailynews.app.ui.view.IMainView;
-import com.lxw.dailynews.framework.common.base.BaseMvpPresenter;
+import com.lxw.dailynews.framework.base.BaseMvpPresenter;
 import com.lxw.dailynews.framework.http.HttpListener;
 
 /**

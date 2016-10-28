@@ -1,4 +1,4 @@
-package com.lxw.dailynews.framework.common.activitystack;
+package com.lxw.dailynews.framework.activitystack;
 
 import android.app.Activity;
 import android.content.Context;
