@@ -9,12 +9,12 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_item1"
+        android:id="@+id/action_styles_night"
         android:title="@string/menu_styles_night"
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_item2"
+        android:id="@+id/action_setting_option"
         android:title="@string/menu_setting_option"
         app:showAsAction="never" />
 </menu>

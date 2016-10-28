@@ -1,19 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:toolbar="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_F2F2F2"
+    android:orientation="vertical"
     tools:context=".app.ui.viewImp.MainActivity">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        android:background="@color/color_01A1ED"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/color_01A1ED"
         toolbar:navigationIcon="@mipmap/ic_toolbar_drawer"
         toolbar:title="@string/toolbar_title"
-        toolbar:titleTextColor="@color/color_FFFFFF"
-        >
-    </android.support.v7.widget.Toolbar>
+        toolbar:titleTextColor="@color/color_FFFFFF" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/layout_swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

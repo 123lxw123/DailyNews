@@ -63,8 +63,7 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
         ButterKnife.bind(this);
         initActivityTag("启动页");
         initView();
-        getSplashPictureInfo();
-        getLatestNews();
+        prepareData();
         jumpToNext();
     }
 
@@ -86,6 +85,17 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
                         imgIcon.setImageResource(R.mipmap.icon_logo);
                     }
                 });
+    }
+
+    @Override
+    public void prepareData() {
+        getSplashPictureInfo();
+        getLatestNews();
+    }
+
+    @Override
+    public void rePrepareData() {
+
     }
 
     //获取启动页图片信息

@@ -8,4 +8,6 @@ import com.hannesdorfmann.mosby.mvp.MvpView;
 
 public interface BaseMvpView extends MvpView {
     void initView();
+    void prepareData();
+    void rePrepareData();
 }
