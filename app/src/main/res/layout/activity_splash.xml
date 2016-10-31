@@ -31,7 +31,7 @@
 
     </RelativeLayout>
     <LinearLayout
-        android:id="@+id/layout_footview"
+        android:id="@+id/layout_footerview"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:layout_width="match_parent"

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout__header_content"
+    android:background="@color/color_85888C"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_250">
+    <ImageView
+        android:id="@+id/img_header_picture"
+        android:alpha="0.8"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <TextView
+        android:id="@+id/txt_header_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="@dimen/dp_40"
+        android:paddingLeft="@dimen/dp_15"
+        android:paddingRight="@dimen/dp_15"
+        android:textColor="@color/color_FFFFFF"
+        android:textSize="@dimen/sp_24"
+        tools:text="读读日报24小时热门TOP 5 中国的铁路上还有美食吗？" />
+</FrameLayout>

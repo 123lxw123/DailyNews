@@ -42,8 +42,8 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
     TextView txtTitle;
     @BindView(R.id.txt_slogan)
     TextView txtSlogan;
-    @BindView(R.id.layout_footview)
-    LinearLayout layoutFootview;
+    @BindView(R.id.layout_footerview)
+    LinearLayout layoutFooterview;
     @BindView(R.id.layout_picture)
     RelativeLayout layoutPicture;
 
@@ -58,7 +58,6 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
         if (android.os.Build.VERSION.SDK_INT >= 14) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
-
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         initActivityTag("启动页");
@@ -75,7 +74,7 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
 
     @Override
     public void initView() {
-        layoutFootview.startAnimation(AnimationUtils.loadAnimation(SplashActivity.this, R.anim.in_bottom_to_top));
+        layoutFooterview.startAnimation(AnimationUtils.loadAnimation(SplashActivity.this, R.anim.in_bottom_to_top));
         Observable.timer(1200, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(AndroidSchedulers.mainThread())

@@ -12,6 +12,8 @@ import com.lxw.dailynews.framework.config.Constant;
 import com.lxw.dailynews.framework.activitystack.ActivityStack;
 import com.lxw.dailynews.framework.log.LoggerHelper;
 
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import dmax.dialog.SpotsDialog;
 
 /**
@@ -27,6 +29,8 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends BaseMvpPresen
     /** activity标签 **/
     private String activityTag = "";
 
+    private Unbinder unbinder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +44,6 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends BaseMvpPresen
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
-
     }
 
     @Override
@@ -90,5 +93,10 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends BaseMvpPresen
     }
     public void showMessage(String message, int showTime){
         Toast.makeText(BaseMvpActivity.this, message, showTime).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
