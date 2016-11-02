@@ -1,6 +1,7 @@
 package com.lxw.dailynews.app.presenter;
 
 import com.lxw.dailynews.app.bean.LatestNewsBean;
+import com.lxw.dailynews.app.bean.NewThemeBean;
 import com.lxw.dailynews.app.bean.SplashPictureInfoBean;
 import com.lxw.dailynews.app.model.model.ISplashModel;
 import com.lxw.dailynews.app.model.modelImp.SplashModel;
@@ -55,7 +56,7 @@ public class SplashPresenter extends BaseMvpPresenter<ISplashView> {
 
                 }
             });
-        }else{
+        } else {
             getView().setSplashPicture();
         }
     }
@@ -67,6 +68,23 @@ public class SplashPresenter extends BaseMvpPresenter<ISplashView> {
             public void onSuccess(LatestNewsBean response) {
                 if (response != null) {
                     getView().setLatestNewsBean(response);
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+
+            }
+        });
+    }
+
+    public void getNewThemes() {
+        splashModel.getNewThemes(new HttpListener<NewThemeBean>() {
+
+            @Override
+            public void onSuccess(NewThemeBean response) {
+                if (response != null) {
+                    getView().setNewThemeBean(response);
                 }
             }
 

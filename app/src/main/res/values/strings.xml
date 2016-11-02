@@ -6,4 +6,6 @@
     <string name="menu_styles_night">夜间模式</string>
     <string name="menu_setting_option">设置选项</string>
     <string name="toolbar_title">首页</string>
+    <string name="main_latest_news">今天热闻</string>
+    <string name="error_request_failure">请求服务器失败</string>
 </resources>

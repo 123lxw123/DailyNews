@@ -1,6 +1,7 @@
 package com.lxw.dailynews.app.api;
 
 import com.lxw.dailynews.app.bean.LatestNewsBean;
+import com.lxw.dailynews.app.bean.NewThemeBean;
 import com.lxw.dailynews.app.bean.SplashPictureInfoBean;
 
 import java.util.concurrent.TimeUnit;
@@ -46,5 +47,11 @@ public class HttpHelper {
     }
     public Observable<LatestNewsBean> getLatestNews(){
         return httpService.getLatestNews();
+    }
+    public Observable<LatestNewsBean> getBeforeNews(String beforeDate){
+        return httpService.getBeforeNews(beforeDate);
+    }
+    public Observable<NewThemeBean> getNewThemes(){
+        return httpService.getNewThemes();
     }
 }

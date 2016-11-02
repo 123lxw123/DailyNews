@@ -55,9 +55,10 @@ public class LatestNewsBean implements Serializable {
     public static class StoriesBean implements Serializable{
         private String title;
         private String ga_prefix;
-        private boolean multipic;
+        private boolean multipic = false;//消息是否包含多张图片（仅出现在包含多图的新闻中）默认否
         private int type;
         private int id;
+        private String headerTitle = ""; //新闻日期分类标题，如今日热闻，11月01日 星期二
         private List<String> images;
 
         public String getTitle() {
@@ -100,6 +101,14 @@ public class LatestNewsBean implements Serializable {
             this.id = id;
         }
 
+        public String getHeaderTitle() {
+            return headerTitle;
+        }
+
+        public void setHeaderTitle(String headerTitle) {
+            this.headerTitle = headerTitle;
+        }
+
         public List<String> getImages() {
             return images;
         }
@@ -116,6 +125,7 @@ public class LatestNewsBean implements Serializable {
                     ", multipic=" + multipic +
                     ", type=" + type +
                     ", id=" + id +
+                    ", headerTitle='" + headerTitle + '\'' +
                     ", images=" + images +
                     '}';
         }

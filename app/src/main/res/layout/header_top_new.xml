@@ -9,7 +9,7 @@
         android:layout_height="@dimen/dp_250"/>
 
     <LinearLayout
-        android:id="@+id/layout_header_position"
+        android:id="@+id/layout_header_dot"
         android:layout_marginBottom="@dimen/dp_10"
         android:orientation="horizontal"
         android:layout_gravity="bottom|center_horizontal"

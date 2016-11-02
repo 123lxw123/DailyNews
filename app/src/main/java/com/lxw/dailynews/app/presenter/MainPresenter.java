@@ -1,10 +1,14 @@
 package com.lxw.dailynews.app.presenter;
 
+import com.lxw.dailynews.R;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
+import com.lxw.dailynews.app.bean.NewThemeBean;
 import com.lxw.dailynews.app.model.model.IMainModel;
+import com.lxw.dailynews.app.model.model.ISplashModel;
 import com.lxw.dailynews.app.model.modelImp.MainModel;
 import com.lxw.dailynews.app.model.modelImp.SplashModel;
 import com.lxw.dailynews.app.ui.view.IMainView;
+import com.lxw.dailynews.framework.application.BaseApplication;
 import com.lxw.dailynews.framework.base.BaseMvpPresenter;
 import com.lxw.dailynews.framework.http.HttpListener;
 
@@ -14,15 +18,16 @@ import com.lxw.dailynews.framework.http.HttpListener;
 
 public class MainPresenter extends BaseMvpPresenter<IMainView> {
     private IMainModel mainModel;
-    private LatestNewsBean latestNewsBean;
+    private ISplashModel splashModel;
 
     public MainPresenter() {
         mainModel = new MainModel();
     }
 
+    //获取最新热闻
     public void getLatestNews() {
         if (isNetworkAvailable()) {
-            new SplashModel().getLatestNews(new HttpListener<LatestNewsBean>() {
+            splashModel.getLatestNews(new HttpListener<LatestNewsBean>() {
 
                 @Override
                 public void onSuccess(LatestNewsBean response) {
@@ -41,7 +46,45 @@ public class MainPresenter extends BaseMvpPresenter<IMainView> {
         }
     }
 
-    public void setLatestNewsBean(LatestNewsBean latestNewsBean) {
-        this.latestNewsBean = latestNewsBean;
+    //获取之前某一天的热闻
+    public void getBeforeNews(String beforeDate) {
+        if (checkNetword()) {
+            mainModel.getBeforeNews(beforeDate, new HttpListener<LatestNewsBean>() {
+                @Override
+                public void onSuccess(LatestNewsBean response) {
+                    if (response != null) {
+                        getView().setLatestNewsBean(response);
+                    }else {
+                        showMessage(BaseApplication.appContext.getString(R.string.error_request_failure));
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable error) {
+                    showMessage(error.getMessage());
+                }
+            });
+        }
+    }
+
+    //获取热闻主题
+    public void getNewThemes(){
+        if (checkNetword()) {
+            splashModel.getNewThemes(new HttpListener<NewThemeBean>() {
+                @Override
+                public void onSuccess(NewThemeBean response) {
+                    if (response != null) {
+                        getView().setNewThemeBean(response);
+                    }else {
+                        showMessage(BaseApplication.appContext.getString(R.string.error_request_failure));
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable error) {
+                    showMessage(error.getMessage());
+                }
+            });
+        }
     }
 }

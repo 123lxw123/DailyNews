@@ -13,9 +13,9 @@ import android.widget.TextView;
 import com.lxw.dailynews.R;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.framework.image.ImageManager;
+import com.lxw.dailynews.framework.log.LoggerHelper;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,12 +30,10 @@ public class HeaderAdapter extends PagerAdapter {
     private List<LatestNewsBean.TopStoriesBean> dataList;
     private Context context;
     private View layoutView;
-    private ViewHolder holderList[];
 
     public HeaderAdapter(Context context, List<LatestNewsBean.TopStoriesBean> dataList) {
         this.context = context;
         this.dataList = dataList;
-        layoutView = LayoutInflater.from(context).inflate(R.layout.header_content, null);
     }
 
     @Override
@@ -54,29 +52,20 @@ public class HeaderAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
+//        container.removeView(holderList[position].layoutHeaderContent);
         container.removeView((View) object);
     }
 
     @Override
     public Object instantiateItem(ViewGroup view, int position) {
+        int i = 0;
         if (dataList != null && dataList.size() > 0) {
-            if(holderList == null){
-                holderList = new ViewHolder[dataList.size()];
-            }
             View contentView = null;
-            if (holderList[position] == null) {
-                ViewHolder holder = new ViewHolder();
-                holder.txtHeaderTitle.setText(dataList.get(position).getTitle());
-                ImageManager.getInstance().loadImage(context, holder.imgHeaderPicture, dataList.get(position).getImage(), false);
-                contentView = holder.layoutHeaderContent;
-                holderList[position] = holder;
-                if(contentView.getParent() != null){
-                    view.removeView(contentView);
-                }
-                view.addView(contentView);
-            } else {
-                contentView = holderList[position].layoutHeaderContent;
-            }
+            ViewHolder holder = new ViewHolder();
+            holder.txtHeaderTitle.setText(dataList.get(position).getTitle());
+            ImageManager.getInstance().loadImage(context, holder.imgHeaderPicture, dataList.get(position).getImage(), true);
+            contentView = holder.layoutHeaderContent;
+            view.addView(contentView);
             return contentView;
         } else {
             return null;
@@ -85,6 +74,7 @@ public class HeaderAdapter extends PagerAdapter {
 
     public class ViewHolder {
         ViewHolder() {
+            View layoutView = LayoutInflater.from(context).inflate(R.layout.header_content, null);
             ButterKnife.bind(this, layoutView);
         }
 

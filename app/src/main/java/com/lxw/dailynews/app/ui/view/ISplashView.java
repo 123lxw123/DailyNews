@@ -1,6 +1,7 @@
 package com.lxw.dailynews.app.ui.view;
 
 import com.lxw.dailynews.app.bean.LatestNewsBean;
+import com.lxw.dailynews.app.bean.NewThemeBean;
 import com.lxw.dailynews.framework.base.BaseMvpView;
 
 /**
@@ -18,7 +19,11 @@ public interface ISplashView extends BaseMvpView {
 
     void getLatestNews();
 
+    void getNewThemes();
+
     void setLatestNewsBean(LatestNewsBean latestNewsBean);
+
+    void setNewThemeBean(NewThemeBean newThemeBean);
 
     void jumpToNext();
 }

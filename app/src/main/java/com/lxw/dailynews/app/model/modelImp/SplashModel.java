@@ -1,6 +1,7 @@
 package com.lxw.dailynews.app.model.modelImp;
 
 import com.lxw.dailynews.app.bean.LatestNewsBean;
+import com.lxw.dailynews.app.bean.NewThemeBean;
 import com.lxw.dailynews.app.bean.SplashPictureInfoBean;
 import com.lxw.dailynews.app.model.model.ISplashModel;
 import com.lxw.dailynews.app.api.HttpHelper;
@@ -36,6 +37,17 @@ public class SplashModel implements ISplashModel {
             @Override
             public Observable<LatestNewsBean> createObservable() {
                 return HttpHelper.getInstance().getLatestNews();
+            }
+        };
+    }
+
+    @Override
+    public void getNewThemes(HttpListener<NewThemeBean> httpListener) {
+        new HttpManager<NewThemeBean>(httpListener){
+
+            @Override
+            public Observable<NewThemeBean> createObservable() {
+                return HttpHelper.getInstance().getNewThemes();
             }
         };
     }
