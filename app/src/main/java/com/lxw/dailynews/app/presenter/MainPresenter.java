@@ -22,6 +22,7 @@ public class MainPresenter extends BaseMvpPresenter<IMainView> {
 
     public MainPresenter() {
         mainModel = new MainModel();
+        splashModel = new SplashModel();
     }
 
     //获取最新热闻

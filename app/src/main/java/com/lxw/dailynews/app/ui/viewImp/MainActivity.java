@@ -3,12 +3,13 @@ package com.lxw.dailynews.app.ui.viewImp;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.format.Time;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,11 +21,11 @@ import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.app.bean.NewThemeBean;
 import com.lxw.dailynews.app.presenter.MainPresenter;
 import com.lxw.dailynews.app.ui.view.IMainView;
-import com.lxw.dailynews.app.ui.view.ISplashView;
 import com.lxw.dailynews.framework.base.BaseMvpActivity;
 import com.lxw.dailynews.framework.image.ImageManager;
 import com.lxw.dailynews.framework.util.StringUtil;
 import com.lxw.dailynews.framework.util.TimeUtil;
+import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -37,6 +38,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.R.id.toggle;
+import static com.bumptech.glide.load.engine.DiskCacheStrategy.RESULT;
+
 public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> implements IMainView {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -44,14 +48,18 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     RecyclerView recyclerview;
     @BindView(R.id.layout_swipe_refresh)
     SwipeRefreshLayout layoutSwipeRefresh;
+    @BindView(R.id.drawer_recyclerview)
+    RecyclerView drawerRecyclerview;
+    @BindView(R.id.layout_drawer)
+    DrawerLayout layoutDrawer;
 
+    //主界面
     private HeaderAndFooterWrapper headerAndFooterWrapper;
     private LoadMoreWrapper loadMoreWrapper;
     private View headerView;
     private ViewPager viewpagerHeaderPicture;
     private LinearLayout layoutHeaderDot;
     private LatestNewsBean latestNewsBean;
-    private NewThemeBean newThemeBean;
     private MultiItemTypeAdapter<LatestNewsBean.StoriesBean> mainAdapter;
     private HeaderAdapter headerAdapter;
     private List<LatestNewsBean.StoriesBean> stories = new ArrayList<LatestNewsBean.StoriesBean>();
@@ -60,6 +68,12 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     private boolean refreshFlag = true;//是否刷新的标志
     private int count = 0;//前N天计数，用于获取以前的热闻
     private String currentDate;//应用的当前日期，当前展示的今天热闻的日期；不是系统当前日期
+    //侧滑菜单
+    private NewThemeBean newThemeBean;
+    private HeaderAndFooterWrapper drawerHeaderAndFooterWrapper;
+    private View drawerHeaderView;
+    private CommonAdapter<NewThemeBean.OthersBean> drawerAdapter;
+    private List<NewThemeBean.OthersBean> otherNewThemes = new ArrayList<NewThemeBean.OthersBean>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +119,12 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
 
     @Override
     public void initNewThemeList() {
-
+        if(refreshFlag){
+            otherNewThemes.clear();
+            otherNewThemes.addAll(newThemeBean.getOthers());
+            drawerRecyclerview.setAdapter(drawerHeaderAndFooterWrapper);
+        }
+        drawerHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
     //获取最新消息传给主页
@@ -236,15 +255,49 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                 count++;//前N天+1
             }
         });
-//
+
+        /*侧滑菜单*/
+        //实现打开关/闭监听
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(MainActivity.this, layoutDrawer, toolbar, R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+//                mAnimationDrawable.stop();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+//                mAnimationDrawable.start();
+            }
+        };
+        //设置左上角的图标响应
+        drawerToggle.syncState();
+        layoutDrawer.addDrawerListener(drawerToggle);
+        drawerRecyclerview.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        drawerRecyclerview.setItemAnimator(new DefaultItemAnimator());
+        drawerAdapter = new CommonAdapter<NewThemeBean.OthersBean>(MainActivity.this, R.layout.item_new_theme, otherNewThemes) {
+            @Override
+            protected void convert(ViewHolder holder, NewThemeBean.OthersBean newThemeBean, int position) {
+                holder.setText(R.id.txt_drawer_theme_title, newThemeBean.getName());
+                holder.setImageResource(R.id.img_drawer_follow_state, R.mipmap.img_drawer_follow);
+            }
+        };
+        drawerHeaderAndFooterWrapper = new HeaderAndFooterWrapper(drawerAdapter);
+        drawerHeaderView = getLayoutInflater().inflate(R.layout.header_drawer, null);
+        drawerHeaderView.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        drawerHeaderAndFooterWrapper.addHeaderView(drawerHeaderView);
     }
 
     @Override
     public void prepareData() {
-        if(latestNewsBean == null){
+        if (latestNewsBean == null) {
             getLatestNews();
         }
-        if(newThemeBean == null){
+        if (newThemeBean == null) {
             getNewThemes();
         }
     }
@@ -284,10 +337,11 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
 
 
         //停止刷新小圈圈动画
-        if(refreshFlag && layoutSwipeRefresh.isRefreshing()){
+        if (refreshFlag && layoutSwipeRefresh.isRefreshing()) {
             layoutSwipeRefresh.setRefreshing(false);
         }
     }
+
     //初始化header底部小圆点
     private void initDots() {
         layoutHeaderDot.removeAllViews();

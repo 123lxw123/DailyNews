@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * Created by lxw9047 on 2016/11/2.
+ *  热闻主题 （侧滑菜单列表）
  */
 
 public class NewThemeBean implements Serializable {
@@ -35,7 +36,7 @@ public class NewThemeBean implements Serializable {
         this.limit = limit;
     }
 
-    public List<?> getSubscribed() {
+    public List<OthersBean> getSubscribed() {
         return subscribed;
     }
 

@@ -40,6 +40,7 @@
             android:id="@+id/img_icon"
             android:layout_marginLeft="@dimen/dp_20"
             android:background="@drawable/bg_rounded_frame"
+            android:padding="@dimen/dp_10"
             android:layout_width="45dp"
             android:layout_height="45dp" />
         <LinearLayout

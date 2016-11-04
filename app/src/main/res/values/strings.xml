@@ -8,4 +8,9 @@
     <string name="toolbar_title">首页</string>
     <string name="main_latest_news">今天热闻</string>
     <string name="error_request_failure">请求服务器失败</string>
+    <string name="drawer_login_tip">请登录</string>
+    <string name="drawer_collect">我的收藏</string>
+    <string name="drawer_download">离线下载</string>
+    <string name="drawer_open">drawer_open</string>
+    <string name="drawer_close">drawer_close</string>
 </resources>

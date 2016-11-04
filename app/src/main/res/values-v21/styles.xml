@@ -5,6 +5,7 @@
         <item name="titleTextAppearance">@dimen/sp_18</item>
         <item name="android:colorControlNormal">@color/color_FFFFFF</item>
         <item name="colorPrimaryDark">@color/color_1875D1</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
     </style>
 
     <!--启动页状态栏颜色和启动页图片适配-->
@@ -14,4 +15,11 @@
         <!--Android 5.x开始需要把颜色设置透明，否则导航栏会呈现系统默认的浅灰色-->
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+
+    <!--修改toolbar 图标的默认颜色-->
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@color/color_FFFFFF</item>
+    </style>
+
 </resources>

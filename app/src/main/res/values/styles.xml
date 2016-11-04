@@ -11,6 +11,7 @@
     <style name="BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="titleTextAppearance">@dimen/sp_18</item>
         <item name="colorPrimaryDark">@color/color_1875D1</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
     </style>
 
     <!--启动页状态栏颜色和启动页图片适配-->
@@ -18,4 +19,9 @@
         <!--在Android 4.4之前的版本上运行，直接跟随系统主题-->
     </style>
 
+    <!--修改toolbar 图标的默认颜色-->
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@color/color_FFFFFF</item>
+    </style>
 </resources>

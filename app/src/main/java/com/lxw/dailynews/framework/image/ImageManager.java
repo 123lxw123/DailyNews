@@ -117,7 +117,7 @@ public class ImageManager {
      */
     public void downloadImage(Context context, String imgUrl, String path, String fileName) {
             try{
-            File file = new File(path + fileName);
+            File file = null;
             Bitmap bitmap = Glide.with(context)
                     .load(imgUrl)
                     .asBitmap()
@@ -125,11 +125,15 @@ public class ImageManager {
                     .get();
                 if(bitmap != null){
                     if(FileUtil.isFileExists(path + fileName)){
+                        file = new File(path + fileName);
                         file.delete();
                     }else{
                         if(!FileUtil.isFileExists(path)){
                             new File(path).mkdirs();
                         }
+                    }
+                    if(file == null){
+                        file = new File(path + fileName);
                     }
                     file.createNewFile();
                     FileOutputStream fos = new FileOutputStream(file);
