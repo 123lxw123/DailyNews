@@ -109,8 +109,8 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
     //加载本地图片
     @Override
     public void setSplashPicture() {
-        if (FileUtil.isFileExists(Constant.PATH_SPLASH_PICTURE_PNG)) {
-            ImageManager.getInstance().loadImage(SplashActivity.this, imgPicture, Constant.PATH_SPLASH_PICTURE_PNG, true, R.mipmap.img_default_splash_picture);
+        if (FileUtil.isFileExists(Constant.PATH_SPLASH_PICTURE + Constant.PATH_SPLASH_PICTURE_PNG)) {
+            ImageManager.getInstance().loadImage(SplashActivity.this, imgPicture, Constant.PATH_SPLASH_PICTURE + Constant.PATH_SPLASH_PICTURE_PNG, true, R.mipmap.img_default_splash_picture);
             String author = SharePreferencesUtil.getStringSharePreferences(SplashActivity.this, SPLASH_AUTHOR, "");
             if (!StringUtil.isEmpty(author)) {
                 txtAuthor.setText(author);

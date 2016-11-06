@@ -346,7 +346,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     private void initDots() {
         layoutHeaderDot.removeAllViews();
         dotViews = new ImageView[top_stories.size()];
-        LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(10, 10);
         mParams.setMargins(0, 0, 5, 0);//设置小圆点左右之间的间隔
 
         for (int i = 0; i < top_stories.size(); i++) {

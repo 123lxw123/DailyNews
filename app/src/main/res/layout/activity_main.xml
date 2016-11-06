@@ -36,12 +36,13 @@
 
     <LinearLayout
         android:layout_gravity="start"
-        android:layout_width="@dimen/dp_300"
+        android:layout_marginRight="@dimen/dp_55"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/drawer_recyclerview"
             android:background="@color/color_FFFFFF"
-            android:layout_width="@dimen/dp_300"
+            android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
 

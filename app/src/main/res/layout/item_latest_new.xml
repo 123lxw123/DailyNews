@@ -27,14 +27,15 @@
         android:layout_weight="1" />
 <FrameLayout
     android:layout_gravity="center"
-    android:layout_width="@dimen/dp_70"
+    android:layout_width="@dimen/dp_90"
     android:layout_height="@dimen/dp_70"
     android:layout_marginTop="@dimen/dp_15"
     android:layout_marginBottom="@dimen/dp_15"
     android:layout_marginRight="@dimen/dp_15">
     <ImageView
         android:id="@+id/img_new_picture"
-        android:layout_width="@dimen/dp_70"
+        android:scaleType="centerCrop"
+        android:layout_width="@dimen/dp_90"
         android:layout_height="@dimen/dp_70"/>
     <ImageView
         android:id="@+id/img_multipic"
