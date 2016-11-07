@@ -34,9 +34,12 @@ import com.zhy.adapter.recyclerview.wrapper.LoadMoreWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.Subscriber;
 
 import static android.R.id.toggle;
 import static com.bumptech.glide.load.engine.DiskCacheStrategy.RESULT;
@@ -312,6 +315,31 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             top_stories.addAll(latestNewsBean.getTop_stories());
             stories.clear();
             initDots();
+            //热闻轮播操作
+            Observable.interval(4, TimeUnit.SECONDS).subscribe(new Subscriber<Long>(){
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(Long along) {
+                    int currentItem = Integer.parseInt(along.toString());
+                    viewpagerHeaderPicture.setCurrentItem(currentItem);
+                    for (int i = 0; i < dotViews.length; i++) {
+                        if (currentItem == i) {
+                            dotViews[i].setSelected(true);
+                        } else {
+                            dotViews[i].setSelected(false);
+                        }
+                    }
+                }
+            });
         }
 
         //添加新闻日期分类标题的item数据
