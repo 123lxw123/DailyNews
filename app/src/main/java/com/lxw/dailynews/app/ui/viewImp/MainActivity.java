@@ -1,5 +1,6 @@
 package com.lxw.dailynews.app.ui.viewImp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
@@ -32,6 +33,7 @@ import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
 import com.zhy.adapter.recyclerview.wrapper.LoadMoreWrapper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -40,9 +42,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscriber;
-
-import static android.R.id.toggle;
-import static com.bumptech.glide.load.engine.DiskCacheStrategy.RESULT;
 
 public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> implements IMainView {
     @BindView(R.id.toolbar)
@@ -193,10 +192,23 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             }
 
             @Override
-            public void convert(ViewHolder holder, LatestNewsBean.StoriesBean storiesBean, int position) {
+            public void convert(ViewHolder holder, final LatestNewsBean.StoriesBean storiesBean, final int position) {
                 holder.setText(R.id.txt_new_title, storiesBean.getTitle());
                 ImageManager.getInstance().loadImage(MainActivity.this, (ImageView) holder.getView(R.id.img_new_picture), storiesBean.getImages().get(0), true);
                 holder.setVisible(R.id.img_multipic, storiesBean.isMultipic());
+                final List<LatestNewsBean.StoriesBean> storiesList = MainActivity.this.stories;
+                holder.setOnClickListener(R.id.cardview_new_item, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(MainActivity.this, NewContentActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("type", "2");
+                        bundle.putInt("position", position);
+                        bundle.putSerializable("stories", (Serializable)storiesList);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
             }
         });
         mainAdapter.addItemViewDelegate(new ItemViewDelegate<LatestNewsBean.StoriesBean>() {//新闻日期分类标题item
@@ -223,6 +235,18 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         layoutHeaderDot = (LinearLayout) headerView.findViewById(R.id.layout_header_dot);
         headerAndFooterWrapper.addHeaderView(headerView);
         headerAdapter = new HeaderAdapter(MainActivity.this, top_stories);
+        headerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, NewContentActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("type", "1");
+                bundle.putInt("position", viewpagerHeaderPicture.getCurrentItem());
+                bundle.putSerializable("top_stories", (Serializable)top_stories);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
         //底部小圆点监听
         viewpagerHeaderPicture.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -283,7 +307,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             @Override
             protected void convert(ViewHolder holder, NewThemeBean.OthersBean newThemeBean, int position) {
                 holder.setText(R.id.txt_drawer_theme_title, newThemeBean.getName());
-                holder.setImageResource(R.id.img_drawer_follow_state, R.mipmap.img_drawer_follow);
+                holder.setImageResource(R.id.img_drawer_follow_state, R.mipmap.ic_follow);
             }
         };
         drawerHeaderAndFooterWrapper = new HeaderAndFooterWrapper(drawerAdapter);

@@ -16,7 +16,7 @@
             android:layout_height="@dimen/dp_0">
             <ImageView
                 android:layout_centerVertical="true"
-                android:src="@mipmap/drawer_default_avatar"
+                android:src="@mipmap/ic_default_avatar"
                 android:layout_width="@dimen/dp_35"
                 android:layout_height="@dimen/dp_35"/>
             <TextView
@@ -43,7 +43,7 @@
                 android:layout_height="match_parent">
                 <ImageView
                     android:layout_centerVertical="true"
-                    android:src="@mipmap/drawer_collect"
+                    android:src="@mipmap/ic_collect"
                     android:layout_width="@dimen/dp_30"
                     android:layout_height="@dimen/dp_30"/>
                 <TextView
@@ -64,7 +64,7 @@
                 android:layout_height="match_parent">
                 <ImageView
                     android:layout_centerVertical="true"
-                    android:src="@mipmap/drawer_download"
+                    android:src="@mipmap/ic_download"
                     android:layout_width="@dimen/dp_40"
                     android:layout_height="@dimen/dp_40"/>
                 <TextView
@@ -89,7 +89,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_50">
         <ImageView
-            android:src="@mipmap/drawer_home"
+            android:src="@mipmap/ic_home"
             android:layout_width="@dimen/dp_35"
             android:layout_height="@dimen/dp_35"/>
         <TextView

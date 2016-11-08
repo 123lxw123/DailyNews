@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardview_new_item"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_100"
     android:layout_marginBottom="@dimen/dp_4"
@@ -41,7 +42,7 @@
         android:id="@+id/img_multipic"
         android:visibility="gone"
         android:layout_gravity="bottom|right"
-        android:src="@mipmap/img_multipic"
+        android:src="@mipmap/ic_multipic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </FrameLayout>

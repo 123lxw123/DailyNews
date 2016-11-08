@@ -6,7 +6,6 @@
     android:layout_height="@dimen/dp_250">
     <ImageView
         android:id="@+id/img_header_picture"
-        android:alpha="0.8"
         android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
