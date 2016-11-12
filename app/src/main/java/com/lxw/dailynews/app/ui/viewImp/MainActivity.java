@@ -197,13 +197,14 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                 ImageManager.getInstance().loadImage(MainActivity.this, (ImageView) holder.getView(R.id.img_new_picture), storiesBean.getImages().get(0), true);
                 holder.setVisible(R.id.img_multipic, storiesBean.isMultipic());
                 final List<LatestNewsBean.StoriesBean> storiesList = MainActivity.this.stories;
+                //点击item打开消息内容
                 holder.setOnClickListener(R.id.cardview_new_item, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(MainActivity.this, NewContentActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putString("type", "2");
-                        bundle.putInt("position", position);
+                        bundle.putInt("position", position - 1);
                         bundle.putSerializable("stories", (Serializable)storiesList);
                         intent.putExtras(bundle);
                         startActivity(intent);
@@ -235,18 +236,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         layoutHeaderDot = (LinearLayout) headerView.findViewById(R.id.layout_header_dot);
         headerAndFooterWrapper.addHeaderView(headerView);
         headerAdapter = new HeaderAdapter(MainActivity.this, top_stories);
-        headerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, NewContentActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("type", "1");
-                bundle.putInt("position", viewpagerHeaderPicture.getCurrentItem());
-                bundle.putSerializable("top_stories", (Serializable)top_stories);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
+
         //底部小圆点监听
         viewpagerHeaderPicture.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

@@ -2,6 +2,8 @@ package com.lxw.dailynews.app.adapter;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +14,12 @@ import android.widget.TextView;
 
 import com.lxw.dailynews.R;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
+import com.lxw.dailynews.app.ui.viewImp.MainActivity;
+import com.lxw.dailynews.app.ui.viewImp.NewContentActivity;
 import com.lxw.dailynews.framework.image.ImageManager;
 import com.lxw.dailynews.framework.log.LoggerHelper;
 
+import java.io.Serializable;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,7 +34,6 @@ public class HeaderAdapter extends PagerAdapter {
 
     private List<LatestNewsBean.TopStoriesBean> dataList;
     private Context context;
-    private View layoutView;
 
     public HeaderAdapter(Context context, List<LatestNewsBean.TopStoriesBean> dataList) {
         this.context = context;
@@ -57,7 +61,7 @@ public class HeaderAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup view, int position) {
+    public Object instantiateItem(ViewGroup view, final int position) {
         int i = 0;
         if (dataList != null && dataList.size() > 0) {
             View contentView = null;
@@ -65,6 +69,19 @@ public class HeaderAdapter extends PagerAdapter {
             holder.txtHeaderTitle.setText(dataList.get(position).getTitle());
             ImageManager.getInstance().loadImage(context, holder.imgHeaderPicture, dataList.get(position).getImage(), true);
             contentView = holder.layoutHeaderContent;
+            //点击打开消息内容
+            contentView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, NewContentActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("type", "1");
+                    bundle.putInt("position", position);
+                    bundle.putSerializable("top_stories", (Serializable)dataList);
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                }
+            });
             view.addView(contentView);
             return contentView;
         } else {
