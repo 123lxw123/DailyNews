@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,10 +19,14 @@ import android.widget.LinearLayout;
 
 import com.lxw.dailynews.R;
 import com.lxw.dailynews.app.adapter.HeaderAdapter;
+import com.lxw.dailynews.app.adapter.LatestNewsDiffCallBack;
+import com.lxw.dailynews.app.adapter.OtherNewThemesDiffCallBack;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.app.bean.NewThemeBean;
 import com.lxw.dailynews.app.presenter.MainPresenter;
 import com.lxw.dailynews.app.ui.view.IMainView;
+import com.lxw.dailynews.framework.base.BaseCommonAdapter;
+import com.lxw.dailynews.framework.base.BaseMultiItemTypeAdapter;
 import com.lxw.dailynews.framework.base.BaseMvpActivity;
 import com.lxw.dailynews.framework.image.ImageManager;
 import com.lxw.dailynews.framework.util.StringUtil;
@@ -42,6 +47,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Action1;
 
 public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> implements IMainView {
     @BindView(R.id.toolbar)
@@ -62,7 +68,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     private ViewPager viewpagerHeaderPicture;
     private LinearLayout layoutHeaderDot;
     private LatestNewsBean latestNewsBean;
-    private MultiItemTypeAdapter<LatestNewsBean.StoriesBean> mainAdapter;
+    private BaseMultiItemTypeAdapter<LatestNewsBean.StoriesBean> mainAdapter;
     private HeaderAdapter headerAdapter;
     private List<LatestNewsBean.StoriesBean> stories = new ArrayList<LatestNewsBean.StoriesBean>();
     private List<LatestNewsBean.TopStoriesBean> top_stories = new ArrayList<LatestNewsBean.TopStoriesBean>();
@@ -74,7 +80,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     private NewThemeBean newThemeBean;
     private HeaderAndFooterWrapper drawerHeaderAndFooterWrapper;
     private View drawerHeaderView;
-    private CommonAdapter<NewThemeBean.OthersBean> drawerAdapter;
+    private BaseCommonAdapter<NewThemeBean.OthersBean> drawerAdapter;
     private List<NewThemeBean.OthersBean> otherNewThemes = new ArrayList<NewThemeBean.OthersBean>();
 
     @Override
@@ -179,7 +185,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         recyclerview.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         recyclerview.setItemAnimator(new DefaultItemAnimator());
         //recyclerview adapter
-        mainAdapter = new MultiItemTypeAdapter(MainActivity.this, stories);
+        mainAdapter = new BaseMultiItemTypeAdapter(MainActivity.this, stories);
         mainAdapter.addItemViewDelegate(new ItemViewDelegate<LatestNewsBean.StoriesBean>() {//热点新闻item
             @Override
             public int getItemViewLayoutId() {
@@ -226,6 +232,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             @Override
             public void convert(ViewHolder holder, LatestNewsBean.StoriesBean storiesBean, int position) {
                 holder.setText(R.id.txt_header_title, storiesBean.getHeaderTitle());
+                toolbar.setTitle(storiesBean.getHeaderTitle());
             }
         });
 
@@ -293,7 +300,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         layoutDrawer.addDrawerListener(drawerToggle);
         drawerRecyclerview.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         drawerRecyclerview.setItemAnimator(new DefaultItemAnimator());
-        drawerAdapter = new CommonAdapter<NewThemeBean.OthersBean>(MainActivity.this, R.layout.item_new_theme, otherNewThemes) {
+        drawerAdapter = new BaseCommonAdapter<NewThemeBean.OthersBean>(MainActivity.this, R.layout.item_new_theme, otherNewThemes) {
             @Override
             protected void convert(ViewHolder holder, NewThemeBean.OthersBean newThemeBean, int position) {
                 holder.setText(R.id.txt_drawer_theme_title, newThemeBean.getName());
@@ -359,12 +366,14 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         //添加新闻日期分类标题的item数据
         LatestNewsBean.StoriesBean storie = new LatestNewsBean.StoriesBean();
         TimeUtil.getDateNumber();
-        if (latestNewsBean.getDate().equals(TimeUtil.getDateNumber())) {//如果时间是今天
+        if (latestNewsBean.getDate().equals(currentDate)) {//如果时间是今天
             storie.setHeaderTitle(getString(R.string.main_latest_news));
+            storie.setId(-1000);
         } else {//时间是过去的一天
             String date = latestNewsBean.getDate().substring(4, 6) + "月" + latestNewsBean.getDate().substring(6, 8) + "日";
             String week = TimeUtil.getWeek(latestNewsBean.getDate());
             storie.setHeaderTitle(date + " " + week);
+            storie.setId(-1000-count);
         }
         stories.add(storie);
         stories.addAll(latestNewsBean.getStories());
@@ -375,7 +384,25 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             recyclerview.setAdapter(loadMoreWrapper);
         }
         headerAdapter.notifyDataSetChanged();
-        loadMoreWrapper.notifyDataSetChanged();
+//        loadMoreWrapper.notifyDataSetChanged();
+
+        //异步比较新旧数据差异刷新recyclerview
+        Observable.create(new Observable.OnSubscribe<DiffUtil.DiffResult>() {
+            @Override
+            public void call(Subscriber<? super DiffUtil.DiffResult> subscriber) {
+                ArrayList<LatestNewsBean.StoriesBean> oldStories = (ArrayList<LatestNewsBean.StoriesBean>) mainAdapter.getData();
+                DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new LatestNewsDiffCallBack(oldStories, stories), true);
+                subscriber.onNext(diffResult);
+            }
+        }).subscribe(new Action1<DiffUtil.DiffResult>() {
+
+            @Override
+            public void call(DiffUtil.DiffResult diffResult) {
+                diffResult.dispatchUpdatesTo(loadMoreWrapper);
+                mainAdapter.setData(stories);
+            }
+        });
+
 
 
         //停止刷新小圈圈动画
