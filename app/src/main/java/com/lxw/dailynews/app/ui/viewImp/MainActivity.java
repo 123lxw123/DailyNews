@@ -3,6 +3,7 @@ package com.lxw.dailynews.app.ui.viewImp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -60,6 +61,8 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     RecyclerView drawerRecyclerview;
     @BindView(R.id.layout_drawer)
     DrawerLayout layoutDrawer;
+    @BindView(R.id.float_action_btn)
+    FloatingActionButton floatActionBtn;
 
     //主界面
     private HeaderAndFooterWrapper headerAndFooterWrapper;
@@ -82,6 +85,9 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     private View drawerHeaderView;
     private BaseCommonAdapter<NewThemeBean.OthersBean> drawerAdapter;
     private List<NewThemeBean.OthersBean> otherNewThemes = new ArrayList<NewThemeBean.OthersBean>();
+    //回到顶部、底部
+    private View.OnClickListener backToTopListener;
+    private View.OnClickListener backToBottomListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -314,6 +320,47 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                 LinearLayout.LayoutParams.WRAP_CONTENT
         ));
         drawerHeaderAndFooterWrapper.addHeaderView(drawerHeaderView);
+
+        //回到顶部按钮
+        backToBottomListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(stories.size() > 0){
+                    recyclerview.smoothScrollToPosition(stories.size() - 1);
+                }
+            }
+        };
+
+        backToTopListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(stories.size() > 0){
+                    recyclerview.smoothScrollToPosition(0);
+                }
+            }
+        };
+
+        recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                    floatActionBtn.setVisibility(View.VISIBLE);
+                }else{
+                    floatActionBtn.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(dy > 0){
+                    floatActionBtn.setOnClickListener(backToBottomListener);
+                }else{
+                    floatActionBtn.setOnClickListener(backToTopListener);
+                }
+            }
+        });
     }
 
     @Override
