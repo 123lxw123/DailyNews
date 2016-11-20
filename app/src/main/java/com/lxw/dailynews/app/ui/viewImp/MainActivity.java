@@ -356,8 +356,10 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                 super.onScrolled(recyclerView, dx, dy);
                 if(dy > 0){
                     floatActionBtn.setOnClickListener(backToBottomListener);
+                    floatActionBtn.setImageResource(R.mipmap.ic_to_bottom);
                 }else{
                     floatActionBtn.setOnClickListener(backToTopListener);
+                    floatActionBtn.setImageResource(R.mipmap.ic_to_top);
                 }
             }
         });
