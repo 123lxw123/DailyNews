@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.hannesdorfmann.mosby.mvp.MvpFragment;
 import com.hannesdorfmann.mosby.mvp.MvpPresenter;
@@ -22,73 +23,13 @@ import com.hannesdorfmann.mosby.mvp.MvpView;
  */
 
 public abstract class BaseMvpFragment<V extends MvpView, P extends MvpPresenter<V>> extends MvpFragment<V, P> {
-    protected View mRootView;
-    public Context mContext;
-    protected boolean isVisible;
-    private boolean isPrepared;
-    private boolean isFirst = true;
 
-    public BaseMvpFragment() {
-        // Required empty public constructor
+    //toast提示信息
+    public void showMessage(String message){
+        showMessage(message, Toast.LENGTH_SHORT);
+    }
+    public void showMessage(String message, int showTime){
+        Toast.makeText(BaseMvpFragment.this.getActivity(), message, showTime).show();
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (getUserVisibleHint()) {
-            isVisible = true;
-            lazyLoad();
-        } else {
-            isVisible = false;
-            onInvisible();
-        }
-    }
-
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mContext = getActivity();
-        setHasOptionsMenu(true);
-//        Log.d("TAG", "fragment->onCreate");
-    }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        if (mRootView == null) {
-            mRootView = initView();
-        }
-//        Log.d("TAG", "fragment->onCreateView");
-        return mRootView;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-//        Log.d("TAG", "fragment->onActivityCreated");
-        isPrepared = true;
-        lazyLoad();
-    }
-
-    protected void lazyLoad() {
-        if (!isPrepared || !isVisible || !isFirst) {
-            return;
-        }
-        prepareData();
-        isFirst = false;
-    }
-
-    //do something
-    protected void onInvisible() {
-
-
-    }
-
-    public abstract View initView();
-
-    public abstract void prepareData();
-
-    public abstract void rePrepareData();
 }

@@ -1,5 +1,8 @@
 package com.lxw.dailynews.framework.base;
 
+import android.app.Activity;
+import android.widget.Toast;
+
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.hannesdorfmann.mosby.mvp.MvpView;
 import com.lxw.dailynews.framework.application.BaseApplication;
@@ -30,9 +33,15 @@ public class BaseMvpPresenter<V extends MvpView> extends MvpBasePresenter<V> {
     }
 
     public void showMessage(String message){
-        ((BaseMvpActivity)getView()).showMessage(message);
+        showMessage(message, Toast.LENGTH_SHORT);
     }
     public void showMessage(String message, int showTime){
-        ((BaseMvpActivity)getView()).showMessage(message, showTime);
+        boolean activityFlag = (getView()) instanceof BaseMvpActivity;
+        boolean fragmentFlag = (getView()) instanceof BaseMvpFragment;
+        if(activityFlag){
+            ((BaseMvpActivity)getView()).showMessage(message, showTime);
+        }else if(fragmentFlag){
+            (((BaseMvpFragment)getView())).showMessage(message, showTime);
+        }
     }
 }

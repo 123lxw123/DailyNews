@@ -34,7 +34,7 @@ public abstract class HttpManager<T> {
 
             @Override
             public void onNext(T response) {
-                LoggerHelper.info("HttpManager-onError-->>",response.toString());
+                LoggerHelper.info("HttpManager-onNext-->>",response.toString());
                 HttpManager.this.httpListener.onSuccess(response);
             }
         };
