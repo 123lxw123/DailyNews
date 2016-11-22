@@ -1,13 +1,16 @@
 package com.lxw.dailynews.app.ui.viewImp;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -20,6 +23,7 @@ import com.lxw.dailynews.app.presenter.NewContentPresenter;
 import com.lxw.dailynews.app.ui.view.INewContentView;
 import com.lxw.dailynews.framework.base.BaseMvpFragment;
 import com.lxw.dailynews.framework.image.ImageManager;
+import com.lxw.dailynews.framework.util.HtmlUtil;
 import com.lxw.dailynews.framework.util.StringUtil;
 
 import butterknife.ButterKnife;
@@ -44,6 +48,7 @@ public class NewsContentFragment extends BaseMvpFragment<INewContentView, NewCon
     private TextView mHeaderTitleTextView;
     private TextView mHeaderAuthorTextView;
     private FrameLayout mHeaderContentFrameLayout;
+    private NestedScrollView mNestedscrollview;
     private CollapsingToolbarLayout mClCollapsingToolbarLayout;
     private WebView mWebviewWebView;
     private FloatingActionButton mActionBtnFloatingActionButton;
@@ -110,9 +115,26 @@ public class NewsContentFragment extends BaseMvpFragment<INewContentView, NewCon
         mHeaderTitleTextView = (TextView) view.findViewById(R.id.txt_header_title);
         mHeaderAuthorTextView = (TextView) view.findViewById(R.id.txt_header_author);
         mHeaderContentFrameLayout = (FrameLayout) view.findViewById(R.id.layout__header_content);
+        mNestedscrollview = (NestedScrollView) view.findViewById(R.id.nestedscrollview);
         mClCollapsingToolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.ctl_cl);
         mWebviewWebView = (WebView) view.findViewById(R.id.webview);
         mActionBtnFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.float_action_btn);
+        mWebviewWebView.getSettings().setDefaultTextEncodingName("utf-8");
+        mWebviewWebView.getSettings().setJavaScriptEnabled(true);
+        //webview内容自适应
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            mWebviewWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);
+        } else {
+            mWebviewWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+        }
+
+        mNestedscrollview.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener(){
+
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+
+            }
+        });
     }
 
     @Override
@@ -134,7 +156,8 @@ public class NewsContentFragment extends BaseMvpFragment<INewContentView, NewCon
             mHeaderTitleTextView.setText(newContentBean.getTitle());
         }
         if(!StringUtil.isEmpty(newContentBean.getBody())){
-            mWebviewWebView.loadDataWithBaseURL(null, newContentBean.getBody(), "text/html", "utf-8", null);
+            String html = HtmlUtil.getHtmlData(newContentBean.getBody());
+            mWebviewWebView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
             mWebviewWebView.setVisibility(View.VISIBLE);
             mActionBtnFloatingActionButton.setVisibility(View.VISIBLE);
         }

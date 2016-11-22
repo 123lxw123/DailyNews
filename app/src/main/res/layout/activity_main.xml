@@ -41,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
+            app:backgroundTint="@color/color_3498DB"
             android:scaleType="fitXY"
             android:src="@mipmap/ic_to_top"
             app:borderWidth="@dimen/dp_0"
