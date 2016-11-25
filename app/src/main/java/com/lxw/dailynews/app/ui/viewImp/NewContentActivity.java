@@ -3,6 +3,10 @@ package com.lxw.dailynews.app.ui.viewImp;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.lxw.dailynews.R;
 import com.lxw.dailynews.app.adapter.NewsContentAdapter;
@@ -21,7 +25,23 @@ import butterknife.ButterKnife;
 public class NewContentActivity extends BaseMvpActivity<INewContentView, NewContentPresenter> implements INewContentView {
 
     @BindView(R.id.viewpager_news_content)
-    ViewPager viewpagerNewsContent;
+    public ViewPager viewpagerNewsContent;
+    @BindView(R.id.img_share)
+    public ImageView imgShare;
+    @BindView(R.id.img_collect)
+    public ImageView imgCollect;
+    @BindView(R.id.img_comment)
+    public ImageView imgComment;
+    @BindView(R.id.txt_comment)
+    public TextView txtComment;
+    @BindView(R.id.img_praise)
+    public ImageView imgPraise;
+    @BindView(R.id.txt_praise)
+    public TextView txtPraise;
+    @BindView(R.id.layout_extra_info)
+    public LinearLayout layoutExtraInfo;
+    @BindView(R.id.toolbar)
+    public Toolbar toolbar;
 
     private String type;//1 点击头部viewpager热闻 2 点击列表item新闻
     private List<LatestNewsBean.StoriesBean> stories;
@@ -56,9 +76,9 @@ public class NewContentActivity extends BaseMvpActivity<INewContentView, NewCont
 
     @Override
     public void initView() {
-        if("1".equals(type) && top_stories != null && top_stories.size() > 0){
+        if ("1".equals(type) && top_stories != null && top_stories.size() > 0) {
             newsContentAdapter = new NewsContentAdapter(getSupportFragmentManager(), type, top_stories, position);
-        }else if("2".equals(type) && stories != null && stories.size() > 0){
+        } else if ("2".equals(type) && stories != null && stories.size() > 0) {
             newsContentAdapter = new NewsContentAdapter(getSupportFragmentManager(), type, stories, position);
         }
         viewpagerNewsContent.setAdapter(newsContentAdapter);

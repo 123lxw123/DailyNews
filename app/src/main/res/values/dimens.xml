@@ -39,5 +39,6 @@
     <dimen name="dp_280">280dp</dimen>
     <dimen name="dp_300">300dp</dimen>
     <dimen name="dp_500">500dp</dimen>
+    <dimen name="dp_1000">1000dp</dimen>
 
 </resources>

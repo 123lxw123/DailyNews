@@ -32,6 +32,7 @@ import com.lxw.dailynews.framework.base.BaseMvpActivity;
 import com.lxw.dailynews.framework.image.ImageManager;
 import com.lxw.dailynews.framework.util.StringUtil;
 import com.lxw.dailynews.framework.util.TimeUtil;
+import com.lxw.dailynews.framework.util.ValueUtil;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -74,6 +75,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     private BaseMultiItemTypeAdapter<LatestNewsBean.StoriesBean> mainAdapter;
     private HeaderAdapter headerAdapter;
     private List<LatestNewsBean.StoriesBean> stories = new ArrayList<LatestNewsBean.StoriesBean>();
+    private List<LatestNewsBean.StoriesBean> stories_only = new ArrayList<LatestNewsBean.StoriesBean>();
     private List<LatestNewsBean.TopStoriesBean> top_stories = new ArrayList<LatestNewsBean.TopStoriesBean>();
     private ImageView[] dotViews;//用于包含底部小圆点的图片
     private boolean refreshFlag = true;//是否刷新的标志
@@ -208,15 +210,21 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                 holder.setText(R.id.txt_new_title, storiesBean.getTitle());
                 ImageManager.getInstance().loadImage(MainActivity.this, (ImageView) holder.getView(R.id.img_new_picture), storiesBean.getImages().get(0), true);
                 holder.setVisible(R.id.img_multipic, storiesBean.isMultipic());
-                final List<LatestNewsBean.StoriesBean> storiesList = MainActivity.this.stories;
+                final List<LatestNewsBean.StoriesBean> storiesList = MainActivity.this.stories_only;
                 //点击item打开消息内容
                 holder.setOnClickListener(R.id.cardview_new_item, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        int position_only = 0;
+                        for(int i = 0; i < storiesList.size(); i++){
+                            if(storiesList.get(i).getId() == stories.get(position - 1).getId()){
+                                position_only = i;
+                            }
+                        }
                         Intent intent = new Intent(MainActivity.this, NewContentActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putString("type", "2");
-                        bundle.putInt("position", position - 1);
+                        bundle.putInt("position", position_only);
                         bundle.putSerializable("stories", (Serializable)storiesList);
                         intent.putExtras(bundle);
                         startActivity(intent);
@@ -384,6 +392,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             top_stories.clear();
             top_stories.addAll(latestNewsBean.getTop_stories());
             stories.clear();
+            stories_only.clear();
             initDots();
             //热闻轮播操作
             Observable.interval(4, TimeUnit.SECONDS).subscribe(new Subscriber<Long>(){
@@ -426,6 +435,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         }
         stories.add(storie);
         stories.addAll(latestNewsBean.getStories());
+        stories_only.addAll(latestNewsBean.getStories());
 
         //刷新列表
         if (refreshFlag) {
@@ -464,8 +474,9 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     private void initDots() {
         layoutHeaderDot.removeAllViews();
         dotViews = new ImageView[top_stories.size()];
-        LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(10, 10);
-        mParams.setMargins(0, 0, 5, 0);//设置小圆点左右之间的间隔
+        int dp5 = ValueUtil.dip2px(MainActivity.this, 5);
+        LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(dp5, dp5);
+        mParams.setMargins(0, 0, dp5, 0);//设置小圆点左右之间的间隔
 
         for (int i = 0; i < top_stories.size(); i++) {
             ImageView imageView = new ImageView(MainActivity.this);

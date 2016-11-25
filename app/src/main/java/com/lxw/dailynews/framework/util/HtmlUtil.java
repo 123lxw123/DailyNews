@@ -14,7 +14,8 @@ public class HtmlUtil {
         String head = "<head>" +
                 "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\"> " +
                 "<style>img{max-width: 100%; width:auto; height:auto;}</style>" +
-                "</head>";
+                "</head>" +
+                "<style type='text/css'> body{word-wrap:break-word;font-family:Arial}</style>";
         return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
     }
 }
