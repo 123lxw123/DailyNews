@@ -42,9 +42,12 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             app:backgroundTint="@color/color_3498DB"
+            app:rippleColor="#33728dff"
             android:scaleType="fitXY"
-            android:src="@mipmap/ic_to_top"
-            app:borderWidth="@dimen/dp_0"
+            app:borderWidth="0dp"
+            app:elevation="@dimen/dp_5"
+            app:pressedTranslationZ="@dimen/dp_10"
+            android:src="@mipmap/ic_comment"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_marginBottom="@dimen/dp_15"/>
     </RelativeLayout>

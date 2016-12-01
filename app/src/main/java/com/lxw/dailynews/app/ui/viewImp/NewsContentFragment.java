@@ -170,6 +170,7 @@ public class NewsContentFragment extends BaseMvpFragment<INewContentView, NewCon
 //            String html = newContentBean.getBody();
             String html = HtmlUtil.getHtmlData(newContentBean.getBody());
             webview.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
+//            webview.loadDataWithBaseURL("file:///android_asset/test.html", null, "text/html", "utf-8", null);
             webview.setVisibility(View.VISIBLE);
         }
         layoutHeaderContent.setVisibility(View.VISIBLE);
