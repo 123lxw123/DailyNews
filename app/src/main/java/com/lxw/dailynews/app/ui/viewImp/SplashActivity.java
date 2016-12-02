@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.lxw.dailynews.R;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
-import com.lxw.dailynews.app.bean.NewThemeBean;
+import com.lxw.dailynews.app.bean.NewsThemeBean;
 import com.lxw.dailynews.app.presenter.SplashPresenter;
 import com.lxw.dailynews.app.ui.view.ISplashView;
 import com.lxw.dailynews.framework.config.Constant;
@@ -50,7 +50,7 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
 
     private final String SPLASH_AUTHOR = "SPLASH_AUTHOR";
     private LatestNewsBean latestNewsBean;
-    private NewThemeBean newThemeBean;
+    private NewsThemeBean newsThemeBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +92,7 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
     public void prepareData() {
         getSplashPictureInfo();
         getLatestNews();
-        getNewThemes();
+        getNewsThemes();
     }
 
     @Override
@@ -157,17 +157,16 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
     }
 
     @Override
-    public void getNewThemes() {
-        getPresenter().getNewThemes();
+    public void getNewsThemes() {
+        getPresenter().getNewsThemes();
     }
 
     public void setLatestNewsBean(LatestNewsBean latestNewsBean) {
         this.latestNewsBean = latestNewsBean;
     }
 
-    @Override
-    public void setNewThemeBean(NewThemeBean newThemeBean) {
-        this.newThemeBean = newThemeBean;
+    public void setNewsThemeBean(NewsThemeBean newsThemeBean) {
+        this.newsThemeBean = newsThemeBean;
     }
 
     //跳转到主页
@@ -182,7 +181,7 @@ public class SplashActivity extends BaseMvpActivity<ISplashView, SplashPresenter
                     public void call(Long along) {
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("latestNewsBean", latestNewsBean);
-                        bundle.putSerializable("newThemeBean", newThemeBean);
+                        bundle.putSerializable("newsThemeBean", newsThemeBean);
                         final Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                         intent.putExtras(bundle);
                         startActivity(intent);

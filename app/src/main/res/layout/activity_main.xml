@@ -47,7 +47,7 @@
             app:borderWidth="0dp"
             app:elevation="@dimen/dp_5"
             app:pressedTranslationZ="@dimen/dp_10"
-            android:src="@mipmap/ic_comment"
+            android:src="@mipmap/ic_to_top"
             android:layout_marginRight="@dimen/dp_15"
             android:layout_marginBottom="@dimen/dp_15"/>
     </RelativeLayout>

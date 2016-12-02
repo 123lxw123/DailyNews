@@ -1,7 +1,7 @@
 package com.lxw.dailynews.app.model.model;
 
 import com.lxw.dailynews.app.bean.LatestNewsBean;
-import com.lxw.dailynews.app.bean.NewThemeBean;
+import com.lxw.dailynews.app.bean.NewsThemeBean;
 import com.lxw.dailynews.app.bean.SplashPictureInfoBean;
 import com.lxw.dailynews.framework.http.HttpListener;
 
@@ -14,5 +14,5 @@ public interface ISplashModel {
 
     void getLatestNews(HttpListener<LatestNewsBean> httpListener);
 
-    void getNewThemes(HttpListener<NewThemeBean> httpListener);
+    void getNewsThemes(HttpListener<NewsThemeBean> httpListener);
 }

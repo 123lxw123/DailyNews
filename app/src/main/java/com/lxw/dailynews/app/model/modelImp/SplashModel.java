@@ -1,7 +1,7 @@
 package com.lxw.dailynews.app.model.modelImp;
 
 import com.lxw.dailynews.app.bean.LatestNewsBean;
-import com.lxw.dailynews.app.bean.NewThemeBean;
+import com.lxw.dailynews.app.bean.NewsThemeBean;
 import com.lxw.dailynews.app.bean.SplashPictureInfoBean;
 import com.lxw.dailynews.app.model.model.ISplashModel;
 import com.lxw.dailynews.app.api.HttpHelper;
@@ -9,7 +9,6 @@ import com.lxw.dailynews.framework.http.HttpListener;
 import com.lxw.dailynews.framework.http.HttpManager;
 
 import rx.Observable;
-import rx.Subscriber;
 
 /**
  * Created by Zion on 2016/10/16.
@@ -42,12 +41,12 @@ public class SplashModel implements ISplashModel {
     }
 
     @Override
-    public void getNewThemes(HttpListener<NewThemeBean> httpListener) {
-        new HttpManager<NewThemeBean>(httpListener){
+    public void getNewsThemes(HttpListener<NewsThemeBean> httpListener) {
+        new HttpManager<NewsThemeBean>(httpListener){
 
             @Override
-            public Observable<NewThemeBean> createObservable() {
-                return HttpHelper.getInstance().getNewThemes();
+            public Observable<NewsThemeBean> createObservable() {
+                return HttpHelper.getInstance().getNewsThemes();
             }
         };
     }

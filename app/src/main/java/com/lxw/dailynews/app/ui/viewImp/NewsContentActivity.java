@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,9 +12,10 @@ import android.widget.TextView;
 import com.lxw.dailynews.R;
 import com.lxw.dailynews.app.adapter.NewsContentAdapter;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
-import com.lxw.dailynews.app.bean.NewContentBean;
-import com.lxw.dailynews.app.presenter.NewContentPresenter;
-import com.lxw.dailynews.app.ui.view.INewContentView;
+import com.lxw.dailynews.app.bean.NewsContentBean;
+import com.lxw.dailynews.app.bean.NewsStoryExtra;
+import com.lxw.dailynews.app.presenter.NewsContentPresenter;
+import com.lxw.dailynews.app.ui.view.INewsContentView;
 import com.lxw.dailynews.framework.base.BaseMvpActivity;
 import com.lxw.dailynews.framework.util.StringUtil;
 
@@ -22,7 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class NewContentActivity extends BaseMvpActivity<INewContentView, NewContentPresenter> implements INewContentView {
+public class NewsContentActivity extends BaseMvpActivity<INewsContentView, NewsContentPresenter> implements INewsContentView {
 
     @BindView(R.id.viewpager_news_content)
     public ViewPager viewpagerNewsContent;
@@ -52,9 +54,9 @@ public class NewContentActivity extends BaseMvpActivity<INewContentView, NewCont
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_content);
+        setContentView(R.layout.activity_news_content);
         ButterKnife.bind(this);
-        initActivityTag(getString(R.string.new_content));
+        initActivityTag(getString(R.string.news_content));
         initView();
         type = getIntent().getStringExtra("type");
         position = getIntent().getIntExtra("position", 0);
@@ -70,8 +72,8 @@ public class NewContentActivity extends BaseMvpActivity<INewContentView, NewCont
 
     @NonNull
     @Override
-    public NewContentPresenter createPresenter() {
-        return new NewContentPresenter();
+    public NewsContentPresenter createPresenter() {
+        return new NewsContentPresenter();
     }
 
     @Override
@@ -83,6 +85,12 @@ public class NewContentActivity extends BaseMvpActivity<INewContentView, NewCont
         }
         viewpagerNewsContent.setAdapter(newsContentAdapter);
         viewpagerNewsContent.setCurrentItem(position);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NewsContentActivity.this.finish();
+            }
+        });
     }
 
     @Override
@@ -94,12 +102,23 @@ public class NewContentActivity extends BaseMvpActivity<INewContentView, NewCont
     }
 
     @Override
-    public void setNewContent(NewContentBean newContentBean) {
+    public void setNewContent(NewsContentBean newsContentBean) {
 
     }
 
     @Override
-    public void getNewContent(String newId) {
+    public void setNewsStoryExtra(NewsStoryExtra newsStoryExtra) {
 
     }
+
+    @Override
+    public void getNewsContent(String newsId) {
+
+    }
+
+    @Override
+    public void getNewsStoryExtra(String newsId) {
+
+    }
+
 }

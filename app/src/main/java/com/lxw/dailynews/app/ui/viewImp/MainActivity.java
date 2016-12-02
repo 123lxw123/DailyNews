@@ -21,9 +21,8 @@ import android.widget.LinearLayout;
 import com.lxw.dailynews.R;
 import com.lxw.dailynews.app.adapter.HeaderAdapter;
 import com.lxw.dailynews.app.adapter.LatestNewsDiffCallBack;
-import com.lxw.dailynews.app.adapter.OtherNewThemesDiffCallBack;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
-import com.lxw.dailynews.app.bean.NewThemeBean;
+import com.lxw.dailynews.app.bean.NewsThemeBean;
 import com.lxw.dailynews.app.presenter.MainPresenter;
 import com.lxw.dailynews.app.ui.view.IMainView;
 import com.lxw.dailynews.framework.base.BaseCommonAdapter;
@@ -33,8 +32,6 @@ import com.lxw.dailynews.framework.image.ImageManager;
 import com.lxw.dailynews.framework.util.StringUtil;
 import com.lxw.dailynews.framework.util.TimeUtil;
 import com.lxw.dailynews.framework.util.ValueUtil;
-import com.zhy.adapter.recyclerview.CommonAdapter;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
@@ -49,6 +46,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> implements IMainView {
@@ -82,11 +80,11 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     private int count = 0;//前N天计数，用于获取以前的热闻
     private String currentDate;//应用的当前日期，当前展示的今天热闻的日期；不是系统当前日期
     //侧滑菜单
-    private NewThemeBean newThemeBean;
+    private NewsThemeBean newsThemeBean;
     private HeaderAndFooterWrapper drawerHeaderAndFooterWrapper;
     private View drawerHeaderView;
-    private BaseCommonAdapter<NewThemeBean.OthersBean> drawerAdapter;
-    private List<NewThemeBean.OthersBean> otherNewThemes = new ArrayList<NewThemeBean.OthersBean>();
+    private BaseCommonAdapter<NewsThemeBean.OthersBean> drawerAdapter;
+    private List<NewsThemeBean.OthersBean> otherNewThemes = new ArrayList<NewsThemeBean.OthersBean>();
     //回到顶部、底部
     private View.OnClickListener backToTopListener;
     private View.OnClickListener backToBottomListener;
@@ -98,9 +96,9 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         initActivityTag("主页");
         ButterKnife.bind(this);
         latestNewsBean = (LatestNewsBean) getIntent().getSerializableExtra("latestNewsBean");
-        newThemeBean = (NewThemeBean) getIntent().getSerializableExtra("newThemeBean");
+        newsThemeBean = (NewsThemeBean) getIntent().getSerializableExtra("newsThemeBean");
         initView();
-        if (latestNewsBean == null || newThemeBean == null) {
+        if (latestNewsBean == null || newsThemeBean == null) {
             prepareData();
         } else {
             rePrepareData();
@@ -121,14 +119,13 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     }
 
     @Override
-    public void getNewThemes() {
-        getPresenter().getNewThemes();
+    public void getNewsThemes() {
+        getPresenter().getNewsThemes();
     }
 
-    @Override
-    public void setNewThemeBean(NewThemeBean newThemeBean) {
-        this.newThemeBean = newThemeBean;
-        if (this.newThemeBean != null) {
+    public void setNewsThemeBean(NewsThemeBean newsThemeBean) {
+        this.newsThemeBean = newsThemeBean;
+        if (this.newsThemeBean != null) {
             initNewThemeList();
         }
     }
@@ -137,7 +134,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     public void initNewThemeList() {
         if(refreshFlag){
             otherNewThemes.clear();
-            otherNewThemes.addAll(newThemeBean.getOthers());
+            otherNewThemes.addAll(newsThemeBean.getOthers());
             drawerRecyclerview.setAdapter(drawerHeaderAndFooterWrapper);
         }
         drawerHeaderAndFooterWrapper.notifyDataSetChanged();
@@ -197,7 +194,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         mainAdapter.addItemViewDelegate(new ItemViewDelegate<LatestNewsBean.StoriesBean>() {//热点新闻item
             @Override
             public int getItemViewLayoutId() {
-                return R.layout.item_latest_new;
+                return R.layout.item_latest_news;
             }
 
             @Override
@@ -221,7 +218,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                                 position_only = i;
                             }
                         }
-                        Intent intent = new Intent(MainActivity.this, NewContentActivity.class);
+                        Intent intent = new Intent(MainActivity.this, NewsContentActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putString("type", "2");
                         bundle.putInt("position", position_only);
@@ -252,7 +249,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
 
         //recyclerview header
         headerAndFooterWrapper = new HeaderAndFooterWrapper(mainAdapter);
-        headerView = getLayoutInflater().inflate(R.layout.header_top_new, null);
+        headerView = getLayoutInflater().inflate(R.layout.header_top_news, null);
         viewpagerHeaderPicture = (ViewPager) headerView.findViewById(R.id.viewpager_header_picture);
         layoutHeaderDot = (LinearLayout) headerView.findViewById(R.id.layout_header_dot);
         headerAndFooterWrapper.addHeaderView(headerView);
@@ -314,9 +311,9 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         layoutDrawer.addDrawerListener(drawerToggle);
         drawerRecyclerview.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         drawerRecyclerview.setItemAnimator(new DefaultItemAnimator());
-        drawerAdapter = new BaseCommonAdapter<NewThemeBean.OthersBean>(MainActivity.this, R.layout.item_new_theme, otherNewThemes) {
+        drawerAdapter = new BaseCommonAdapter<NewsThemeBean.OthersBean>(MainActivity.this, R.layout.item_news_theme, otherNewThemes) {
             @Override
-            protected void convert(ViewHolder holder, NewThemeBean.OthersBean newThemeBean, int position) {
+            protected void convert(ViewHolder holder, NewsThemeBean.OthersBean newThemeBean, int position) {
                 holder.setText(R.id.txt_drawer_theme_title, newThemeBean.getName());
                 holder.setImageResource(R.id.img_drawer_follow_state, R.mipmap.ic_follow);
             }
@@ -378,8 +375,8 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         if (latestNewsBean == null) {
             getLatestNews();
         }
-        if (newThemeBean == null) {
-            getNewThemes();
+        if (newsThemeBean == null) {
+            getNewsThemes();
         }
     }
 
@@ -395,7 +392,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             stories_only.clear();
             initDots();
             //热闻轮播操作
-            Observable.interval(4, TimeUnit.SECONDS).subscribe(new Subscriber<Long>(){
+            Observable.interval(4, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Long>(){
                 @Override
                 public void onCompleted() {
 
@@ -408,7 +405,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
 
                 @Override
                 public void onNext(Long along) {
-                    int currentItem = Integer.parseInt(along.toString());
+                    int currentItem = new Long(along).intValue() % top_stories.size();
                     viewpagerHeaderPicture.setCurrentItem(currentItem);
                     for (int i = 0; i < dotViews.length; i++) {
                         if (currentItem == i) {

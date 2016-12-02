@@ -14,10 +14,8 @@ import android.widget.TextView;
 
 import com.lxw.dailynews.R;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
-import com.lxw.dailynews.app.ui.viewImp.MainActivity;
-import com.lxw.dailynews.app.ui.viewImp.NewContentActivity;
+import com.lxw.dailynews.app.ui.viewImp.NewsContentActivity;
 import com.lxw.dailynews.framework.image.ImageManager;
-import com.lxw.dailynews.framework.log.LoggerHelper;
 
 import java.io.Serializable;
 import java.util.List;
@@ -73,7 +71,7 @@ public class HeaderAdapter extends PagerAdapter {
             contentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, NewContentActivity.class);
+                    Intent intent = new Intent(context, NewsContentActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("type", "1");
                     bundle.putInt("position", position);

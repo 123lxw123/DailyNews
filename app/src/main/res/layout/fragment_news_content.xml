@@ -6,9 +6,10 @@
     android:layout_height="match_parent">
 
     <com.lxw.dailynews.framework.widget.MyNestedScrollView
-        android:id="@+id/nestedscrollview_head"
+        android:id="@+id/nestedscrollview_detail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:descendantFocusability="blocksDescendants">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -16,9 +17,9 @@
             android:orientation="vertical">
 
             <TextView
-                android:background="@color/color_00000000"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize" />
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/color_00000000"/>
 
             <FrameLayout
                 android:id="@+id/layout_header_content"
@@ -68,33 +69,6 @@
 
                 </LinearLayout>
             </FrameLayout>
-            <TextView
-                android:id="@+id/txt_empty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-    </com.lxw.dailynews.framework.widget.MyNestedScrollView>
-
-    <com.lxw.dailynews.framework.widget.MyNestedScrollView
-        android:id="@+id/nestedscrollview_detail"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:descendantFocusability="blocksDescendants">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/color_00000000"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_200"
-                android:background="@color/color_00000000"/>
 
             <WebView
                 android:id="@+id/webview"

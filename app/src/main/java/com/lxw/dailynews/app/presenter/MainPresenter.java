@@ -2,7 +2,7 @@ package com.lxw.dailynews.app.presenter;
 
 import com.lxw.dailynews.R;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
-import com.lxw.dailynews.app.bean.NewThemeBean;
+import com.lxw.dailynews.app.bean.NewsThemeBean;
 import com.lxw.dailynews.app.model.model.IMainModel;
 import com.lxw.dailynews.app.model.model.ISplashModel;
 import com.lxw.dailynews.app.model.modelImp.MainModel;
@@ -69,13 +69,13 @@ public class MainPresenter extends BaseMvpPresenter<IMainView> {
     }
 
     //获取热闻主题
-    public void getNewThemes(){
+    public void getNewsThemes(){
         if (checkNetword()) {
-            splashModel.getNewThemes(new HttpListener<NewThemeBean>() {
+            splashModel.getNewsThemes(new HttpListener<NewsThemeBean>() {
                 @Override
-                public void onSuccess(NewThemeBean response) {
+                public void onSuccess(NewsThemeBean response) {
                     if (response != null) {
-                        getView().setNewThemeBean(response);
+                        getView().setNewsThemeBean(response);
                     }else {
                         showMessage(BaseApplication.appContext.getString(R.string.error_request_failure));
                     }

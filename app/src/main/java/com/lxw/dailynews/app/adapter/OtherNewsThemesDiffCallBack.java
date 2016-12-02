@@ -2,8 +2,7 @@ package com.lxw.dailynews.app.adapter;
 
 import android.support.v7.util.DiffUtil;
 
-import com.lxw.dailynews.app.bean.LatestNewsBean;
-import com.lxw.dailynews.app.bean.NewThemeBean;
+import com.lxw.dailynews.app.bean.NewsThemeBean;
 
 import java.util.List;
 
@@ -13,10 +12,10 @@ import java.util.List;
  * 核心类 用来判断 新旧Item差异
  */
 
-public class OtherNewThemesDiffCallBack extends DiffUtil.Callback {
-    private List<NewThemeBean.OthersBean> mOldDatas, mNewDatas;
+public class OtherNewsThemesDiffCallBack extends DiffUtil.Callback {
+    private List<NewsThemeBean.OthersBean> mOldDatas, mNewDatas;
 
-    public OtherNewThemesDiffCallBack(List<NewThemeBean.OthersBean> mOldDatas, List<NewThemeBean.OthersBean> mNewDatas) {
+    public OtherNewsThemesDiffCallBack(List<NewsThemeBean.OthersBean> mOldDatas, List<NewsThemeBean.OthersBean> mNewDatas) {
         this.mOldDatas = mOldDatas;
         this.mNewDatas = mNewDatas;
     }
@@ -73,8 +72,8 @@ public class OtherNewThemesDiffCallBack extends DiffUtil.Callback {
      */
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-        NewThemeBean.OthersBean beanOld = mOldDatas.get(oldItemPosition);
-        NewThemeBean.OthersBean beanNew = mNewDatas.get(newItemPosition);
+        NewsThemeBean.OthersBean beanOld = mOldDatas.get(oldItemPosition);
+        NewsThemeBean.OthersBean beanNew = mNewDatas.get(newItemPosition);
         if (beanOld.getId() != beanNew.getId()) {
             return false;//如果有内容不同，就返回false
         }

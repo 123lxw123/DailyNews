@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardview_new_item"
     android:layout_width="match_parent"
@@ -8,6 +9,7 @@
     android:layout_marginTop="@dimen/dp_4"
     android:layout_marginLeft="@dimen/dp_10"
     android:layout_marginRight="@dimen/dp_10"
+    android:background="@drawable/bg_ripple"
     app:cardBackgroundColor="@color/color_FFFFFF"
     app:cardCornerRadius="@dimen/dp_5">
 <LinearLayout
@@ -20,8 +22,8 @@
         android:textColor="@color/color_000000"
         android:paddingLeft="@dimen/dp_15"
         android:paddingTop="@dimen/dp_15"
-        android:paddingBottom="15dp"
-        android:paddingRight="@dimen/dp_5"
+        android:paddingBottom="@dimen/dp_15"
+        android:paddingRight="@dimen/dp_15"
         android:textSize="@dimen/sp_18"
         android:layout_width="@dimen/dp_0"
         android:layout_height="match_parent"

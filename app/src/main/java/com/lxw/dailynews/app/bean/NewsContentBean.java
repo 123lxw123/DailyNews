@@ -8,7 +8,7 @@ import java.util.List;
  * 消息内容及离线下载
  */
 
-public class NewContentBean implements Serializable {
+public class NewsContentBean implements Serializable {
 
     /**
      * body : <div class="main-wrap content-wrap">

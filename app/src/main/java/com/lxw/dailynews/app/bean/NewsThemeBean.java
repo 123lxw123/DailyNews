@@ -8,7 +8,7 @@ import java.util.List;
  *  热闻主题 （侧滑菜单列表）
  */
 
-public class NewThemeBean implements Serializable {
+public class NewsThemeBean implements Serializable {
 
     /**
      * limit : 1000
@@ -113,7 +113,7 @@ public class NewThemeBean implements Serializable {
 
     @Override
     public String toString() {
-        return "NewThemeBean{" +
+        return "NewsThemeBean{" +
                 "limit=" + limit +
                 ", subscribed=" + subscribed +
                 ", others=" + others +
