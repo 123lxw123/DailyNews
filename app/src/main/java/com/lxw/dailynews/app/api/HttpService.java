@@ -2,8 +2,9 @@ package com.lxw.dailynews.app.api;
 
 import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.app.bean.NewsContentBean;
-import com.lxw.dailynews.app.bean.NewsStoryExtra;
+import com.lxw.dailynews.app.bean.NewsStoryExtraBean;
 import com.lxw.dailynews.app.bean.NewsThemeBean;
+import com.lxw.dailynews.app.bean.ThemeContentBean;
 import com.lxw.dailynews.app.bean.SplashPictureInfoBean;
 
 import retrofit2.http.GET;
@@ -32,9 +33,9 @@ public interface HttpService {
     Observable<NewsContentBean> getNewsContent(@Path("newsId") String newsId);
 
     @GET("4/story-extra/{newsId}")
-    Observable<NewsStoryExtra> getNewsStoryExtra(@Path("newsId") String newsId);
+    Observable<NewsStoryExtraBean> getNewsStoryExtra(@Path("newsId") String newsId);
 
     @GET("4/theme/{themeId}")
-    Observable<NewsStoryExtra> getNewsThemeList(@Path("themeId") String themeId);
+    Observable<ThemeContentBean> getThemeContent(@Path("themeId") String themeId);
 
 }

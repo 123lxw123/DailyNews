@@ -1,7 +1,7 @@
 package com.lxw.dailynews.app.ui.view;
 
 import com.lxw.dailynews.app.bean.NewsContentBean;
-import com.lxw.dailynews.app.bean.NewsStoryExtra;
+import com.lxw.dailynews.app.bean.NewsStoryExtraBean;
 import com.lxw.dailynews.framework.base.BaseMvpView;
 
 /**
@@ -10,7 +10,7 @@ import com.lxw.dailynews.framework.base.BaseMvpView;
 
 public interface INewsContentView extends BaseMvpView {
     void setNewContent(NewsContentBean newsContentBean);
-    void setNewsStoryExtra(NewsStoryExtra newsStoryExtra);
+    void setNewsStoryExtraBean(NewsStoryExtraBean newsStoryExtraBean);
     void getNewsContent(String newsId);
     void getNewsStoryExtra(String newsId);
 

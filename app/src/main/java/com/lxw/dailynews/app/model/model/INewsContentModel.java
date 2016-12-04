@@ -1,7 +1,7 @@
 package com.lxw.dailynews.app.model.model;
 
 import com.lxw.dailynews.app.bean.NewsContentBean;
-import com.lxw.dailynews.app.bean.NewsStoryExtra;
+import com.lxw.dailynews.app.bean.NewsStoryExtraBean;
 import com.lxw.dailynews.framework.http.HttpListener;
 
 /**
@@ -12,5 +12,5 @@ public interface INewsContentModel {
 
     void getNewsContent(String newsId, HttpListener<NewsContentBean> httpListener);
 
-    void getNewsStoryExtra(String newsId, HttpListener<NewsStoryExtra> httpListener);
+    void getNewsStoryExtra(String newsId, HttpListener<NewsStoryExtraBean> httpListener);
 }

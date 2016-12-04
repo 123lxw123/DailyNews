@@ -14,15 +14,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
+import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.lxw.dailynews.R;
 import com.lxw.dailynews.app.adapter.HeaderAdapter;
 import com.lxw.dailynews.app.adapter.LatestNewsDiffCallBack;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.app.bean.NewsThemeBean;
+import com.lxw.dailynews.app.bean.ThemeContentBean;
 import com.lxw.dailynews.app.presenter.MainPresenter;
 import com.lxw.dailynews.app.ui.view.IMainView;
 import com.lxw.dailynews.framework.base.BaseCommonAdapter;
@@ -83,11 +87,26 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     private NewsThemeBean newsThemeBean;
     private HeaderAndFooterWrapper drawerHeaderAndFooterWrapper;
     private View drawerHeaderView;
+    private LinearLayout ll_drawer_home;
     private BaseCommonAdapter<NewsThemeBean.OthersBean> drawerAdapter;
     private List<NewsThemeBean.OthersBean> otherNewThemes = new ArrayList<NewsThemeBean.OthersBean>();
     //回到顶部、底部
     private View.OnClickListener backToTopListener;
     private View.OnClickListener backToBottomListener;
+
+    private LinearLayoutManager linearLayoutManager;
+
+    //主題日報
+    private boolean frag_content_type = true;//主页内容的类型标识,true(首页新闻列表),false(主题新闻列表)
+    private String themeId;
+    private ThemeContentBean themeContentBean;//主題內容
+    private BaseMultiItemTypeAdapter<LatestNewsBean.StoriesBean> mainThemeAdapter;
+    private HeaderAndFooterWrapper themeHeaderAndFooterWrapper;
+    private LoadMoreWrapper themeLoadMoreWrapper;
+    private View themeHeaderView;
+    private KenBurnsView kenBurnsView;
+    private LinearLayout ll_editor;
+    private List<LatestNewsBean.StoriesBean> stories_theme = new ArrayList<LatestNewsBean.StoriesBean>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +159,17 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         drawerHeaderAndFooterWrapper.notifyDataSetChanged();
     }
 
+    @Override
+    public void getThemeCotent(String themeId) {
+        getPresenter().getThemeContent(themeId);
+    }
+
+    @Override
+    public void setThemeContentBean(ThemeContentBean themeContentBean) {
+        this.themeContentBean = themeContentBean;
+        rePrepareThemeData();
+    }
+
     //获取最新消息传给主页
     @Override
     public void getLatestNews() {
@@ -175,19 +205,24 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         });
 
         //SwipeRefreshLayout
-        //设置卷内的颜色
+        //设置圈内的颜色
         layoutSwipeRefresh.setColorSchemeResources(android.R.color.holo_blue_bright);
         //下拉刷新监听
         SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 refreshFlag = true;
-                getLatestNews();
+                if(frag_content_type){
+                    getLatestNews();
+                }else {
+                    getThemeCotent(themeId);
+                }
+
             }
         };
         layoutSwipeRefresh.setOnRefreshListener(refreshListener);
-
-        recyclerview.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        linearLayoutManager = new LinearLayoutManager(MainActivity.this);
+        recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setItemAnimator(new DefaultItemAnimator());
         //recyclerview adapter
         mainAdapter = new BaseMultiItemTypeAdapter(MainActivity.this, stories);
@@ -243,8 +278,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             @Override
             public void convert(ViewHolder holder, LatestNewsBean.StoriesBean storiesBean, int position) {
                 holder.setText(R.id.txt_header_title, storiesBean.getHeaderTitle());
-                toolbar.setTitle(storiesBean.getHeaderTitle());
-            }
+                }
         });
 
         //recyclerview header
@@ -313,13 +347,38 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         drawerRecyclerview.setItemAnimator(new DefaultItemAnimator());
         drawerAdapter = new BaseCommonAdapter<NewsThemeBean.OthersBean>(MainActivity.this, R.layout.item_news_theme, otherNewThemes) {
             @Override
-            protected void convert(ViewHolder holder, NewsThemeBean.OthersBean newThemeBean, int position) {
+            protected void convert(ViewHolder holder, final NewsThemeBean.OthersBean newThemeBean, final int position) {
                 holder.setText(R.id.txt_drawer_theme_title, newThemeBean.getName());
                 holder.setImageResource(R.id.img_drawer_follow_state, R.mipmap.ic_follow);
+                if(newThemeBean.isFrag_select()){
+                    holder.setBackgroundColor(R.id.rl_news_theme, R.color.color_F0F0F0);
+                }else{
+                    holder.setBackgroundColor(R.id.rl_news_theme, R.color.color_FFFFFF);
+                }
+
+                //点击日报主题监听
+                holder.setOnClickListener(R.id.rl_news_theme, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        themeId = newThemeBean.getId() + "";
+                        for(int i = 0; i < otherNewThemes.size(); i++){
+                            if(i == position - 1){
+                                otherNewThemes.get(i).setFrag_select(true);
+                            }else {
+                                otherNewThemes.get(i).setFrag_select(false);
+                            }
+                        }
+                        drawerAdapter.notifyDataSetChanged();
+                        ll_drawer_home.setBackgroundColor(R.color.color_FFFFFF);
+
+                        initThemeView(newThemeBean);
+                    }
+                });
             }
         };
         drawerHeaderAndFooterWrapper = new HeaderAndFooterWrapper(drawerAdapter);
         drawerHeaderView = getLayoutInflater().inflate(R.layout.header_drawer, null);
+        ll_drawer_home = (LinearLayout) drawerHeaderView.findViewById(R.id.drawer_home);
         drawerHeaderView.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -359,15 +418,159 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if(dy > 0){
+                int firstPosition = linearLayoutManager.findFirstVisibleItemPosition();
+                if(dy > 0){//上滑
+                    if(firstPosition < stories.size() && StringUtil.isNotEmpty(stories.get(firstPosition).getHeaderTitle())){
+                        toolbar.setTitle(stories.get(firstPosition).getHeaderTitle());
+                    }
                     floatActionBtn.setOnClickListener(backToBottomListener);
                     floatActionBtn.setImageResource(R.mipmap.ic_to_bottom);
-                }else{
+                }else{//下滑
+                    if(firstPosition == 0){
+                        toolbar.setTitle(getString(R.string.toolbar_title));
+                    }else if(StringUtil.isNotEmpty(stories.get(firstPosition).getHeaderTitle())){
+                        for(int i = firstPosition - 1; i >= 0; i--){
+                            if(StringUtil.isNotEmpty(stories.get(i).getHeaderTitle())){
+                                toolbar.setTitle(stories.get(i).getHeaderTitle());
+                                break;
+                            }
+                        }
+                    }
                     floatActionBtn.setOnClickListener(backToTopListener);
                     floatActionBtn.setImageResource(R.mipmap.ic_to_top);
                 }
             }
         });
+    }
+
+    //主题日報界面初始化
+    @Override
+    public void initThemeView(NewsThemeBean.OthersBean newsThemeBean){
+        frag_content_type = false;
+        refreshFlag = true;
+        toolbar.getMenu().clear();
+        toolbar.inflateMenu(R.menu.toolbar_main_theme);//设置右上角的填充菜单
+        toolbar.setTitle(newsThemeBean.getName());
+
+        mainThemeAdapter = new BaseMultiItemTypeAdapter(MainActivity.this, stories_theme);
+        mainThemeAdapter.addItemViewDelegate(new ItemViewDelegate<LatestNewsBean.StoriesBean>() {//热点新闻item
+            @Override
+            public int getItemViewLayoutId() {
+                return R.layout.item_latest_news;
+            }
+
+            @Override
+            public boolean isForViewType(LatestNewsBean.StoriesBean item, int position) {
+                return StringUtil.isEmpty(item.getHeaderTitle());
+            }
+
+            @Override
+            public void convert(ViewHolder holder, final LatestNewsBean.StoriesBean storiesBean, final int position) {
+                holder.setText(R.id.txt_new_title, storiesBean.getTitle());
+                if(storiesBean.getImages() != null){
+                    ImageManager.getInstance().loadImage(MainActivity.this, (ImageView) holder.getView(R.id.img_new_picture), storiesBean.getImages().get(0), true);
+                    holder.setVisible(R.id.fl_picture, true);
+                }else{
+                    holder.setVisible(R.id.fl_picture, false);
+                }
+
+                holder.setVisible(R.id.img_multipic, storiesBean.isMultipic());
+                final List<LatestNewsBean.StoriesBean> storiesList = MainActivity.this.stories_only;
+                //点击item打开消息内容
+                holder.setOnClickListener(R.id.cardview_new_item, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int position_only = 0;
+                        for(int i = 0; i < storiesList.size(); i++){
+                            if(storiesList.get(i).getId() == stories.get(position - 1).getId()){
+                                position_only = i;
+                            }
+                        }
+                        Intent intent = new Intent(MainActivity.this, NewsContentActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("type", "2");
+                        bundle.putInt("position", position_only);
+                        bundle.putSerializable("stories", (Serializable)storiesList);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+                });
+            }
+        });
+
+        themeHeaderAndFooterWrapper = new HeaderAndFooterWrapper(mainThemeAdapter);
+        themeHeaderView = getLayoutInflater().inflate(R.layout.header_theme_content, null);
+        themeHeaderView.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        kenBurnsView = (KenBurnsView) themeHeaderView.findViewById(R.id.kenburnsview_picture);
+        ll_editor = (LinearLayout) themeHeaderView.findViewById(R.id.ll_editor);
+        themeHeaderAndFooterWrapper.addHeaderView(themeHeaderView);
+        themeLoadMoreWrapper = new LoadMoreWrapper(themeHeaderAndFooterWrapper);
+        themeLoadMoreWrapper.setLoadMoreView(R.layout.layout_enpty);
+        themeLoadMoreWrapper.setOnLoadMoreListener(new LoadMoreWrapper.OnLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+//                refreshFlag = false;
+//                getBeforeNews(TimeUtil.getBeforeDate(currentDate, count));
+//                count++;//前N天+1
+            }
+        });
+        recyclerview.setAdapter(themeLoadMoreWrapper);
+        getThemeCotent(newsThemeBean.getId() + "");
+    }
+
+    @Override
+    public void rePrepareThemeData() {
+        if(refreshFlag){
+
+            //初始化头部图片
+            ImageManager.getInstance().loadImage(MainActivity.this, kenBurnsView, themeContentBean.getBackground(), true);
+
+            //初始化主题主编头像列表
+            ll_editor.removeAllViews();
+            List<ThemeContentBean.EditorsBean> editors = themeContentBean.getEditors();
+            int dp15 = ValueUtil.dip2px(MainActivity.this, 15);
+            int dp30 = ValueUtil.dip2px(MainActivity.this, 30);
+            LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(dp30, dp30);
+            mParams.setMargins(dp15, 0, 0, 0);
+            for(int i = 0; i < editors.size(); i++){
+                ImageView imageView = new ImageView(MainActivity.this);
+                imageView.setLayoutParams(mParams);
+                ImageManager.getInstance().loadCircleImage(MainActivity.this, imageView, editors.get(i).getAvatar());
+                ll_editor.addView(imageView);
+            }
+
+            stories_theme.clear();
+        }
+
+        stories_theme.addAll(themeContentBean.getStories());
+        //异步比较新旧数据差异刷新recyclerview
+        Observable.create(new Observable.OnSubscribe<DiffUtil.DiffResult>() {
+            @Override
+            public void call(Subscriber<? super DiffUtil.DiffResult> subscriber) {
+                ArrayList<LatestNewsBean.StoriesBean> oldStories = (ArrayList<LatestNewsBean.StoriesBean>) mainThemeAdapter.getData();
+                DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new LatestNewsDiffCallBack(oldStories, stories_theme), true);
+                subscriber.onNext(diffResult);
+            }
+        }).subscribe(new Action1<DiffUtil.DiffResult>() {
+
+            @Override
+            public void call(DiffUtil.DiffResult diffResult) {
+                diffResult.dispatchUpdatesTo(themeLoadMoreWrapper);
+                mainThemeAdapter.setData(stories_theme);
+            }
+        });
+
+        //停止刷新小圈圈动画
+        if (refreshFlag && layoutSwipeRefresh.isRefreshing()) {
+            layoutSwipeRefresh.setRefreshing(false);
+        }
+
+        if(layoutDrawer.isDrawerOpen(findViewById(R.id.ll_drawer))){
+            layoutDrawer.closeDrawers();
+        }
     }
 
     @Override
@@ -390,6 +593,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             top_stories.addAll(latestNewsBean.getTop_stories());
             stories.clear();
             stories_only.clear();
+            toolbar.setTitle(getString(R.string.toolbar_title));
             initDots();
             //热闻轮播操作
             Observable.interval(4, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Long>(){
@@ -486,6 +690,15 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             }
             dotViews[i] = imageView;//得到每个小圆点的引用，用于滑动页面时，（onPageSelected方法中）更改它们的状态。
             layoutHeaderDot.addView(imageView);//添加到布局里面显示
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(layoutDrawer.isDrawerOpen(findViewById(R.id.ll_drawer))){
+            layoutDrawer.closeDrawers();
+        }else{
+            super.onBackPressed();
         }
     }
 }

@@ -2,7 +2,7 @@ package com.lxw.dailynews.app.presenter;
 
 import com.lxw.dailynews.R;
 import com.lxw.dailynews.app.bean.NewsContentBean;
-import com.lxw.dailynews.app.bean.NewsStoryExtra;
+import com.lxw.dailynews.app.bean.NewsStoryExtraBean;
 import com.lxw.dailynews.app.model.model.INewsContentModel;
 import com.lxw.dailynews.app.model.modelImp.NewsContentModel;
 import com.lxw.dailynews.app.ui.view.INewsContentView;
@@ -45,11 +45,11 @@ public class NewsContentPresenter extends BaseMvpPresenter<INewsContentView> {
     //获取消息额外信息
     public void getNewsStoryExtra(String newsId) {
         if (checkNetword()) {
-            newsContentModel.getNewsStoryExtra(newsId, new HttpListener<NewsStoryExtra>() {
+            newsContentModel.getNewsStoryExtra(newsId, new HttpListener<NewsStoryExtraBean>() {
                 @Override
-                public void onSuccess(NewsStoryExtra response) {
+                public void onSuccess(NewsStoryExtraBean response) {
                     if (response != null) {
-                        getView().setNewsStoryExtra(response);
+                        getView().setNewsStoryExtraBean(response);
                     } else {
                         showMessage(BaseApplication.appContext.getString(R.string.error_request_failure));
                     }

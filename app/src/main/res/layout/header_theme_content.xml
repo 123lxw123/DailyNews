@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<com.flaviofaria.kenburnsview.KenBurnsView
+    android:id="@+id/kenburnsview_picture"
+    android:scaleType="centerCrop"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_250" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:background="@null"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50">
+        <TextView
+            android:id="@+id/txt_editor"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/dp_10"
+            android:text="@string/theme_editor"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/color_6F6F6F"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:id="@+id/ll_editor"
+            android:orientation="horizontal"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

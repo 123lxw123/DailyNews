@@ -55,6 +55,8 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
     //progress dialog
     compile 'com.github.d-max:spots-dialog:0.7@aar'
+    //kenburnsview
+    compile 'com.flaviofaria:kenburnsview:1.0.7'
 
     testCompile 'junit:junit:4.12'
 }

@@ -13,7 +13,7 @@ import com.lxw.dailynews.R;
 import com.lxw.dailynews.app.adapter.NewsContentAdapter;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.app.bean.NewsContentBean;
-import com.lxw.dailynews.app.bean.NewsStoryExtra;
+import com.lxw.dailynews.app.bean.NewsStoryExtraBean;
 import com.lxw.dailynews.app.presenter.NewsContentPresenter;
 import com.lxw.dailynews.app.ui.view.INewsContentView;
 import com.lxw.dailynews.framework.base.BaseMvpActivity;
@@ -106,8 +106,7 @@ public class NewsContentActivity extends BaseMvpActivity<INewsContentView, NewsC
 
     }
 
-    @Override
-    public void setNewsStoryExtra(NewsStoryExtra newsStoryExtra) {
+    public void setNewsStoryExtraBean(NewsStoryExtraBean newsStoryExtraBean) {
 
     }
 

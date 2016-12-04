@@ -89,7 +89,7 @@ public class HeaderAdapter extends PagerAdapter {
 
     public class ViewHolder {
         ViewHolder() {
-            View layoutView = LayoutInflater.from(context).inflate(R.layout.header_content, null);
+            View layoutView = LayoutInflater.from(context).inflate(R.layout.header_news_content, null);
             ButterKnife.bind(this, layoutView);
         }
 

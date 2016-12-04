@@ -3,6 +3,7 @@ package com.lxw.dailynews.app.model.modelImp;
 import com.lxw.dailynews.app.api.HttpHelper;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.app.bean.SplashPictureInfoBean;
+import com.lxw.dailynews.app.bean.ThemeContentBean;
 import com.lxw.dailynews.app.model.model.IMainModel;
 import com.lxw.dailynews.framework.http.HttpListener;
 import com.lxw.dailynews.framework.http.HttpManager;
@@ -21,6 +22,17 @@ public class MainModel implements IMainModel{
             @Override
             public Observable<LatestNewsBean> createObservable() {
                 return HttpHelper.getInstance().getBeforeNews(beforeDate);
+            }
+        };
+    }
+
+    @Override
+    public void getThemeContent(final String themeId, HttpListener<ThemeContentBean> httpListener) {
+        new HttpManager<ThemeContentBean>(httpListener){
+
+            @Override
+            public Observable<ThemeContentBean> createObservable() {
+                return HttpHelper.getInstance().getThemeContent(themeId);
             }
         };
     }

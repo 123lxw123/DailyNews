@@ -2,7 +2,7 @@ package com.lxw.dailynews.app.model.modelImp;
 
 import com.lxw.dailynews.app.api.HttpHelper;
 import com.lxw.dailynews.app.bean.NewsContentBean;
-import com.lxw.dailynews.app.bean.NewsStoryExtra;
+import com.lxw.dailynews.app.bean.NewsStoryExtraBean;
 import com.lxw.dailynews.app.model.model.INewsContentModel;
 import com.lxw.dailynews.framework.http.HttpListener;
 import com.lxw.dailynews.framework.http.HttpManager;
@@ -27,11 +27,11 @@ public class NewsContentModel implements INewsContentModel {
     }
 
     @Override
-    public void getNewsStoryExtra(final String newsId, HttpListener<NewsStoryExtra> httpListener) {
-        new HttpManager<NewsStoryExtra>(httpListener){
+    public void getNewsStoryExtra(final String newsId, HttpListener<NewsStoryExtraBean> httpListener) {
+        new HttpManager<NewsStoryExtraBean>(httpListener){
 
             @Override
-            public Observable<NewsStoryExtra> createObservable() {
+            public Observable<NewsStoryExtraBean> createObservable() {
                 return HttpHelper.getInstance().getNewsStoryExtra(newsId);
             }
         };

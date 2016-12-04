@@ -70,7 +70,7 @@
                 <TextView
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/dp_50"
-                    android:text="@string/drawer_collect"
+                    android:text="@string/drawer_download"
                     android:textSize="@dimen/sp_16"
                     android:textColor="@color/color_FFFFFF"
                     android:layout_width="wrap_content"
@@ -83,7 +83,7 @@
     <LinearLayout
         android:id="@+id/drawer_home"
         android:paddingLeft="@dimen/dp_20"
-        android:background="@color/color_EFEFEF"
+        android:background="@color/color_F0F0F0"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:layout_width="match_parent"

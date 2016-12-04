@@ -3,6 +3,7 @@
     <string name="splash_author">picture_author</string>
     <string name="splash_slogan">每日三次，每次七分钟</string>
     <string name="menu_notifications">menu_notifications</string>
+    <string name="menu_follow">menu_follow</string>
     <string name="menu_styles_night">夜间模式</string>
     <string name="menu_setting_option">设置选项</string>
     <string name="toolbar_title">首页</string>
@@ -14,7 +15,8 @@
     <string name="drawer_open">drawer_open</string>
     <string name="drawer_close">drawer_close</string>
     <string name="news_content">消息内容</string>
+    <string name="theme_content">主题内容</string>
+    <string name="theme_title">日报</string>
+    <string name="theme_editor">主编</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

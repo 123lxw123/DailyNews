@@ -1,7 +1,6 @@
 package com.lxw.dailynews.app.ui.viewImp;
 
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,7 +19,7 @@ import android.widget.TextView;
 
 import com.lxw.dailynews.R;
 import com.lxw.dailynews.app.bean.NewsContentBean;
-import com.lxw.dailynews.app.bean.NewsStoryExtra;
+import com.lxw.dailynews.app.bean.NewsStoryExtraBean;
 import com.lxw.dailynews.app.presenter.NewsContentPresenter;
 import com.lxw.dailynews.app.ui.view.INewsContentView;
 import com.lxw.dailynews.framework.base.BaseMvpFragment;
@@ -54,7 +53,7 @@ public class NewsContentFragment extends BaseMvpFragment<INewsContentView, NewsC
     MyNestedScrollView nestedscrollviewDetail;
 
     private NewsContentBean newsContentBean = new NewsContentBean();
-    private NewsStoryExtra newsStoryExtra = new NewsStoryExtra();
+    private NewsStoryExtraBean newsStoryExtraBean = new NewsStoryExtraBean();
     private Toolbar toolbar;
     private ImageView imgShare;
     private ImageView imgCollect;
@@ -104,10 +103,9 @@ public class NewsContentFragment extends BaseMvpFragment<INewsContentView, NewsC
         }
     }
 
-    @Override
-    public void setNewsStoryExtra(NewsStoryExtra newsStoryExtra) {
-        this.newsStoryExtra = newsStoryExtra;
-        if(newsStoryExtra != null){
+    public void setNewsStoryExtraBean(NewsStoryExtraBean newsStoryExtraBean) {
+        this.newsStoryExtraBean = newsStoryExtraBean;
+        if(newsStoryExtraBean != null){
             initNewsStoryExtra();
         }
     }
@@ -115,8 +113,8 @@ public class NewsContentFragment extends BaseMvpFragment<INewsContentView, NewsC
     private void initNewsStoryExtra() {
         toolbar.setAlpha(1);
         toolbar.setVisibility(View.VISIBLE);
-        txtComment.setText(newsStoryExtra.getComments() + "");
-        txtPraise.setText(newsStoryExtra.getPopularity() + "");
+        txtComment.setText(newsStoryExtraBean.getComments() + "");
+        txtPraise.setText(newsStoryExtraBean.getPopularity() + "");
     }
 
     //获取消息内容

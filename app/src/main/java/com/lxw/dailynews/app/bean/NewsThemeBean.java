@@ -58,6 +58,7 @@ public class NewsThemeBean implements Serializable {
         private String description;
         private int id;
         private String name;
+        private boolean frag_select = false;//是否选中的标识，
 
         public int getColor() {
             return color;
@@ -99,6 +100,14 @@ public class NewsThemeBean implements Serializable {
             this.name = name;
         }
 
+        public boolean isFrag_select() {
+            return frag_select;
+        }
+
+        public void setFrag_select(boolean frag_select) {
+            this.frag_select = frag_select;
+        }
+
         @Override
         public String toString() {
             return "OthersBean{" +
@@ -107,6 +116,7 @@ public class NewsThemeBean implements Serializable {
                     ", description='" + description + '\'' +
                     ", id=" + id +
                     ", name='" + name + '\'' +
+                    ", frag_select=" + frag_select +
                     '}';
         }
     }

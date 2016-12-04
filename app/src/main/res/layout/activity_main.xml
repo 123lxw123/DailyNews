@@ -53,6 +53,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/ll_drawer"
         android:layout_gravity="start"
         android:layout_marginRight="@dimen/dp_55"
         android:layout_width="match_parent"

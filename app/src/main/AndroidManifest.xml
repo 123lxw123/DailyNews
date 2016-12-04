@@ -36,7 +36,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".app.ui.viewImp.MainActivity" />
-        <activity android:name=".app.ui.viewImp.NewsContentActivity"></activity>
+        <activity android:name=".app.ui.viewImp.NewsContentActivity" />
     </application>
 
 </manifest>

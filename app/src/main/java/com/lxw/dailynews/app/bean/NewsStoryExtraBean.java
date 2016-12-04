@@ -7,7 +7,7 @@ import java.io.Serializable;
  * 新闻额外信息
  */
 
-public class NewsStoryExtra implements Serializable{
+public class NewsStoryExtraBean implements Serializable{
     /**
      * long_comments : 12
      * popularity : 2
@@ -59,7 +59,7 @@ public class NewsStoryExtra implements Serializable{
 
     @Override
     public String toString() {
-        return "NewsStoryExtra{" +
+        return "NewsStoryExtraBean{" +
                 "long_comments=" + long_comments +
                 ", popularity=" + popularity +
                 ", short_comments=" + short_comments +
