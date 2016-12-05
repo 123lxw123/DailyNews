@@ -5,6 +5,8 @@ import com.lxw.dailynews.app.bean.NewsThemeBean;
 import com.lxw.dailynews.app.bean.ThemeContentBean;
 import com.lxw.dailynews.framework.base.BaseMvpView;
 
+import java.util.List;
+
 /**
  * Created by lxw9047 on 2016/10/24.
  */
@@ -20,4 +22,5 @@ public interface IMainView extends BaseMvpView {
     void rePrepareThemeData();
     void getThemeCotent(String themeId);
     void setThemeContentBean(ThemeContentBean themeCotentBean);
+    void setBeforeThemeContent(List<LatestNewsBean.StoriesBean> beforeThemeContent);
 }

@@ -13,6 +13,8 @@ import com.lxw.dailynews.framework.application.BaseApplication;
 import com.lxw.dailynews.framework.base.BaseMvpPresenter;
 import com.lxw.dailynews.framework.http.HttpListener;
 
+import java.util.List;
+
 /**
  * Created by lxw9047 on 2016/10/24.
  */
@@ -90,7 +92,7 @@ public class MainPresenter extends BaseMvpPresenter<IMainView> {
         }
     }
 
-    //获取主题内容
+    //获取主题新闻内容
     public void getThemeContent(String themeId) {
         if (checkNetword()) {
             mainModel.getThemeContent(themeId, new HttpListener<ThemeContentBean>() {
@@ -98,6 +100,27 @@ public class MainPresenter extends BaseMvpPresenter<IMainView> {
                 public void onSuccess(ThemeContentBean response) {
                     if (response != null) {
                         getView().setThemeContentBean(response);
+                    } else {
+                        showMessage(BaseApplication.appContext.getString(R.string.error_request_failure));
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable error) {
+                    showMessage(error.getMessage());
+                }
+            });
+        }
+    }
+
+    //获取主题之前的新闻内容
+    public void getBeforeThemeContent(String themeId, String timeStamp) {
+        if (checkNetword()) {
+            mainModel.getBeforeThemeContent(themeId, timeStamp, new HttpListener<List<LatestNewsBean.StoriesBean>>() {
+                @Override
+                public void onSuccess(List<LatestNewsBean.StoriesBean> response) {
+                    if (response != null) {
+                        getView().setBeforeThemeContent(response);
                     } else {
                         showMessage(BaseApplication.appContext.getString(R.string.error_request_failure));
                     }

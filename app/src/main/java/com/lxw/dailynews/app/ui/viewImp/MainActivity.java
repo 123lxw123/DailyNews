@@ -170,6 +170,12 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         rePrepareThemeData();
     }
 
+    @Override
+    public void setBeforeThemeContent(List<LatestNewsBean.StoriesBean> beforeThemeContent) {
+        stories_theme.addAll(beforeThemeContent);
+        themeLoadMoreWrapper.notifyDataSetChanged();
+    }
+
     //获取最新消息传给主页
     @Override
     public void getLatestNews() {
@@ -351,9 +357,9 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                 holder.setText(R.id.txt_drawer_theme_title, newThemeBean.getName());
                 holder.setImageResource(R.id.img_drawer_follow_state, R.mipmap.ic_follow);
                 if(newThemeBean.isFrag_select()){
-                    holder.setBackgroundColor(R.id.rl_news_theme, R.color.color_F0F0F0);
+                    holder.getView(R.id.rl_news_theme).setBackgroundColor(MainActivity.this.getResources().getColor(R.color.color_DDDDDD));
                 }else{
-                    holder.setBackgroundColor(R.id.rl_news_theme, R.color.color_FFFFFF);
+                    holder.getView(R.id.rl_news_theme).setBackgroundColor(MainActivity.this.getResources().getColor(R.color.color_FFFFFF));
                 }
 
                 //点击日报主题监听
@@ -368,8 +374,8 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                                 otherNewThemes.get(i).setFrag_select(false);
                             }
                         }
-                        drawerAdapter.notifyDataSetChanged();
-                        ll_drawer_home.setBackgroundColor(R.color.color_FFFFFF);
+                        drawerHeaderAndFooterWrapper.notifyDataSetChanged();
+                        ll_drawer_home.setBackgroundColor(MainActivity.this.getResources().getColor(R.color.color_FFFFFF));
 
                         initThemeView(newThemeBean);
                     }
@@ -379,6 +385,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         drawerHeaderAndFooterWrapper = new HeaderAndFooterWrapper(drawerAdapter);
         drawerHeaderView = getLayoutInflater().inflate(R.layout.header_drawer, null);
         ll_drawer_home = (LinearLayout) drawerHeaderView.findViewById(R.id.drawer_home);
+        ll_drawer_home.setBackgroundColor(MainActivity.this.getResources().getColor(R.color.color_DDDDDD));
         drawerHeaderView.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -389,8 +396,14 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         backToBottomListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(stories.size() > 0){
-                    recyclerview.smoothScrollToPosition(stories.size() - 1);
+                if (frag_content_type) {
+                    if (stories.size() > 0) {
+                        recyclerview.smoothScrollToPosition(stories.size());
+                    }
+                } else {
+                    if (stories_theme.size() > 0) {
+                        recyclerview.smoothScrollToPosition(stories_theme.size());
+                    }
                 }
             }
         };
@@ -398,8 +411,14 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         backToTopListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(stories.size() > 0){
-                    recyclerview.smoothScrollToPosition(0);
+                if(frag_content_type){
+                    if(stories.size() > 0){
+                        recyclerview.smoothScrollToPosition(0);
+                    }
+                }else{
+                    if(stories_theme.size() > 0){
+                        recyclerview.smoothScrollToPosition(0);
+                    }
                 }
             }
         };
@@ -420,15 +439,15 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                 super.onScrolled(recyclerView, dx, dy);
                 int firstPosition = linearLayoutManager.findFirstVisibleItemPosition();
                 if(dy > 0){//上滑
-                    if(firstPosition < stories.size() && StringUtil.isNotEmpty(stories.get(firstPosition).getHeaderTitle())){
+                    if(frag_content_type && firstPosition < stories.size() && StringUtil.isNotEmpty(stories.get(firstPosition).getHeaderTitle())){
                         toolbar.setTitle(stories.get(firstPosition).getHeaderTitle());
                     }
                     floatActionBtn.setOnClickListener(backToBottomListener);
-                    floatActionBtn.setImageResource(R.mipmap.ic_to_bottom);
+                    floatActionBtn.setImageDrawable(getResources().getDrawable(R.mipmap.ic_to_bottom));
                 }else{//下滑
-                    if(firstPosition == 0){
+                    if(frag_content_type && firstPosition == 0){
                         toolbar.setTitle(getString(R.string.toolbar_title));
-                    }else if(StringUtil.isNotEmpty(stories.get(firstPosition).getHeaderTitle())){
+                    }else if(frag_content_type && StringUtil.isNotEmpty(stories.get(firstPosition).getHeaderTitle())){
                         for(int i = firstPosition - 1; i >= 0; i--){
                             if(StringUtil.isNotEmpty(stories.get(i).getHeaderTitle())){
                                 toolbar.setTitle(stories.get(i).getHeaderTitle());
@@ -437,7 +456,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                         }
                     }
                     floatActionBtn.setOnClickListener(backToTopListener);
-                    floatActionBtn.setImageResource(R.mipmap.ic_to_top);
+                    floatActionBtn.setImageDrawable(getResources().getDrawable(R.mipmap.ic_to_top));
                 }
             }
         });
@@ -450,6 +469,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         refreshFlag = true;
         toolbar.getMenu().clear();
         toolbar.inflateMenu(R.menu.toolbar_main_theme);//设置右上角的填充菜单
+        String name = newsThemeBean.getName();
         toolbar.setTitle(newsThemeBean.getName());
 
         mainThemeAdapter = new BaseMultiItemTypeAdapter(MainActivity.this, stories_theme);
@@ -475,21 +495,15 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                 }
 
                 holder.setVisible(R.id.img_multipic, storiesBean.isMultipic());
-                final List<LatestNewsBean.StoriesBean> storiesList = MainActivity.this.stories_only;
+                final List<LatestNewsBean.StoriesBean> storiesList = MainActivity.this.stories_theme;
                 //点击item打开消息内容
                 holder.setOnClickListener(R.id.cardview_new_item, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int position_only = 0;
-                        for(int i = 0; i < storiesList.size(); i++){
-                            if(storiesList.get(i).getId() == stories.get(position - 1).getId()){
-                                position_only = i;
-                            }
-                        }
                         Intent intent = new Intent(MainActivity.this, NewsContentActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putString("type", "2");
-                        bundle.putInt("position", position_only);
+                        bundle.putInt("position", position - 1);
                         bundle.putSerializable("stories", (Serializable)storiesList);
                         intent.putExtras(bundle);
                         startActivity(intent);
@@ -512,9 +526,9 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         themeLoadMoreWrapper.setOnLoadMoreListener(new LoadMoreWrapper.OnLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
-//                refreshFlag = false;
-//                getBeforeNews(TimeUtil.getBeforeDate(currentDate, count));
-//                count++;//前N天+1
+                if(stories_theme != null && stories_theme.size() > 0){
+                    getPresenter().getBeforeThemeContent(themeId, stories_theme.get(stories_theme.size() - 1).getId() + "");
+                }
             }
         });
         recyclerview.setAdapter(themeLoadMoreWrapper);
@@ -546,22 +560,23 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         }
 
         stories_theme.addAll(themeContentBean.getStories());
+        themeLoadMoreWrapper.notifyDataSetChanged();
         //异步比较新旧数据差异刷新recyclerview
-        Observable.create(new Observable.OnSubscribe<DiffUtil.DiffResult>() {
-            @Override
-            public void call(Subscriber<? super DiffUtil.DiffResult> subscriber) {
-                ArrayList<LatestNewsBean.StoriesBean> oldStories = (ArrayList<LatestNewsBean.StoriesBean>) mainThemeAdapter.getData();
-                DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new LatestNewsDiffCallBack(oldStories, stories_theme), true);
-                subscriber.onNext(diffResult);
-            }
-        }).subscribe(new Action1<DiffUtil.DiffResult>() {
-
-            @Override
-            public void call(DiffUtil.DiffResult diffResult) {
-                diffResult.dispatchUpdatesTo(themeLoadMoreWrapper);
-                mainThemeAdapter.setData(stories_theme);
-            }
-        });
+//        Observable.create(new Observable.OnSubscribe<DiffUtil.DiffResult>() {
+//            @Override
+//            public void call(Subscriber<? super DiffUtil.DiffResult> subscriber) {
+//                ArrayList<LatestNewsBean.StoriesBean> oldStories = (ArrayList<LatestNewsBean.StoriesBean>) mainThemeAdapter.getData();
+//                DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new LatestNewsDiffCallBack(oldStories, stories_theme), true);
+//                subscriber.onNext(diffResult);
+//            }
+//        }).subscribe(new Action1<DiffUtil.DiffResult>() {
+//
+//            @Override
+//            public void call(DiffUtil.DiffResult diffResult) {
+//                diffResult.dispatchUpdatesTo(themeLoadMoreWrapper);
+//                mainThemeAdapter.setData(stories_theme);
+//            }
+//        });
 
         //停止刷新小圈圈动画
         if (refreshFlag && layoutSwipeRefresh.isRefreshing()) {

@@ -8,6 +8,8 @@ import com.lxw.dailynews.app.model.model.IMainModel;
 import com.lxw.dailynews.framework.http.HttpListener;
 import com.lxw.dailynews.framework.http.HttpManager;
 
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -33,6 +35,17 @@ public class MainModel implements IMainModel{
             @Override
             public Observable<ThemeContentBean> createObservable() {
                 return HttpHelper.getInstance().getThemeContent(themeId);
+            }
+        };
+    }
+
+    @Override
+    public void getBeforeThemeContent(final String themeId, final String timeStamp, HttpListener<List<LatestNewsBean.StoriesBean>> httpListener) {
+        new HttpManager<List<LatestNewsBean.StoriesBean>>(httpListener){
+
+            @Override
+            public Observable<List<LatestNewsBean.StoriesBean>> createObservable() {
+                return HttpHelper.getInstance().getBeforeThemeContent(themeId, timeStamp);
             }
         };
     }

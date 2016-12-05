@@ -7,6 +7,7 @@ import com.lxw.dailynews.app.bean.NewsThemeBean;
 import com.lxw.dailynews.app.bean.ThemeContentBean;
 import com.lxw.dailynews.app.bean.SplashPictureInfoBean;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -71,5 +72,9 @@ public class HttpHelper {
 
     public Observable<ThemeContentBean> getThemeContent(String themeId){
         return httpService.getThemeContent(themeId);
+    }
+
+    public Observable<List<LatestNewsBean.StoriesBean>> getBeforeThemeContent(String themeId, String timeStamp){
+        return httpService.getBeforeThemeContent(themeId, timeStamp);
     }
 }

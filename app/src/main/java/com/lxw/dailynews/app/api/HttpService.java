@@ -7,6 +7,8 @@ import com.lxw.dailynews.app.bean.NewsThemeBean;
 import com.lxw.dailynews.app.bean.ThemeContentBean;
 import com.lxw.dailynews.app.bean.SplashPictureInfoBean;
 
+import java.util.List;
+
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import rx.Observable;
@@ -37,5 +39,8 @@ public interface HttpService {
 
     @GET("4/theme/{themeId}")
     Observable<ThemeContentBean> getThemeContent(@Path("themeId") String themeId);
+
+    @GET("4/section/{themeId}/before/{timeStamp}")
+    Observable<List<LatestNewsBean.StoriesBean>> getBeforeThemeContent(@Path("themeId") String themeId, @Path("timeStamp") String timeStamp);
 
 }

@@ -83,7 +83,6 @@
     <LinearLayout
         android:id="@+id/drawer_home"
         android:paddingLeft="@dimen/dp_20"
-        android:background="@color/color_F0F0F0"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:layout_width="match_parent"
