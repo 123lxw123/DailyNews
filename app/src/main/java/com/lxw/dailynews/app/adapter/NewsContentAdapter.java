@@ -40,6 +40,7 @@ public class NewsContentAdapter extends FragmentStatePagerAdapter {
         } else {
             bundle.putString("newsId", stories.get(position).getId() + "");
         }
+        bundle.putString("type", type);
         return NewsContentFragment.newInstance(bundle);
     }
 

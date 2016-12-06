@@ -1,5 +1,6 @@
 package com.lxw.dailynews.app.api;
 
+import com.lxw.dailynews.app.bean.BeforeThemeContentBean;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.app.bean.NewsContentBean;
 import com.lxw.dailynews.app.bean.NewsStoryExtraBean;
@@ -74,7 +75,7 @@ public class HttpHelper {
         return httpService.getThemeContent(themeId);
     }
 
-    public Observable<List<LatestNewsBean.StoriesBean>> getBeforeThemeContent(String themeId, String timeStamp){
-        return httpService.getBeforeThemeContent(themeId, timeStamp);
+    public Observable<BeforeThemeContentBean> getBeforeThemeContent(String themeId, String newsId){
+        return httpService.getBeforeThemeContent(themeId, newsId);
     }
 }

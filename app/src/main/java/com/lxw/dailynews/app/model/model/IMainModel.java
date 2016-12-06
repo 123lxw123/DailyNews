@@ -1,7 +1,7 @@
 package com.lxw.dailynews.app.model.model;
 
+import com.lxw.dailynews.app.bean.BeforeThemeContentBean;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
-import com.lxw.dailynews.app.bean.SplashPictureInfoBean;
 import com.lxw.dailynews.app.bean.ThemeContentBean;
 import com.lxw.dailynews.framework.http.HttpListener;
 
@@ -16,5 +16,6 @@ public interface IMainModel {
 
     void getThemeContent(String themeId, HttpListener<ThemeContentBean> httpListener);
 
-    void getBeforeThemeContent(String themeId, String timeStamp, HttpListener<List<LatestNewsBean.StoriesBean>> httpListener);
+
+    void getBeforeThemeContent(String themeId, String newsId, HttpListener<BeforeThemeContentBean> httpListener);
 }

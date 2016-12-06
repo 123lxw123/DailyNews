@@ -1,5 +1,6 @@
 package com.lxw.dailynews.app.api;
 
+import com.lxw.dailynews.app.bean.BeforeThemeContentBean;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.app.bean.NewsContentBean;
 import com.lxw.dailynews.app.bean.NewsStoryExtraBean;
@@ -40,7 +41,7 @@ public interface HttpService {
     @GET("4/theme/{themeId}")
     Observable<ThemeContentBean> getThemeContent(@Path("themeId") String themeId);
 
-    @GET("4/section/{themeId}/before/{timeStamp}")
-    Observable<List<LatestNewsBean.StoriesBean>> getBeforeThemeContent(@Path("themeId") String themeId, @Path("timeStamp") String timeStamp);
+    @GET("4/theme/{themeId}/before/{newsId}")
+    Observable<BeforeThemeContentBean> getBeforeThemeContent(@Path("themeId") String themeId, @Path("newsId") String newsId);
 
 }

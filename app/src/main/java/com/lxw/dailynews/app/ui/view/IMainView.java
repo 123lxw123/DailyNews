@@ -1,5 +1,6 @@
 package com.lxw.dailynews.app.ui.view;
 
+import com.lxw.dailynews.app.bean.BeforeThemeContentBean;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.app.bean.NewsThemeBean;
 import com.lxw.dailynews.app.bean.ThemeContentBean;
@@ -20,7 +21,8 @@ public interface IMainView extends BaseMvpView {
     void initNewThemeList();
     void initThemeView(NewsThemeBean.OthersBean newsThemeBean);
     void rePrepareThemeData();
-    void getThemeCotent(String themeId);
-    void setThemeContentBean(ThemeContentBean themeCotentBean);
-    void setBeforeThemeContent(List<LatestNewsBean.StoriesBean> beforeThemeContent);
+    void getThemeContent(String themeId);
+    void setThemeContentBean(ThemeContentBean themeContentBean);
+    void getBeforeThemeContent(String themeId, String newsId);
+    void setBeforeThemeContentBean(BeforeThemeContentBean beforeThemeContentBean);
 }

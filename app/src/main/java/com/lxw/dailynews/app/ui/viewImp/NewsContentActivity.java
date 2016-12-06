@@ -80,7 +80,7 @@ public class NewsContentActivity extends BaseMvpActivity<INewsContentView, NewsC
     public void initView() {
         if ("1".equals(type) && top_stories != null && top_stories.size() > 0) {
             newsContentAdapter = new NewsContentAdapter(getSupportFragmentManager(), type, top_stories, position);
-        } else if ("2".equals(type) && stories != null && stories.size() > 0) {
+        } else if (("2".equals(type) || "3".equals(type)) && stories != null && stories.size() > 0) {
             newsContentAdapter = new NewsContentAdapter(getSupportFragmentManager(), type, stories, position);
         }
         viewpagerNewsContent.setAdapter(newsContentAdapter);

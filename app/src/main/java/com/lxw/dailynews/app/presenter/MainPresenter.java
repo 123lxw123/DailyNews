@@ -1,6 +1,7 @@
 package com.lxw.dailynews.app.presenter;
 
 import com.lxw.dailynews.R;
+import com.lxw.dailynews.app.bean.BeforeThemeContentBean;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.app.bean.NewsThemeBean;
 import com.lxw.dailynews.app.bean.ThemeContentBean;
@@ -114,13 +115,13 @@ public class MainPresenter extends BaseMvpPresenter<IMainView> {
     }
 
     //获取主题之前的新闻内容
-    public void getBeforeThemeContent(String themeId, String timeStamp) {
+    public void getBeforeThemeContent(String themeId, String newsId) {
         if (checkNetword()) {
-            mainModel.getBeforeThemeContent(themeId, timeStamp, new HttpListener<List<LatestNewsBean.StoriesBean>>() {
+            mainModel.getBeforeThemeContent(themeId, newsId, new HttpListener<BeforeThemeContentBean>() {
                 @Override
-                public void onSuccess(List<LatestNewsBean.StoriesBean> response) {
+                public void onSuccess(BeforeThemeContentBean response) {
                     if (response != null) {
-                        getView().setBeforeThemeContent(response);
+                        getView().setBeforeThemeContentBean(response);
                     } else {
                         showMessage(BaseApplication.appContext.getString(R.string.error_request_failure));
                     }

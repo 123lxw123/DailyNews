@@ -26,11 +26,14 @@ import com.lxw.dailynews.framework.base.BaseMvpFragment;
 import com.lxw.dailynews.framework.image.ImageManager;
 import com.lxw.dailynews.framework.util.HtmlUtil;
 import com.lxw.dailynews.framework.util.StringUtil;
+import com.lxw.dailynews.framework.util.ValueUtil;
 import com.lxw.dailynews.framework.widget.MyNestedScrollView;
 import com.lxw.dailynews.framework.widget.MyNestedScrollViewListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.R.attr.type;
 
 
 /**
@@ -61,6 +64,7 @@ public class NewsContentFragment extends BaseMvpFragment<INewsContentView, NewsC
     private TextView txtPraise;
     private String newsId;//新闻id
     private View view;//新闻详情界面
+    private String type;
     private LinearLayout.LayoutParams layoutParams;
 
     public static NewsContentFragment newInstance(Bundle bundle) {
@@ -73,6 +77,7 @@ public class NewsContentFragment extends BaseMvpFragment<INewsContentView, NewsC
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         newsId = getArguments().getString("newsId");
+        type = getArguments().getString("type");
     }
 
     @Nullable
@@ -160,9 +165,10 @@ public class NewsContentFragment extends BaseMvpFragment<INewsContentView, NewsC
                 ObjectAnimator
                         .ofFloat(layoutHeaderContent, "translationY", oldy / 2, y / 2)
                         .start();
+                int dp200 = ValueUtil.dip2px(NewsContentFragment.this.getActivity(), 200);
                 //toolbar透明效果
-                if(y >= 0 && y <= layoutHeaderContent.getHeight() - toolbar.getHeight()){
-                    float alpht = 1 - (float)y / (layoutHeaderContent.getHeight() - toolbar.getHeight());
+                if(y >= 0 && y <= dp200 - toolbar.getHeight()){
+                    float alpht = 1 - (float)y / (dp200 - toolbar.getHeight());
                     toolbar.setAlpha(alpht);
                     toolbar.setVisibility(View.VISIBLE);
                 }else if(y - oldy > 0){
@@ -173,6 +179,10 @@ public class NewsContentFragment extends BaseMvpFragment<INewsContentView, NewsC
                 }
             }
         });
+
+        if("3".equals(type)){
+            layoutHeaderContent.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -203,6 +213,10 @@ public class NewsContentFragment extends BaseMvpFragment<INewsContentView, NewsC
 //            webview.loadDataWithBaseURL("file:///android_asset/test.html", null, "text/html", "utf-8", null);
             webview.setVisibility(View.VISIBLE);
         }
-        layoutHeaderContent.setVisibility(View.VISIBLE);
+        if("3".equals(type)){
+            layoutHeaderContent.setVisibility(View.GONE);
+        }else {
+            layoutHeaderContent.setVisibility(View.VISIBLE);
+        }
     }
 }
