@@ -25,4 +25,5 @@ public interface IMainView extends BaseMvpView {
     void setThemeContentBean(ThemeContentBean themeContentBean);
     void getBeforeThemeContent(String themeId, String newsId);
     void setBeforeThemeContentBean(BeforeThemeContentBean beforeThemeContentBean);
+    void stopRefreshAnimation();
 }

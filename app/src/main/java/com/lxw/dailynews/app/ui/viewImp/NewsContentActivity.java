@@ -1,5 +1,6 @@
 package com.lxw.dailynews.app.ui.viewImp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
@@ -18,6 +19,7 @@ import com.lxw.dailynews.app.presenter.NewsContentPresenter;
 import com.lxw.dailynews.app.ui.view.INewsContentView;
 import com.lxw.dailynews.framework.base.BaseMvpActivity;
 import com.lxw.dailynews.framework.util.StringUtil;
+import com.umeng.socialize.UMShareAPI;
 
 import java.util.List;
 
@@ -120,4 +122,11 @@ public class NewsContentActivity extends BaseMvpActivity<INewsContentView, NewsC
 
     }
 
+    //友盟分享回调
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+
+    }
 }

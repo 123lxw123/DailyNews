@@ -38,16 +38,21 @@ public class MainPresenter extends BaseMvpPresenter<IMainView> {
                 public void onSuccess(LatestNewsBean response) {
                     if (response != null) {
                         getView().setLatestNewsBean(response);
+                    }else{
+                        getView().stopRefreshAnimation();
+                        showMessage(BaseApplication.appContext.getString(R.string.error_request_failure));
                     }
                 }
 
                 @Override
                 public void onFailure(Throwable error) {
                     //展示上次加载的消息
+                    getView().stopRefreshAnimation();
                 }
             });
         } else {
             //展示上次加载的消息
+            getView().stopRefreshAnimation();
         }
     }
 
@@ -81,6 +86,7 @@ public class MainPresenter extends BaseMvpPresenter<IMainView> {
                     if (response != null) {
                         getView().setNewsThemeBean(response);
                     }else {
+                        getView().stopRefreshAnimation();
                         showMessage(BaseApplication.appContext.getString(R.string.error_request_failure));
                     }
                 }
@@ -88,8 +94,11 @@ public class MainPresenter extends BaseMvpPresenter<IMainView> {
                 @Override
                 public void onFailure(Throwable error) {
                     showMessage(error.getMessage());
+                    getView().stopRefreshAnimation();
                 }
             });
+        }else{
+            getView().stopRefreshAnimation();
         }
     }
 
@@ -102,15 +111,19 @@ public class MainPresenter extends BaseMvpPresenter<IMainView> {
                     if (response != null) {
                         getView().setThemeContentBean(response);
                     } else {
+                        getView().stopRefreshAnimation();
                         showMessage(BaseApplication.appContext.getString(R.string.error_request_failure));
                     }
                 }
 
                 @Override
                 public void onFailure(Throwable error) {
+                    getView().stopRefreshAnimation();
                     showMessage(error.getMessage());
                 }
             });
+        }else{
+            getView().stopRefreshAnimation();
         }
     }
 

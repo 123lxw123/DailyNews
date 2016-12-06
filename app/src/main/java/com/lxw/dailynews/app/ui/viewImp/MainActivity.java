@@ -227,6 +227,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                 refreshFlag = true;
                 if (frag_content_type) {
                     getLatestNews();
+                    getNewsThemes();
                 } else {
                     getThemeContent(themeId);
                 }
@@ -332,9 +333,11 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         loadMoreWrapper.setOnLoadMoreListener(new LoadMoreWrapper.OnLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {//获取前N天的热闻
-                refreshFlag = false;
-                getBeforeNews(TimeUtil.getBeforeDate(currentDate, count));
-                count++;//前N天+1
+                if (stories != null && stories.size() > 0) {
+                    refreshFlag = false;
+                    getBeforeNews(TimeUtil.getBeforeDate(currentDate, count));
+                    count++;//前N天+1
+                }
             }
         });
 
@@ -384,7 +387,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                         drawerHeaderAndFooterWrapper.notifyDataSetChanged();
                         ll_drawer_home.setBackgroundColor(MainActivity.this.getResources().getColor(R.color.color_FFFFFF));
                         //取消头部热闻轮播订阅
-                        if(subscription != null){
+                        if (subscription != null) {
                             subscription.unsubscribe();
                         }
                         initThemeView(newThemeBean);
@@ -549,8 +552,8 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         themeLoadMoreWrapper.setOnLoadMoreListener(new LoadMoreWrapper.OnLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
-                refreshFlag = false;
-                if(stories_theme != null && stories_theme.size() > 0){
+                if (stories_theme != null && stories_theme.size() > 0) {
+                    refreshFlag = false;
                     getBeforeThemeContent(themeId, stories_theme.get(stories_theme.size() - 1).getId() + "");
                 }
             }
@@ -603,10 +606,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
 //            }
 //        });
 
-        //停止刷新小圈圈动画
-        if (refreshFlag && layoutSwipeRefresh.isRefreshing()) {
-            layoutSwipeRefresh.setRefreshing(false);
-        }
+        stopRefreshAnimation();
 
         if (layoutDrawer.isDrawerOpen(findViewById(R.id.ll_drawer))) {
             layoutDrawer.closeDrawers();
@@ -636,7 +636,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             toolbar.setTitle(getString(R.string.toolbar_title));
             initDots();
             //热闻轮播操作
-            subscription  = Observable.interval(4, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Long>() {
+            subscription = Observable.interval(4, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Long>() {
                 @Override
                 public void onCompleted() {
 
@@ -704,10 +704,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         });
 
 
-        //停止刷新小圈圈动画
-        if (refreshFlag && layoutSwipeRefresh.isRefreshing()) {
-            layoutSwipeRefresh.setRefreshing(false);
-        }
+        stopRefreshAnimation();
     }
 
     //初始化header底部小圆点
@@ -738,6 +735,15 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             layoutDrawer.closeDrawers();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void stopRefreshAnimation() {
+
+        //停止刷新小圈圈动画
+        if (refreshFlag && layoutSwipeRefresh.isRefreshing()) {
+            layoutSwipeRefresh.setRefreshing(false);
         }
     }
 }
