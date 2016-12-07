@@ -18,3 +18,5 @@
 -keep class com.tencent.mm.sdk.** {
    *;
 }
+
+-dontwarn okio.**

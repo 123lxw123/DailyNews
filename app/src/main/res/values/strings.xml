@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">知乎小报</string>
+    <string name="app_name">小简报</string>
     <string name="splash_author">picture_author</string>
     <string name="splash_slogan">每日三次，每次七分钟</string>
     <string name="menu_notifications">menu_notifications</string>
@@ -16,7 +16,7 @@
     <string name="drawer_close">drawer_close</string>
     <string name="news_content">消息内容</string>
     <string name="theme_content">主题内容</string>
-    <string name="theme_title">日报</string>
+    <string name="theme_title">主题日报</string>
     <string name="theme_editor">主编</string>
     <string name="weixin_share">微信分享</string>
 
