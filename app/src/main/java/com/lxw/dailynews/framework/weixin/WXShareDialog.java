@@ -19,7 +19,7 @@ public class WXShareDialog extends AlertDialog {
     private String link;
     private String wechatContent;
     private String wechatTitle;
-    private String mImageView;
+    private String imageUrl;
 
     private LinearLayout share_wechat_btn;
     private LinearLayout share_link_btn;
@@ -44,12 +44,12 @@ public class WXShareDialog extends AlertDialog {
         this.wechatTitle = wechatTitle;
     }
 
-    public WXShareDialog(Activity context, String link, String wechatTitle, String wechatContent, String imageurl) {
+    public WXShareDialog(Activity context, String link, String wechatTitle, String wechatContent, String imageUrl) {
         super(context);
         this.link = link;
         this.wechatContent = wechatContent;
         this.wechatTitle = wechatTitle;
-        this.mImageView = imageurl;
+        this.imageUrl = imageUrl;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class WXShareDialog extends AlertDialog {
                 url.title = wechatTitle;
                 url.description = wechatContent;
                 url.url = link;// 点击图片后的链接地址
-                url.filePath = mImageView;
+                url.imageUrl = imageUrl;
                 wxShareAction.sendToSession(url);
                 WXShareDialog.this.dismiss();
             }
@@ -86,11 +86,10 @@ public class WXShareDialog extends AlertDialog {
             public void onClick(View v) {
                 wxShareAction = new WXShareAction(getContext());
                 WXShareImgUrlBean url = new WXShareImgUrlBean();
-                url.isFriends = true;
                 url.title = wechatTitle;
                 url.description = wechatContent;
-                url.filePath = mImageView;
                 url.url = link;// 点击图片后的链接地址
+                url.imageUrl = imageUrl;
                 wxShareAction.sendToSession(url);
                 WXShareDialog.this.dismiss();
             }

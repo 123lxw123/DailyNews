@@ -19,6 +19,9 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
+import static android.R.attr.bitmap;
+import static android.R.attr.path;
+
 /**
  * Created by Zion on 2016/10/15.
  *
@@ -84,10 +87,10 @@ public class ImageManager {
      * 常规加载图片
      *
      * @param context
-     * @param imageView 图片容器
-     * @param imgUrl    图片地址
-     * @param isFade    是否需要动画
-     * @param errorImgId    加载错误显示图片资源id
+     * @param imageView  图片容器
+     * @param imgUrl     图片地址
+     * @param isFade     是否需要动画
+     * @param errorImgId 加载错误显示图片资源id
      */
     public void loadImage(Context context, ImageView imageView,
                           String imgUrl, boolean isFade, int errorImgId) {
@@ -111,39 +114,60 @@ public class ImageManager {
 
     /**
      * 常规下载图片
+     *
      * @param context
-     * @param imgUrl    图片地址
-     * @param path      图片保存路径
+     * @param imgUrl  图片地址
+     * @param path    图片保存路径
      */
     public void downloadImage(Context context, String imgUrl, String path, String fileName) {
-            try{
+        try {
             File file = null;
             Bitmap bitmap = Glide.with(context)
                     .load(imgUrl)
                     .asBitmap()
                     .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .get();
-                if(bitmap != null){
-                    if(FileUtil.isFileExists(path + fileName)){
-                        file = new File(path + fileName);
-                        file.delete();
-                    }else{
-                        if(!FileUtil.isFileExists(path)){
-                            new File(path).mkdirs();
-                        }
+            if (bitmap != null) {
+                if (FileUtil.isFileExists(path + fileName)) {
+                    file = new File(path + fileName);
+                    file.delete();
+                } else {
+                    if (!FileUtil.isFileExists(path)) {
+                        new File(path).mkdirs();
                     }
-                    if(file == null){
-                        file = new File(path + fileName);
-                    }
-                    file.createNewFile();
-                    FileOutputStream fos = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                    fos.flush();
-                    fos.close();
                 }
-            }catch(Exception e){
+                if (file == null) {
+                    file = new File(path + fileName);
+                }
+                file.createNewFile();
+                FileOutputStream fos = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                fos.flush();
+                fos.close();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 常规下载图片
+     *
+     * @param context
+     * @param imgUrl  图片地址
+     */
+    public Bitmap downloadImage(Context context, String imgUrl) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = Glide.with(context)
+                    .load(imgUrl)
+                    .asBitmap()
+                    .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 
     /**

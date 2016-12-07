@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory;
 import android.widget.Toast;
 
 import com.lxw.dailynews.R;
+import com.lxw.dailynews.framework.application.BaseApplication;
+import com.lxw.dailynews.framework.image.ImageManager;
 import com.lxw.dailynews.framework.util.StringUtil;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
@@ -27,8 +29,7 @@ public class WXShareAction {
 	// IWXAPI 是第三方app和微信通信的openapi接口
 	private IWXAPI api;
 	// 已通过审核APP_ID
-	 public final String APP_ID = "wx2c20bb41676cf1d4";//本地签名debug
-//	public final String APP_ID = "wx8e35dadd9ababbf4";// 正式签名
+	public final String APP_ID = "wx598f0cc5d9238534";// 正式签名
 
 	private Context context;
 	private final int THUMB_SIZE = 150;
@@ -69,6 +70,8 @@ public class WXShareAction {
 			weixinShareText(bean);
 			break;
 		case SHAREIMGURL:
+
+			Bitmap bmp = ImageManager.getInstance().downloadImage(BaseApplication.appContext, ((WXShareImgUrlBean) bean).imageUrl);
 			weixinShareImgUrl(bean);
 			break;
 		default:
@@ -110,25 +113,18 @@ public class WXShareAction {
 		SendMessageToWX.Req req = new SendMessageToWX.Req();
 		req.transaction = buildTransaction("text"); // transaction字段用于唯一标识一个请求
 		req.message = msg;
-		req.scene = txtBean.isFriends ? SendMessageToWX.Req.WXSceneTimeline
-				: SendMessageToWX.Req.WXSceneSession;
+		req.scene = SendMessageToWX.Req.WXSceneTimeline;
 		// 调用api接口发送数据到微信
 		api.sendReq(req);
 	}
 
 	private void weixinShareImg(WXShareBaseBean bean) {
 		WXShareImgBean ibean = (WXShareImgBean) bean;
-		File file = new File(ibean.filePath);
-		if (!file.exists()) {
-			Toast.makeText(context, "分享的图片不存在", Toast.LENGTH_SHORT).show();
-			// 图片不存在
-			return;
-		}
+		Bitmap bmp = ImageManager.getInstance().downloadImage(BaseApplication.appContext, ((WXShareImgBean) bean).imageUrl);
 		WXImageObject imgObj = new WXImageObject();
-		imgObj.setImagePath(ibean.filePath);
+		imgObj.setImagePath(((WXShareImgBean) bean).imageUrl);
 		WXMediaMessage msg = new WXMediaMessage();
 		msg.mediaObject = imgObj;
-		Bitmap bmp = BitmapFactory.decodeFile(ibean.filePath);
 		Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, THUMB_SIZE,
 				THUMB_SIZE, true);
 		bmp.recycle();
@@ -142,22 +138,13 @@ public class WXShareAction {
 		SendMessageToWX.Req req = new SendMessageToWX.Req();
 		req.transaction = buildTransaction("img");
 		req.message = msg;
-		req.scene = ibean.isFriends ? SendMessageToWX.Req.WXSceneTimeline
-				: SendMessageToWX.Req.WXSceneSession;
+		req.scene = SendMessageToWX.Req.WXSceneTimeline;
 		api.sendReq(req);
 	}
 
 	private void weixinShareImgUrl(WXShareBaseBean bean) {
 		WXShareImgUrlBean ibean = (WXShareImgUrlBean) bean;
-		File file = new File(ibean.filePath);
-		Bitmap bmp;
-		// 文件不存在采用默认图片
-		if (StringUtil.isEmpty(ibean.filePath) || !file.exists()) {
-			bmp = BitmapFactory.decodeResource(context.getResources(),
-					R.mipmap.ic_launcher);
-		} else {
-			bmp = BitmapFactory.decodeFile(ibean.filePath);
-		}
+		Bitmap bmp = ImageManager.getInstance().downloadImage(BaseApplication.appContext, ((WXShareImgUrlBean) bean).imageUrl);
 		WXWebpageObject webpage = new WXWebpageObject();
 		webpage.webpageUrl = ibean.url;
 		WXMediaMessage msg = new WXMediaMessage(webpage);
@@ -171,8 +158,7 @@ public class WXShareAction {
 		SendMessageToWX.Req req = new SendMessageToWX.Req();
 		req.transaction = buildTransaction("webpage");
 		req.message = msg;
-		req.scene = ibean.isFriends ? SendMessageToWX.Req.WXSceneTimeline
-				: SendMessageToWX.Req.WXSceneSession;
+		req.scene = SendMessageToWX.Req.WXSceneTimeline;
 		api.sendReq(req);
 	}
 
