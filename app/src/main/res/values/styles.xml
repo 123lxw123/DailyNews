@@ -24,4 +24,13 @@
         <item name="spinBars">true</item>
         <item name="color">@color/color_FFFFFF</item>
     </style>
+
+    <!--分割线-->
+    <style name="split_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:background">@color/color_DDDDDD</item>
+    </style>
+
+
 </resources>

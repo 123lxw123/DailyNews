@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 android {
+    signingConfigs {
+        config {
+            keyAlias 'alias'
+            keyPassword '123456'
+            storeFile file('appKeyStore.jks')
+            storePassword '123456'
+        }
+    }
     compileSdkVersion 24
     buildToolsVersion "23.0.3"
     defaultConfig {
@@ -15,22 +23,13 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.umeng
-        }
-    }
-
-    signingConfigs {
-        umeng {
-            storeFile file('umeng.keystore')
-            storePassword "android"
-            keyAlias "androiddebugkey"
-            keyPassword "android"
+            signingConfig signingConfigs.config
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -67,6 +66,6 @@ dependencies {
     compile 'com.github.d-max:spots-dialog:0.7@aar'
     //kenburnsview
     compile 'com.flaviofaria:kenburnsview:1.0.7'
-
     testCompile 'junit:junit:4.12'
+    compile files('libs/libammsdk.jar')
 }

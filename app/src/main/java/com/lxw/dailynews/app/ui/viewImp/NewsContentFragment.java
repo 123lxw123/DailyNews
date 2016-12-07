@@ -1,6 +1,7 @@
 package com.lxw.dailynews.app.ui.viewImp;
 
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -27,6 +28,7 @@ import com.lxw.dailynews.framework.image.ImageManager;
 import com.lxw.dailynews.framework.util.HtmlUtil;
 import com.lxw.dailynews.framework.util.StringUtil;
 import com.lxw.dailynews.framework.util.ValueUtil;
+import com.lxw.dailynews.framework.weixin.WXShareDialog;
 import com.lxw.dailynews.framework.widget.MyNestedScrollView;
 import com.lxw.dailynews.framework.widget.MyNestedScrollViewListener;
 
@@ -34,6 +36,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.R.attr.type;
+import static android.os.Build.VERSION_CODES.N;
 
 
 /**
@@ -213,6 +216,18 @@ public class NewsContentFragment extends BaseMvpFragment<INewsContentView, NewsC
 //            webview.loadDataWithBaseURL("file:///android_asset/test.html", null, "text/html", "utf-8", null);
             webview.setVisibility(View.VISIBLE);
         }
+
+        //微信分享
+        imgShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Activity activity = NewsContentFragment.this.getActivity();
+                WXShareDialog dlg = new WXShareDialog(activity, newsContentBean.getShare_url(), activity.getResources().getString(R.string.app_name),
+                        newsContentBean.getTitle(), newsContentBean.getImage());
+                dlg.show();
+            }
+        });
+
         if("3".equals(type)){
             layoutHeaderContent.setVisibility(View.GONE);
         }else {
