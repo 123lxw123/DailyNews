@@ -2,6 +2,7 @@ package com.lxw.dailynews.app.api;
 
 import com.lxw.dailynews.app.bean.BeforeThemeContentBean;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
+import com.lxw.dailynews.app.bean.NewsCommentBean;
 import com.lxw.dailynews.app.bean.NewsContentBean;
 import com.lxw.dailynews.app.bean.NewsStoryExtraBean;
 import com.lxw.dailynews.app.bean.NewsThemeBean;
@@ -43,5 +44,8 @@ public interface HttpService {
 
     @GET("4/theme/{themeId}/before/{newsId}")
     Observable<BeforeThemeContentBean> getBeforeThemeContent(@Path("themeId") String themeId, @Path("newsId") String newsId);
+
+    @GET("4/story/{newsId}/{commentsType}")
+    Observable<NewsCommentBean> getNewsComments(@Path("newsId") String newsId, @Path("commentsType") String commentsType);
 
 }

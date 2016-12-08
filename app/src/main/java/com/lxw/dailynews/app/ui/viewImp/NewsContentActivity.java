@@ -19,6 +19,7 @@ import com.lxw.dailynews.app.presenter.NewsContentPresenter;
 import com.lxw.dailynews.app.ui.view.INewsContentView;
 import com.lxw.dailynews.framework.base.BaseMvpActivity;
 import com.lxw.dailynews.framework.util.StringUtil;
+import com.lxw.dailynews.framework.widget.LazyViewPager;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ import butterknife.ButterKnife;
 public class NewsContentActivity extends BaseMvpActivity<INewsContentView, NewsContentPresenter> implements INewsContentView {
 
     @BindView(R.id.viewpager_news_content)
-    public ViewPager viewpagerNewsContent;
+    public LazyViewPager viewpagerNewsContent;
     @BindView(R.id.img_share)
     public ImageView imgShare;
     @BindView(R.id.img_collect)

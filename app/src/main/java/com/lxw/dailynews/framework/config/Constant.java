@@ -26,4 +26,7 @@ public class Constant {
     /** 启动页图片路径**/
     public static String PATH_SPLASH_PICTURE_PNG = "splash_picture.png";
 
+    /** 新闻评论的类型：长评论| 短评论**/
+    public static String COMMENTS_TYPE_LONG = "long-comments";
+    public static String COMMENTS_TYPE_SHORT = "short-comments";
 }

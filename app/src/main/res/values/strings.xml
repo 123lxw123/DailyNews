@@ -19,5 +19,6 @@
     <string name="theme_title">主题日报</string>
     <string name="theme_editor">主编</string>
     <string name="weixin_share">微信分享</string>
+    <string name="weixin_share_description">(分享自 @之乎日报 APP)</string>
 
 </resources>

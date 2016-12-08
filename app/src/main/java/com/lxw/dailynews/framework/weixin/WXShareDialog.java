@@ -90,6 +90,7 @@ public class WXShareDialog extends AlertDialog {
                 url.description = wechatContent;
                 url.url = link;// 点击图片后的链接地址
                 url.imageUrl = imageUrl;
+                url.isFriends = true;
                 wxShareAction.sendToSession(url);
                 WXShareDialog.this.dismiss();
             }

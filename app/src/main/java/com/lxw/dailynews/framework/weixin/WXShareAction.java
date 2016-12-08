@@ -35,7 +35,7 @@ public class WXShareAction {
     // IWXAPI 是第三方app和微信通信的openapi接口
     private IWXAPI api;
     // 已通过审核APP_ID
-    public final String APP_ID = "wx598f0cc5d9238534";// 正式签名
+    public final String APP_ID = "wx16b17af3bfbcaf4d";// 正式签名
 
     private Context context;
     private final int THUMB_SIZE = 150;
@@ -146,7 +146,8 @@ public class WXShareAction {
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.transaction = buildTransaction("text"); // transaction字段用于唯一标识一个请求
         req.message = msg;
-        req.scene = SendMessageToWX.Req.WXSceneTimeline;
+        req.scene = txtBean.isFriends ? SendMessageToWX.Req.WXSceneTimeline
+                : SendMessageToWX.Req.WXSceneSession;
         // 调用api接口发送数据到微信
         api.sendReq(req);
     }
@@ -157,6 +158,11 @@ public class WXShareAction {
         imgObj.setImagePath(((WXShareImgBean) bean).imageUrl);
         WXMediaMessage msg = new WXMediaMessage();
         msg.mediaObject = imgObj;
+        if (bmp == null) {
+            Toast.makeText(context, "分享的图片不存在", Toast.LENGTH_SHORT).show();
+            // 图片不存在
+            return;
+        }
         Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, THUMB_SIZE,
                 THUMB_SIZE, true);
         msg.thumbData = Util.bmpToByteArray(thumbBmp, true);
@@ -168,7 +174,8 @@ public class WXShareAction {
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.transaction = buildTransaction("img");
         req.message = msg;
-        req.scene = SendMessageToWX.Req.WXSceneTimeline;
+        req.scene = ibean.isFriends ? SendMessageToWX.Req.WXSceneTimeline
+                : SendMessageToWX.Req.WXSceneSession;
         api.sendReq(req);
     }
 
@@ -179,13 +186,17 @@ public class WXShareAction {
         WXMediaMessage msg = new WXMediaMessage(webpage);
         msg.title = ibean.title;
         msg.description = ibean.description;
+        if(bmp == null){
+            bmp = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_share_logo);
+        }
         Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, THUMB_SIZE,
                 THUMB_SIZE, true);
         msg.thumbData = Util.bmpToByteArray(thumbBmp, true); // 设置缩略图
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.transaction = buildTransaction("webpage");
         req.message = msg;
-        req.scene = SendMessageToWX.Req.WXSceneTimeline;
+        req.scene = ibean.isFriends ? SendMessageToWX.Req.WXSceneTimeline
+                : SendMessageToWX.Req.WXSceneSession;
         api.sendReq(req);
     }
 

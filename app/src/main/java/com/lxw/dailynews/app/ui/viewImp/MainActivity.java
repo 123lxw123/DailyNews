@@ -107,6 +107,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     private LoadMoreWrapper themeLoadMoreWrapper;
     private View themeHeaderView;
     private KenBurnsView kenBurnsView;
+    private LinearLayout layout_editor;
     private LinearLayout ll_editor;
     private List<LatestNewsBean.StoriesBean> stories_theme = new ArrayList<LatestNewsBean.StoriesBean>();
 
@@ -545,6 +546,19 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                 LinearLayout.LayoutParams.WRAP_CONTENT
         ));
         kenBurnsView = (KenBurnsView) themeHeaderView.findViewById(R.id.kenburnsview_picture);
+        layout_editor = (LinearLayout) themeHeaderView.findViewById(R.id.layout_editor);
+        layout_editor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(themeContentBean != null && themeContentBean.getEditors() != null && themeContentBean.getEditors().size() > 0) {
+                    Intent intent = new Intent(MainActivity.this, ThemeEditorActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("editorsBean", (Serializable) themeContentBean.getEditors());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            }
+        });
         ll_editor = (LinearLayout) themeHeaderView.findViewById(R.id.ll_editor);
         themeHeaderAndFooterWrapper.addHeaderView(themeHeaderView);
         themeLoadMoreWrapper = new LoadMoreWrapper(themeHeaderAndFooterWrapper);

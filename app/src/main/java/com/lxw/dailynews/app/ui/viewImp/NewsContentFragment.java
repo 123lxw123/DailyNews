@@ -2,6 +2,7 @@ package com.lxw.dailynews.app.ui.viewImp;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -63,6 +64,7 @@ public class NewsContentFragment extends BaseMvpFragment<INewsContentView, NewsC
     private Toolbar toolbar;
     private ImageView imgShare;
     private ImageView imgCollect;
+    private ImageView imgComment;
     private TextView txtComment;
     private TextView txtPraise;
     private String newsId;//新闻id
@@ -143,6 +145,7 @@ public class NewsContentFragment extends BaseMvpFragment<INewsContentView, NewsC
         toolbar = ((NewsContentActivity) getActivity()).toolbar;
         imgShare = ((NewsContentActivity) getActivity()).imgShare;
         imgCollect = ((NewsContentActivity) getActivity()).imgCollect;
+        imgComment = ((NewsContentActivity) getActivity()).imgComment;
         txtComment = ((NewsContentActivity) getActivity()).txtComment;
         txtPraise = ((NewsContentActivity) getActivity()).txtPraise;
         //webview初始化
@@ -222,11 +225,24 @@ public class NewsContentFragment extends BaseMvpFragment<INewsContentView, NewsC
             @Override
             public void onClick(View v) {
                 Activity activity = NewsContentFragment.this.getActivity();
-                WXShareDialog dlg = new WXShareDialog(activity, newsContentBean.getShare_url(), activity.getResources().getString(R.string.app_name),
-                        newsContentBean.getTitle(), newsContentBean.getImage());
+                WXShareDialog dlg = new WXShareDialog(activity, newsContentBean.getShare_url(), newsContentBean.getTitle(),
+                        newsContentBean.getTitle() + " " + getActivity().getResources().getString(R.string.weixin_share_description), newsContentBean.getImage());
                 dlg.show();
             }
         });
+
+        //跳转到评论
+        View.OnClickListener commentsListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), NewsCommentActivity.class);
+                intent.putExtra("comments", newsStoryExtraBean.getComments());
+                startActivity(intent);
+            }
+        };
+        imgComment.setOnClickListener(commentsListener);
+        txtComment.setOnClickListener(commentsListener);
+
 
         if("3".equals(type)){
             layoutHeaderContent.setVisibility(View.GONE);
