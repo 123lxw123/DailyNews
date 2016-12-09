@@ -13,6 +13,7 @@ import com.lxw.dailynews.app.ui.view.IMainView;
 import com.lxw.dailynews.app.ui.view.INewsCommentView;
 import com.lxw.dailynews.framework.application.BaseApplication;
 import com.lxw.dailynews.framework.base.BaseMvpPresenter;
+import com.lxw.dailynews.framework.config.Constant;
 import com.lxw.dailynews.framework.http.HttpListener;
 
 /**
@@ -27,14 +28,18 @@ public class NewsCommentPresenter extends BaseMvpPresenter<INewsCommentView> {
     }
 
     //获取新闻评论
-    public void getNewsComments(String newsId, String commentsType) {
+    public void getNewsComments(String newsId, final String commentsType) {
         if (isNetworkAvailable()) {
             newsCommentModel.getNewsComments(newsId, commentsType, new HttpListener<NewsCommentBean>() {
 
                 @Override
                 public void onSuccess(NewsCommentBean response) {
                     if (response != null) {
-                        getView().setNewsCommentBean(response);
+                        if(commentsType.equals(Constant.COMMENTS_TYPE_LONG)){
+                            getView().setLongCommentBean(response);
+                        }else{
+                            getView().setShortCommentBean(response);
+                        }
                     }else{
                         getView().stopRefreshAnimation();
                         showMessage(BaseApplication.appContext.getString(R.string.error_request_failure));

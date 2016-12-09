@@ -4,6 +4,7 @@
     <string name="splash_slogan">每日三次，每次七分钟</string>
     <string name="menu_notifications">menu_notifications</string>
     <string name="menu_follow">menu_follow</string>
+    <string name="menu_comment">menu_comment</string>
     <string name="menu_styles_night">夜间模式</string>
     <string name="menu_setting_option">设置选项</string>
     <string name="toolbar_title">首页</string>
@@ -20,5 +21,12 @@
     <string name="theme_editor">主编</string>
     <string name="weixin_share">微信分享</string>
     <string name="weixin_share_description">(分享自 @之乎日报 APP)</string>
+    <string name="news_comments">%1$s条点评</string>
+    <string name="long_comments">%1$s条长评</string>
+    <string name="short_comments">%1$s条短评</string>
+    <string name="comment_expand">展开</string>
+    <string name="comment_close">收起</string>
+    <string name="comment_empty">深度长评虚位以待</string>
+    <string name="comment_reply_to">//%1$s：</string>
 
 </resources>

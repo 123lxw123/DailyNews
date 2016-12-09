@@ -1,5 +1,6 @@
 package com.lxw.dailynews.app.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ import java.util.List;
      err_msg: 错误消息，仅当status非0时出现
  */
 
-public class NewsCommentBean {
+public class NewsCommentBean implements Serializable{
 
     private List<CommentsBean> comments;
 
@@ -49,6 +50,7 @@ public class NewsCommentBean {
         private int time;
         private int id;
         private int likes;
+        private String headerTitle = "";// 类别标题
         private ReplyToBean reply_to;
 
         public String getAuthor() {
@@ -107,7 +109,15 @@ public class NewsCommentBean {
             this.reply_to = reply_to;
         }
 
-        public static class ReplyToBean {
+        public String getHeaderTitle() {
+            return headerTitle;
+        }
+
+        public void setHeaderTitle(String headerTitle) {
+            this.headerTitle = headerTitle;
+        }
+
+        public static class ReplyToBean implements Serializable{
             /**
              * content : 第二个机灵抖的还是有逻辑问题，不该说忘了，应该说没喝过啊我也不知道
              * status : 0
@@ -151,6 +161,23 @@ public class NewsCommentBean {
             public void setAuthor(String author) {
                 this.author = author;
             }
+
+            @Override
+            public String toString() {
+                return "ReplyToBean{" +
+                        "content='" + content + '\'' +
+                        ", status=" + status +
+                        ", id=" + id +
+                        ", author='" + author + '\'' +
+                        '}';
+            }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "NewsCommentBean{" +
+                "comments=" + comments +
+                '}';
     }
 }

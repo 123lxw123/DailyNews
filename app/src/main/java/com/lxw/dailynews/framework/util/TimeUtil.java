@@ -2,7 +2,10 @@ package com.lxw.dailynews.framework.util;
 
 import android.provider.CalendarContract;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 /**
@@ -72,7 +75,7 @@ public class TimeUtil {
      * 获取某一天的前N天的日期
      *
      * @param dateNumber 日期 如 20161102
-     * @param count       前N天
+     * @param count      前N天
      * @return
      */
     public static String getBeforeDate(String dateNumber, int count) {
@@ -87,5 +90,17 @@ public class TimeUtil {
         String Month = String.format("%02d", calendar.get(Calendar.MONTH) + 1);// 获取当前月份
         String Day = String.format("%02d", calendar.get(Calendar.DAY_OF_MONTH));// 获取当前月份的日期号码
         return Year + Month + Day;
+    }
+
+    /**
+     * 时间戳转换成日期、时间
+     *
+     * @param timestamp 时间戳
+     * @return 格式化日期、时间
+     */
+    public static String getFormatDate(int timestamp) {
+        SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm");
+        String date = format.format(timestamp);
+        return date;
     }
 }

@@ -236,7 +236,8 @@ public class NewsContentFragment extends BaseMvpFragment<INewsContentView, NewsC
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), NewsCommentActivity.class);
-                intent.putExtra("comments", newsStoryExtraBean.getComments());
+                intent.putExtra("newsStoryExtraBean", newsStoryExtraBean);
+                intent.putExtra("newsId", newsId);
                 startActivity(intent);
             }
         };

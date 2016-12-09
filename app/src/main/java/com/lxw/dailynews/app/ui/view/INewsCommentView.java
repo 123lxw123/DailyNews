@@ -9,5 +9,9 @@ import com.lxw.dailynews.framework.base.BaseMvpView;
 
 public interface INewsCommentView  extends BaseMvpView{
     void getNewsComments(String newsId, String commentsType);
-    void setNewsCommentBean(NewsCommentBean newsCommentBean);
+    void setLongCommentBean(NewsCommentBean newsCommentBean);
+    void setShortCommentBean(NewsCommentBean newsCommentBean);
+    void rePrepareLongCommentData();
+    void rePrepareShortCommentData();
+    void stopRefreshAnimation();
 }
