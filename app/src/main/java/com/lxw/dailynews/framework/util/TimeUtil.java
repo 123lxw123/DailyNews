@@ -98,9 +98,8 @@ public class TimeUtil {
      * @param timestamp 时间戳
      * @return 格式化日期、时间
      */
-    public static String getFormatDate(int timestamp) {
-        SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm");
-        String date = format.format(timestamp);
+    public static String getFormatDate(long timestamp) {
+        String date = new java.text.SimpleDateFormat("MM-dd HH:mm").format(new java.util.Date(timestamp * 1000));
         return date;
     }
 }

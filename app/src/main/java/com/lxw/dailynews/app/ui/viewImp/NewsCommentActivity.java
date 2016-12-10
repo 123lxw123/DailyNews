@@ -1,6 +1,8 @@
 package com.lxw.dailynews.app.ui.viewImp;
 
+import android.animation.ObjectAnimator;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,6 +34,7 @@ import com.lxw.dailynews.framework.base.BaseMultiItemTypeAdapter;
 import com.lxw.dailynews.framework.base.BaseMvpActivity;
 import com.lxw.dailynews.framework.config.Constant;
 import com.lxw.dailynews.framework.image.ImageManager;
+import com.lxw.dailynews.framework.log.LoggerHelper;
 import com.lxw.dailynews.framework.util.StringUtil;
 import com.lxw.dailynews.framework.util.TimeUtil;
 import com.lxw.dailynews.framework.util.ValueUtil;
@@ -53,18 +56,25 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
     private NewsStoryExtraBean newsStoryExtraBean;
     private NewsCommentBean newsCommentBean;
     private String newsId;//新闻id
+    private LinearLayoutManager linearLayoutManager;
     private List<NewsCommentBean.CommentsBean> comments = new ArrayList<>();
     private List<NewsCommentBean.CommentsBean> longComments = new ArrayList<>();
     private List<NewsCommentBean.CommentsBean> shortComments = new ArrayList<>();
     private BaseMultiItemTypeAdapter<NewsCommentBean.CommentsBean> adapter;
     private int requset_count = 0;
 
+    private NewsCommentBean.CommentsBean shortCommentsBean;
+    private NewsCommentBean.CommentsBean longCommentsBean;
+    private NewsCommentBean.CommentsBean emptyCommentsBean;
+
+    private boolean frag_short_comment_expand = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_comment);
         ButterKnife.bind(this);
-        newsStoryExtraBean = (NewsStoryExtraBean)getIntent().getSerializableExtra("newsStoryExtraBean");
+        newsStoryExtraBean = (NewsStoryExtraBean) getIntent().getSerializableExtra("newsStoryExtraBean");
         newsId = getIntent().getStringExtra("newsId");
         initView();
         prepareData();
@@ -78,7 +88,7 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
 
     @Override
     public void getNewsComments(String newsId, String commentsType) {
-        requset_count ++;
+        requset_count++;
         getPresenter().getNewsComments(newsId, commentsType);
     }
 
@@ -90,13 +100,14 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
 
     @Override
     public void setShortCommentBean(NewsCommentBean newsCommentBean) {
-
+        this.newsCommentBean = newsCommentBean;
+        rePrepareShortCommentData();
     }
 
     @Override
     public void stopRefreshAnimation() {
-        requset_count --;
-        if(requset_count == 0){
+        requset_count--;
+        if (requset_count == 0) {
             hideProgressBar();
         }
     }
@@ -113,12 +124,12 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
             }
         });
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
         rvComments.setLayoutManager(linearLayoutManager);
         rvComments.setNestedScrollingEnabled(false);
         adapter = new BaseMultiItemTypeAdapter<>(NewsCommentActivity.this, comments);
         //评论头部title
-        adapter.addItemViewDelegate(new ItemViewDelegate<NewsCommentBean.CommentsBean>(){
+        adapter.addItemViewDelegate(new ItemViewDelegate<NewsCommentBean.CommentsBean>() {
 
             @Override
             public int getItemViewLayoutId() {
@@ -131,18 +142,50 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
             }
 
             @Override
-            public void convert(ViewHolder holder, NewsCommentBean.CommentsBean commentsBean, int position) {
-                if(commentsBean.getHeaderTitle().equals(Constant.COMMENTS_TYPE_LONG)){
+            public void convert(final ViewHolder holder, final NewsCommentBean.CommentsBean commentsBean, final int position) {
+                if (commentsBean.getHeaderTitle().equals(Constant.COMMENTS_TYPE_LONG)) {
                     holder.setText(R.id.txt_comment_header, String.format(getResources().getString(R.string.long_comments), newsStoryExtraBean.getLong_comments() + ""));
                     holder.setVisible(R.id.img_expand, false);
-                }else{
+                    holder.setOnClickListener(R.id.ll_header, null);
+                } else {
                     holder.setText(R.id.txt_comment_header, String.format(getResources().getString(R.string.short_comments), newsStoryExtraBean.getShort_comments() + ""));
-                    holder.setVisible(R.id.img_expand, true);
+                    if (newsStoryExtraBean.getShort_comments() > 0) {
+                        holder.setVisible(R.id.img_expand, true);
+                    } else {
+                        holder.setVisible(R.id.img_expand, false);
+                    }
+                    holder.setOnClickListener(R.id.ll_header, new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            if(position == 1){
+                                return;
+                            }
+
+                            frag_short_comment_expand = !frag_short_comment_expand;
+                            if (frag_short_comment_expand) {
+                                ((ImageView) holder.getView(R.id.img_expand)).setImageResource(R.mipmap.ic_comment_fold);
+                                LoggerHelper.info("NewsCommentActivity", "true");
+                                getNewsComments(newsId, Constant.COMMENTS_TYPE_SHORT);
+                            } else {
+                                ((ImageView) holder.getView(R.id.img_expand)).setImageResource(R.mipmap.ic_comment_expand);
+                                LoggerHelper.info("NewsCommentActivity", "false");
+                                comments.clear();
+                                comments.addAll(longComments);
+                                comments.add(shortCommentsBean);
+                                adapter.notifyDataSetChanged();
+                                rvComments.smoothScrollToPosition(0);
+//                                ObjectAnimator anim = ObjectAnimator.ofFloat((ImageView) holder.getView(R.id.img_expand), "rotation", 0f, 180f);
+//                                anim.setDuration(10).start();
+                            }
+                        }
+
+                    });
                 }
             }
         });
         //长评论为空展示empty
-        adapter.addItemViewDelegate(new ItemViewDelegate<NewsCommentBean.CommentsBean>(){
+        adapter.addItemViewDelegate(new ItemViewDelegate<NewsCommentBean.CommentsBean>() {
 
             @Override
             public int getItemViewLayoutId() {
@@ -164,7 +207,7 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
                 //toolbar高度
                 int toolBarHeight = toolbar.getHeight();
                 //状态栏高度
-                int statusBarHeight  = 0;
+                int statusBarHeight = 0;
                 int statusBarId = getResources().getIdentifier("status_bar_height", "dimen", "android");
                 if (statusBarId > 0) {
                     statusBarHeight = getResources().getDimensionPixelSize(statusBarId);
@@ -174,7 +217,7 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
             }
         });
         //评论内容
-        adapter.addItemViewDelegate(new ItemViewDelegate<NewsCommentBean.CommentsBean>(){
+        adapter.addItemViewDelegate(new ItemViewDelegate<NewsCommentBean.CommentsBean>() {
 
             @Override
             public int getItemViewLayoutId() {
@@ -187,31 +230,66 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
             }
 
             @Override
-            public void convert(ViewHolder holder, NewsCommentBean.CommentsBean commentsBean, int position) {
+            public void convert(final ViewHolder holder, NewsCommentBean.CommentsBean commentsBean, int position) {
                 ImageManager.getInstance().loadCircleImage(NewsCommentActivity.this, (ImageView) holder.getView(R.id.img_avatar), commentsBean.getAvatar());
                 holder.setText(R.id.txt_author, commentsBean.getAuthor());
-                ((TextView)holder.getView(R.id.txt_author)).getPaint().setFakeBoldText(true);
+                ((TextView) holder.getView(R.id.txt_author)).getPaint().setFakeBoldText(true);
                 holder.setText(R.id.txt_praise, commentsBean.getLikes() + "");
                 holder.setText(R.id.txt_content, commentsBean.getContent());
-                if(commentsBean.getReply_to() == null){
+                if (commentsBean.getReply_to() == null) {
                     holder.setVisible(R.id.txt_reply_to, false);
                     holder.setVisible(R.id.txt_expand, false);
-                }else{
-                    holder.setVisible(R.id.txt_reply_to, true);
+                } else {
+                    boolean frag_show = false;
                     String reply_to = String.format(getResources().getString(R.string.comment_reply_to), commentsBean.getReply_to().getAuthor());
                     int sp16 = ValueUtil.sp2px(NewsCommentActivity.this, 16);
-                    Spannable span = new SpannableString(reply_to + commentsBean.getReply_to().getContent());
+                    final Spannable span = new SpannableString(reply_to + commentsBean.getReply_to().getContent());
                     span.setSpan(new AbsoluteSizeSpan(sp16), 0, reply_to.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     span.setSpan(new StyleSpan(Typeface.BOLD), 0, reply_to.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     span.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.color_000000)), 0, reply_to.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    ((TextView)holder.getView(R.id.txt_reply_to)).setText(span);
-                    if(((TextView)holder.getView(R.id.txt_reply_to)).getLineCount() > 2){
-                        holder.setVisible(R.id.txt_expand, true);
-                        ((TextView)holder.getView(R.id.txt_reply_to)).setMaxLines(2);
-                        ((TextView)holder.getView(R.id.txt_reply_to)).setEllipsize(android.text.TextUtils.TruncateAt.END);
-                    }else{
-                        holder.setVisible(R.id.txt_expand, false);
+                    if (((TextView) holder.getView(R.id.txt_reply_to)).getLineCount() > 2) {
+                        frag_show = true;
                     }
+                    final boolean frag = frag_show;
+                    ((TextView) holder.getView(R.id.txt_reply_to)).setMaxLines(Integer.MAX_VALUE);
+                    ((TextView) holder.getView(R.id.txt_reply_to)).setText(span);
+                    ((TextView) holder.getView(R.id.txt_reply_to)).post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (((TextView) holder.getView(R.id.txt_reply_to)).getLineCount() > 2) {
+                                holder.setVisible(R.id.txt_expand, true);
+                                if (!frag) {
+                                    ((TextView) holder.getView(R.id.txt_reply_to)).setMaxLines(2);
+                                    ((TextView) holder.getView(R.id.txt_reply_to)).setEllipsize(android.text.TextUtils.TruncateAt.END);
+                                    holder.setText(R.id.txt_expand, NewsCommentActivity.this.getResources().getString(R.string.comment_expand));
+                                } else {
+                                    ((TextView) holder.getView(R.id.txt_reply_to)).setMaxLines(Integer.MAX_VALUE);
+                                    ((TextView) holder.getView(R.id.txt_reply_to)).setEllipsize(android.text.TextUtils.TruncateAt.END);
+                                    holder.setText(R.id.txt_expand, NewsCommentActivity.this.getResources().getString(R.string.comment_close));
+                                }
+                            } else {
+                                holder.setVisible(R.id.txt_expand, false);
+                            }
+                            holder.setVisible(R.id.txt_reply_to, true);
+                        }
+                    });
+                    //点击展开收起
+                    holder.setOnClickListener(R.id.txt_expand, new View.OnClickListener() {
+                        private boolean frag_expand = false;
+
+                        @Override
+                        public void onClick(View v) {
+                            frag_expand = !frag_expand;
+                            if (frag_expand) {
+                                ((TextView) holder.getView(R.id.txt_reply_to)).setMaxLines(Integer.MAX_VALUE);
+                                holder.setText(R.id.txt_expand, NewsCommentActivity.this.getResources().getString(R.string.comment_close));
+                            } else {
+                                ((TextView) holder.getView(R.id.txt_reply_to)).setMaxLines(2);
+                                holder.setText(R.id.txt_expand, NewsCommentActivity.this.getResources().getString(R.string.comment_expand));
+                            }
+                        }
+                    });
                 }
                 holder.setText(R.id.txt_time, TimeUtil.getFormatDate(commentsBean.getTime()));
             }
@@ -222,6 +300,15 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
 
     @Override
     public void prepareData() {
+        longCommentsBean = new NewsCommentBean.CommentsBean();
+        longCommentsBean.setHeaderTitle(Constant.COMMENTS_TYPE_LONG);
+
+        emptyCommentsBean = new NewsCommentBean.CommentsBean();
+        emptyCommentsBean.setHeaderTitle(Constant.COMMENTS_TYPE_EMPTY);
+
+        shortCommentsBean = new NewsCommentBean.CommentsBean();
+        shortCommentsBean.setHeaderTitle(Constant.COMMENTS_TYPE_SHORT);
+
         getNewsComments(newsId, Constant.COMMENTS_TYPE_LONG);
     }
 
@@ -235,24 +322,18 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
         comments.clear();
         //长评论
         longComments.clear();
-        NewsCommentBean.CommentsBean longCommentsBean = new NewsCommentBean.CommentsBean();
-        longCommentsBean.setHeaderTitle(Constant.COMMENTS_TYPE_LONG);
         longComments.add(longCommentsBean);
-        if(newsCommentBean == null || newsCommentBean.getComments().size() < 1){
-            NewsCommentBean.CommentsBean emptyCommentsBean = new NewsCommentBean.CommentsBean();
-            emptyCommentsBean.setHeaderTitle(Constant.COMMENTS_TYPE_EMPTY);
+        if (newsCommentBean == null || newsCommentBean.getComments().size() < 1) {
             longComments.add(emptyCommentsBean);
-        }else{
+        } else {
             longComments.addAll(newsCommentBean.getComments());
         }
         comments.addAll(longComments);
         //短评论
-        if(shortComments.size() < 1){
-            NewsCommentBean.CommentsBean shortCommentsBean = new NewsCommentBean.CommentsBean();
-            shortCommentsBean.setHeaderTitle(Constant.COMMENTS_TYPE_SHORT);
+        if (shortComments.size() < 1) {
             shortComments.add(shortCommentsBean);
             comments.addAll(shortComments);
-        }else {
+        } else {
             comments.addAll(shortComments);
         }
         //刷新
@@ -261,6 +342,45 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
 
     @Override
     public void rePrepareShortCommentData() {
+        comments.clear();
+        //长评论
+        comments.addAll(longComments);
+        //短评论
+        if (shortComments.size() < 1) {
+            shortComments.add(shortCommentsBean);
+            shortComments.addAll(newsCommentBean.getComments());
+        } else {
+            shortComments.addAll(newsCommentBean.getComments());
+        }
+        comments.addAll(shortComments);
+        //刷新
+        adapter.notifyDataSetChanged();
+        rvComments.smoothScrollToPosition(longComments.size());
+        smoothMoveToPosition(longComments.size());
 
+    }
+
+    private void smoothMoveToPosition(int position) {
+        //屏幕高度
+        WindowManager wm1 = NewsCommentActivity.this.getWindowManager();
+        int height = wm1.getDefaultDisplay().getHeight();
+        //评论header高度
+        int dp50 = ValueUtil.dip2px(NewsCommentActivity.this, 50);
+        //toolbar高度
+        int toolBarHeight = toolbar.getHeight();
+        //状态栏高度
+        int statusBarHeight = 0;
+        int statusBarId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (statusBarId > 0) {
+            statusBarHeight = getResources().getDimensionPixelSize(statusBarId);
+        }
+        int scroll = height - statusBarHeight - toolBarHeight - dp50;
+        rvComments.smoothScrollBy(0, scroll);
+//        int firstPosition = linearLayoutManager.findFirstVisibleItemPosition();
+//        int lastPosition = linearLayoutManager.findLastVisibleItemPosition();
+//        if(position <= lastPosition){
+//            int top = rvComments.getChildAt(position - firstPosition).getTop();
+//            rvComments.smoothScrollBy(0, top);
+//        }
     }
 }

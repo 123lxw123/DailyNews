@@ -47,7 +47,7 @@ public class NewsCommentBean implements Serializable{
         private String author;
         private String content;
         private String avatar;
-        private int time;
+        private long time;
         private int id;
         private int likes;
         private String headerTitle = "";// 类别标题
@@ -77,11 +77,11 @@ public class NewsCommentBean implements Serializable{
             this.avatar = avatar;
         }
 
-        public int getTime() {
+        public long getTime() {
             return time;
         }
 
-        public void setTime(int time) {
+        public void setTime(long time) {
             this.time = time;
         }
 

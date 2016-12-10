@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_header"
     android:orientation="vertical"
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
@@ -22,7 +23,7 @@
             android:id="@+id/img_expand"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/dp_15"
-            android:src="@mipmap/ic_comment_fold"
+            android:src="@mipmap/ic_comment_expand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"/>
