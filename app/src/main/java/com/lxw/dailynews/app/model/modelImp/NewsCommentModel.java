@@ -25,4 +25,15 @@ public class NewsCommentModel implements INewsCommentModel {
             }
         };
     }
+
+    @Override
+    public void getBeforeNewsComments(final String newsId, final String commentsType, final String commentId, final HttpListener<NewsCommentBean> httpListener) {
+        new HttpManager<NewsCommentBean>(httpListener) {
+
+            @Override
+            public Observable<NewsCommentBean> createObservable() {
+                return HttpHelper.getInstance().getBeforeNewsComments(newsId, commentsType, commentId);
+            }
+        };
+    }
 }

@@ -12,4 +12,6 @@ import retrofit2.http.Path;
 
 public interface INewsCommentModel  {
     void getNewsComments(String newsId, String commentsType, HttpListener<NewsCommentBean> httpListener);
+
+    void getBeforeNewsComments(String newsId, String commentsType, String commentId, HttpListener<NewsCommentBean> httpListener);
 }

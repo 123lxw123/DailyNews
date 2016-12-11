@@ -40,6 +40,7 @@ import com.lxw.dailynews.framework.util.TimeUtil;
 import com.lxw.dailynews.framework.util.ValueUtil;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
+import com.zhy.adapter.recyclerview.wrapper.LoadMoreWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +70,12 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
 
     private boolean frag_short_comment_expand = false;
 
+    //上拉加载更多评论
+    private LoadMoreWrapper shortCommentLoadMoreWrapper;
+    private LoadMoreWrapper longCommentLoadMoreWrapper;
+    private boolean frag_short_comment_loadmore = false;
+    private boolean frag_long_comment_loadmore = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +97,12 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
     public void getNewsComments(String newsId, String commentsType) {
         requset_count++;
         getPresenter().getNewsComments(newsId, commentsType);
+    }
+
+    @Override
+    public void getBeforeNewsComments(String newsId, String commentsType, String commentId) {
+        requset_count++;
+        getPresenter().getBeforeNewsComments(newsId, commentsType, commentId);
     }
 
     @Override
@@ -151,6 +164,11 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
                     holder.setText(R.id.txt_comment_header, String.format(getResources().getString(R.string.short_comments), newsStoryExtraBean.getShort_comments() + ""));
                     if (newsStoryExtraBean.getShort_comments() > 0) {
                         holder.setVisible(R.id.img_expand, true);
+                        if (frag_short_comment_expand) {
+                            ((ImageView) holder.getView(R.id.img_expand)).setImageResource(R.mipmap.ic_comment_fold);
+                        } else {
+                            ((ImageView) holder.getView(R.id.img_expand)).setImageResource(R.mipmap.ic_comment_expand);
+                        }
                     } else {
                         holder.setVisible(R.id.img_expand, false);
                     }
@@ -158,9 +176,6 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
 
                         @Override
                         public void onClick(View v) {
-                            if(position == 1){
-                                return;
-                            }
 
                             frag_short_comment_expand = !frag_short_comment_expand;
                             if (frag_short_comment_expand) {
@@ -173,10 +188,9 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
                                 comments.clear();
                                 comments.addAll(longComments);
                                 comments.add(shortCommentsBean);
-                                adapter.notifyDataSetChanged();
+//                                rvComments.setAdapter(shortCommentLoadMoreWrapper);
+                                shortCommentLoadMoreWrapper.notifyDataSetChanged();
                                 rvComments.smoothScrollToPosition(0);
-//                                ObjectAnimator anim = ObjectAnimator.ofFloat((ImageView) holder.getView(R.id.img_expand), "rotation", 0f, 180f);
-//                                anim.setDuration(10).start();
                             }
                         }
 
@@ -294,8 +308,30 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
                 holder.setText(R.id.txt_time, TimeUtil.getFormatDate(commentsBean.getTime()));
             }
         });
+        shortCommentLoadMoreWrapper = new LoadMoreWrapper(adapter);
+        shortCommentLoadMoreWrapper.setLoadMoreView(R.layout.layout_enpty);
+        shortCommentLoadMoreWrapper.setOnLoadMoreListener(new LoadMoreWrapper.OnLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                if (frag_short_comment_expand && shortComments != null && shortComments.size() > 1) {
+                    frag_short_comment_loadmore = true;
+                    getBeforeNewsComments(newsId, Constant.COMMENTS_TYPE_SHORT, shortComments.get(shortComments.size() - 1).getId() + "");
+                }
+            }
+        });
 
-        rvComments.setAdapter(adapter);
+        longCommentLoadMoreWrapper = new LoadMoreWrapper(adapter);
+        longCommentLoadMoreWrapper.setLoadMoreView(R.layout.layout_enpty);
+        longCommentLoadMoreWrapper.setOnLoadMoreListener(new LoadMoreWrapper.OnLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                if (longComments != null && longComments.size() > 1) {
+                    frag_long_comment_loadmore = true;
+                    getBeforeNewsComments(newsId, Constant.COMMENTS_TYPE_LONG, longComments.get(longComments.size() - 1).getId() + "");
+                }
+            }
+        });
+        rvComments.setAdapter(longCommentLoadMoreWrapper);
     }
 
     @Override
@@ -321,23 +357,35 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
     public void rePrepareLongCommentData() {
         comments.clear();
         //长评论
-        longComments.clear();
-        longComments.add(longCommentsBean);
-        if (newsCommentBean == null || newsCommentBean.getComments().size() < 1) {
-            longComments.add(emptyCommentsBean);
-        } else {
+        if (frag_long_comment_loadmore) {//长评论加载更多
             longComments.addAll(newsCommentBean.getComments());
-        }
-        comments.addAll(longComments);
-        //短评论
-        if (shortComments.size() < 1) {
-            shortComments.add(shortCommentsBean);
-            comments.addAll(shortComments);
+            comments.addAll(longComments);
         } else {
-            comments.addAll(shortComments);
+            longComments.clear();
+            longComments.add(longCommentsBean);
+            if (newsCommentBean == null || newsCommentBean.getComments().size() < 1) {
+                longComments.add(emptyCommentsBean);
+            } else {
+                longComments.addAll(newsCommentBean.getComments());
+            }
+            comments.addAll(longComments);
         }
-        //刷新
-        adapter.notifyDataSetChanged();
+        if (longComments.size() - 1 < newsStoryExtraBean.getLong_comments()) {//长评论还没加载完
+//            rvComments.setAdapter(longCommentLoadMoreWrapper);
+            longCommentLoadMoreWrapper.notifyDataSetChanged();
+        } else {//长评论已经加载完毕，添加短评论
+            //短评论
+            if (shortComments.size() < 1) {
+                shortComments.add(shortCommentsBean);
+                comments.addAll(shortComments);
+            } else {
+                comments.addAll(shortComments);
+            }
+            rvComments.setAdapter(shortCommentLoadMoreWrapper);
+            shortCommentLoadMoreWrapper.notifyDataSetChanged();
+        }
+
+        frag_long_comment_loadmore = false;
     }
 
     @Override
@@ -346,21 +394,35 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
         //长评论
         comments.addAll(longComments);
         //短评论
-        if (shortComments.size() < 1) {
+        if (frag_short_comment_loadmore) {
+            shortComments.addAll(newsCommentBean.getComments());
+            comments.addAll(shortComments);
+        } else {
+
+            shortComments.clear();
             shortComments.add(shortCommentsBean);
             shortComments.addAll(newsCommentBean.getComments());
-        } else {
-            shortComments.addAll(newsCommentBean.getComments());
+            comments.addAll(shortComments);
         }
-        comments.addAll(shortComments);
-        //刷新
-        adapter.notifyDataSetChanged();
-        rvComments.smoothScrollToPosition(longComments.size());
-        smoothMoveToPosition(longComments.size());
 
+        //刷新
+//        rvComments.setAdapter(shortCommentLoadMoreWrapper);
+        shortCommentLoadMoreWrapper.notifyDataSetChanged();
+        if(!frag_short_comment_loadmore){
+            rvComments.smoothScrollToPosition(longComments.size());
+            rvComments.post(new Runnable() {
+                @Override
+                public void run() {
+                    smoothMoveToPosition(longComments.size());
+                }
+            });
+        }
+        frag_short_comment_loadmore = false;
     }
 
     private void smoothMoveToPosition(int position) {
+
+
         //屏幕高度
         WindowManager wm1 = NewsCommentActivity.this.getWindowManager();
         int height = wm1.getDefaultDisplay().getHeight();
@@ -375,7 +437,13 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
             statusBarHeight = getResources().getDimensionPixelSize(statusBarId);
         }
         int scroll = height - statusBarHeight - toolBarHeight - dp50;
-        rvComments.smoothScrollBy(0, scroll);
+        if (rvComments.getChildAt(position).getTop() < scroll) {
+            rvComments.smoothScrollBy(0, rvComments.getChildAt(position).getTop());
+        } else {
+            rvComments.smoothScrollBy(0, scroll);
+        }
+
+
 //        int firstPosition = linearLayoutManager.findFirstVisibleItemPosition();
 //        int lastPosition = linearLayoutManager.findLastVisibleItemPosition();
 //        if(position <= lastPosition){

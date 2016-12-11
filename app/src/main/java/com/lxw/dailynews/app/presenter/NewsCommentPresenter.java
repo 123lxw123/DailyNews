@@ -57,4 +57,35 @@ public class NewsCommentPresenter extends BaseMvpPresenter<INewsCommentView> {
             getView().stopRefreshAnimation();
         }
     }
+
+    //获取之前的新闻评论
+    public void getBeforeNewsComments(String newsId, final String commentsType, final String commentId) {
+        if (isNetworkAvailable()) {
+            newsCommentModel.getBeforeNewsComments(newsId, commentsType, commentId, new HttpListener<NewsCommentBean>() {
+
+                @Override
+                public void onSuccess(NewsCommentBean response) {
+                    if (response != null) {
+                        if(commentsType.equals(Constant.COMMENTS_TYPE_LONG)){
+                            getView().setLongCommentBean(response);
+                        }else{
+                            getView().setShortCommentBean(response);
+                        }
+                    }else{
+                        getView().stopRefreshAnimation();
+                        showMessage(BaseApplication.appContext.getString(R.string.error_request_failure));
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable error) {
+                    //展示上次加载的消息
+                    getView().stopRefreshAnimation();
+                }
+            });
+        } else {
+            //展示上次加载的消息
+            getView().stopRefreshAnimation();
+        }
+    }
 }

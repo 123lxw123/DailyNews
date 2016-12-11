@@ -48,4 +48,7 @@ public interface HttpService {
     @GET("4/story/{newsId}/{commentsType}")
     Observable<NewsCommentBean> getNewsComments(@Path("newsId") String newsId, @Path("commentsType") String commentsType);
 
+    @GET("4/story/{newsId}/{commentsType}/before/{commentId}")
+    Observable<NewsCommentBean> getBeforeNewsComments(@Path("newsId") String newsId, @Path("commentsType") String commentsType, @Path("commentId") String commentId);
+
 }

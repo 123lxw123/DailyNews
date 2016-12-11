@@ -83,4 +83,9 @@ public class HttpHelper {
     public Observable<NewsCommentBean> getNewsComments(String newsId, String commentsType){
         return httpService.getNewsComments(newsId, commentsType);
     }
+
+    public Observable<NewsCommentBean> getBeforeNewsComments(String newsId, String commentsType, String commentId){
+        return httpService.getBeforeNewsComments(newsId, commentsType, commentId);
+    }
+
 }
