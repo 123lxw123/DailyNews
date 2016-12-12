@@ -71,6 +71,17 @@
                 android:textColor="@color/color_767676"
                 android:textSize="@dimen/sp_14" />
 
+            <TextView
+                android:id="@+id/txt_reply_to_delete"
+                android:background="@color/color_EFEFEF"
+                android:text="@string/comment_reply_to_delete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp_5"
+                android:textColor="@color/color_767676"
+                android:textSize="@dimen/sp_14"
+                android:visibility="gone"/>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_40"

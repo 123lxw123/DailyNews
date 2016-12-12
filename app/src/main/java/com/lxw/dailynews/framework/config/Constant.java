@@ -30,4 +30,11 @@ public class Constant {
     public static String COMMENTS_TYPE_LONG = "long-comments";
     public static String COMMENTS_TYPE_SHORT = "short-comments";
     public static String COMMENTS_TYPE_EMPTY = "empty-comments";
+
+    /** 通用状态值**/
+
+    public static final String STATUS_0 = "0";
+    public static final String STATUS_1 = "1";
+    public static final String STATUS_2 = "2";
+    public static final String STATUS_3 = "3";
 }

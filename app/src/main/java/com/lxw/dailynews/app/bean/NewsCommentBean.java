@@ -1,5 +1,7 @@
 package com.lxw.dailynews.app.bean;
 
+import com.lxw.dailynews.framework.config.Constant;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -33,7 +35,7 @@ public class NewsCommentBean implements Serializable{
         this.comments = comments;
     }
 
-    public static class CommentsBean {
+    public static class CommentsBean implements Serializable{
         /**
          * author : andy小陆
          * content : 《小仙有毒》里，温家的入室弟子考题有一年是“硕鼠”。温家大伯温吞海当年应试的毒方是采尽天下至甜至香之物，密炼熬成一碗甜羹，无毒且馥郁甘甜。但人一旦饮下此羹，尝到了那绝世甜香，之后哪怕是喝蜂蜜也会觉得腥臭苦涩无比，止不住的呕吐，从此世上可食之物就只剩一个味道：苦，最终竟把人活活饿死！正应了考题“硕鼠”。。
@@ -52,6 +54,7 @@ public class NewsCommentBean implements Serializable{
         private int likes;
         private String headerTitle = "";// 类别标题
         private ReplyToBean reply_to;
+        private String status_expand = Constant.STATUS_0;//被回复评论TextView 展开收起状态  0 未初始化 1 隐藏缩放 2 收起 3 展开
 
         public String getAuthor() {
             return author;
@@ -117,6 +120,14 @@ public class NewsCommentBean implements Serializable{
             this.headerTitle = headerTitle;
         }
 
+        public String getStatus_expand() {
+            return status_expand;
+        }
+
+        public void setStatus_expand(String status_expand) {
+            this.status_expand = status_expand;
+        }
+
         public static class ReplyToBean implements Serializable{
             /**
              * content : 第二个机灵抖的还是有逻辑问题，不该说忘了，应该说没喝过啊我也不知道
@@ -171,6 +182,21 @@ public class NewsCommentBean implements Serializable{
                         ", author='" + author + '\'' +
                         '}';
             }
+        }
+
+        @Override
+        public String toString() {
+            return "CommentsBean{" +
+                    "author='" + author + '\'' +
+                    ", content='" + content + '\'' +
+                    ", avatar='" + avatar + '\'' +
+                    ", time=" + time +
+                    ", id=" + id +
+                    ", likes=" + likes +
+                    ", headerTitle='" + headerTitle + '\'' +
+                    ", reply_to=" + reply_to +
+                    ", status_expand='" + status_expand + '\'' +
+                    '}';
         }
     }
 

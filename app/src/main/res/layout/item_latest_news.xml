@@ -30,6 +30,7 @@
 <FrameLayout
     android:id="@+id/fl_picture"
     android:layout_gravity="center"
+    android:layout_marginLeft="@dimen/dp_3"
     android:layout_width="@dimen/dp_90"
     android:layout_height="@dimen/dp_70">
     <ImageView

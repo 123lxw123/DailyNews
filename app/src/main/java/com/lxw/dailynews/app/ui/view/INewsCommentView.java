@@ -3,6 +3,8 @@ package com.lxw.dailynews.app.ui.view;
 import com.lxw.dailynews.app.bean.NewsCommentBean;
 import com.lxw.dailynews.framework.base.BaseMvpView;
 
+import java.util.List;
+
 /**
  * Created by lxw9047 on 2016/12/8.
  */
@@ -15,4 +17,6 @@ public interface INewsCommentView  extends BaseMvpView{
     void rePrepareLongCommentData();
     void rePrepareShortCommentData();
     void stopRefreshAnimation();
+    void smoothMoveTopToPosition(int position);
+    void setReplyToExpandStatus(int commentId, String expandStatus);
 }

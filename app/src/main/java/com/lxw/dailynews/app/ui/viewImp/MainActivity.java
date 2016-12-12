@@ -36,6 +36,7 @@ import com.lxw.dailynews.framework.log.LoggerHelper;
 import com.lxw.dailynews.framework.util.StringUtil;
 import com.lxw.dailynews.framework.util.TimeUtil;
 import com.lxw.dailynews.framework.util.ValueUtil;
+import com.lxw.dailynews.framework.widget.MyLinearLayoutManager;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
@@ -238,6 +239,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         layoutSwipeRefresh.setOnRefreshListener(refreshListener);
         linearLayoutManager = new LinearLayoutManager(MainActivity.this);
         recyclerview.setLayoutManager(linearLayoutManager);
+//        recyclerview.setNestedScrollingEnabled(false);
         recyclerview.setItemAnimator(new DefaultItemAnimator());
         //recyclerview adapter
         mainAdapter = new BaseMultiItemTypeAdapter(MainActivity.this, stories);
@@ -387,10 +389,6 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                         }
                         drawerHeaderAndFooterWrapper.notifyDataSetChanged();
                         ll_drawer_home.setBackgroundColor(MainActivity.this.getResources().getColor(R.color.color_FFFFFF));
-                        //取消头部热闻轮播订阅
-                        if (subscription != null) {
-                            subscription.unsubscribe();
-                        }
                         initThemeView(newThemeBean);
                     }
                 });
@@ -649,31 +647,33 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             stories_only.clear();
             toolbar.setTitle(getString(R.string.toolbar_title));
             initDots();
-            //热闻轮播操作
-            subscription = Observable.interval(4, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Long>() {
-                @Override
-                public void onCompleted() {
+            if(subscription == null){
+                //热闻轮播操作
+                subscription = Observable.interval(4, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
 
-                }
+                    }
 
-                @Override
-                public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-                }
+                    }
 
-                @Override
-                public void onNext(Long along) {
-                    int currentItem = new Long(along).intValue() % top_stories.size();
-                    viewpagerHeaderPicture.setCurrentItem(currentItem);
-                    for (int i = 0; i < dotViews.length; i++) {
-                        if (currentItem == i) {
-                            dotViews[i].setSelected(true);
-                        } else {
-                            dotViews[i].setSelected(false);
+                    @Override
+                    public void onNext(Long along) {
+                        int currentItem = new Long(along).intValue() % top_stories.size();
+                        viewpagerHeaderPicture.setCurrentItem(currentItem);
+                        for (int i = 0; i < dotViews.length; i++) {
+                            if (currentItem == i) {
+                                dotViews[i].setSelected(true);
+                            } else {
+                                dotViews[i].setSelected(false);
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
         }
 
         //添加新闻日期分类标题的item数据
