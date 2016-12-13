@@ -8,6 +8,9 @@ import com.lxw.dailynews.app.ui.viewImp.MainActivity;
 import com.lxw.dailynews.framework.log.LoggerHelper;
 import com.lxw.dailynews.framework.util.SharePreferencesUtil;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
 /**
  * Created by lxw9047 on 2016/10/12.
  */
@@ -24,6 +27,11 @@ public class BaseApplication extends Application implements
     @Override
     public void onCreate() {
         super.onCreate();
+        //初始化 realm 数据库
+        Realm.init(this);
+        RealmConfiguration configuration = new RealmConfiguration.Builder().build();
+        Realm.setDefaultConfiguration(configuration);
+
         appContext = getApplicationContext();
         appStartCount = SharePreferencesUtil.getIntSharePreferences(appContext, APP_START_COUNT, 0);
         appStartCount = appStartCount + 1;
