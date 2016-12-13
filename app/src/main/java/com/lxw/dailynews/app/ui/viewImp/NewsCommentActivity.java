@@ -245,17 +245,18 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
 
             @Override
             public void convert(final ViewHolder holder, final NewsCommentBean.CommentsBean commentsBean, final int position) {
+                holder.setIsRecyclable(false);
                 ImageManager.getInstance().loadCircleImage(NewsCommentActivity.this, (ImageView) holder.getView(R.id.img_avatar), commentsBean.getAvatar());
                 holder.setText(R.id.txt_author, commentsBean.getAuthor());
                 ((TextView) holder.getView(R.id.txt_author)).getPaint().setFakeBoldText(true);
                 holder.setText(R.id.txt_praise, commentsBean.getLikes() + "");
                 holder.setText(R.id.txt_content, commentsBean.getContent());
-                if (commentsBean.getReply_to() == null) {
+                if (commentsBean.getReply_to() == null) {//没有被回复者
                     holder.setVisible(R.id.txt_reply_to, false);
                     holder.setVisible(R.id.txt_reply_to_delete, false);
                     holder.setVisible(R.id.txt_expand, false);
                 } else {
-                    if(commentsBean.getReply_to().getStatus() == 0){
+                    if(commentsBean.getReply_to().getStatus() == 0){//被回复评论没有删除
                         String reply_to = String.format(getResources().getString(R.string.comment_reply_to), commentsBean.getReply_to().getAuthor());
                         int sp16 = ValueUtil.sp2px(NewsCommentActivity.this, 16);
                         final Spannable span = new SpannableString(reply_to + commentsBean.getReply_to().getContent());
@@ -263,7 +264,7 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
                         span.setSpan(new StyleSpan(Typeface.BOLD), 0, reply_to.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         span.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.color_000000)), 0, reply_to.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         switch (commentsBean.getStatus_expand()) {
-                            case Constant.STATUS_0:
+                            case Constant.STATUS_0://初始化
                                 ((TextView) holder.getView(R.id.txt_reply_to)).setMaxLines(Integer.MAX_VALUE);
                                 ((TextView) holder.getView(R.id.txt_reply_to)).setText(span);
                                 ((TextView) holder.getView(R.id.txt_reply_to)).post(new Runnable() {
@@ -287,13 +288,13 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
                                 });
                                 break;
 
-                            case Constant.STATUS_1:
+                            case Constant.STATUS_1://不需要收起
                                 ((TextView) holder.getView(R.id.txt_reply_to)).setText(span);
                                 holder.setVisible(R.id.txt_expand, false);
                                 holder.setVisible(R.id.txt_reply_to, true);
                                 holder.setVisible(R.id.txt_reply_to_delete, false);
                                 break;
-                            case Constant.STATUS_2:
+                            case Constant.STATUS_2://收起
                                 ((TextView) holder.getView(R.id.txt_reply_to)).setMaxLines(2);
                                 ((TextView) holder.getView(R.id.txt_reply_to)).setEllipsize(android.text.TextUtils.TruncateAt.END);
                                 ((TextView) holder.getView(R.id.txt_reply_to)).setText(span);
@@ -302,7 +303,7 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
                                 holder.setVisible(R.id.txt_reply_to, true);
                                 holder.setVisible(R.id.txt_reply_to_delete, false);
                                 break;
-                            case Constant.STATUS_3:
+                            case Constant.STATUS_3://展开
                                 ((TextView) holder.getView(R.id.txt_reply_to)).setMaxLines(Integer.MAX_VALUE);
                                 ((TextView) holder.getView(R.id.txt_reply_to)).setEllipsize(android.text.TextUtils.TruncateAt.END);
                                 ((TextView) holder.getView(R.id.txt_reply_to)).setText(span);
@@ -330,7 +331,7 @@ public class NewsCommentActivity extends BaseMvpActivity<INewsCommentView, NewsC
                                 }
                             }
                         });
-                    }else{
+                    }else{//被回复评论已经删除
                         holder.setVisible(R.id.txt_reply_to, false);
                         holder.setVisible(R.id.txt_reply_to_delete, true);
                         holder.setVisible(R.id.txt_expand, false);

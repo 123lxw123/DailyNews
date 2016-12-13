@@ -662,7 +662,8 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
 
                     @Override
                     public void onNext(Long along) {
-                        int currentItem = new Long(along).intValue() % top_stories.size();
+//                        int currentItem = new Long(along).intValue() % top_stories.size();
+                        int currentItem = (viewpagerHeaderPicture.getCurrentItem() + 1) % top_stories.size();
                         viewpagerHeaderPicture.setCurrentItem(currentItem);
                         for (int i = 0; i < dotViews.length; i++) {
                             if (currentItem == i) {
