@@ -46,7 +46,8 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".app.ui.viewImp.ThemeEditorActivity" />
-        <activity android:name=".app.ui.viewImp.NewsCommentActivity"></activity>
+        <activity android:name=".app.ui.viewImp.NewsCommentActivity" />
+        <activity android:name=".app.ui.viewImp.PhotoPreviewActivity"></activity>
     </application>
 
 </manifest>

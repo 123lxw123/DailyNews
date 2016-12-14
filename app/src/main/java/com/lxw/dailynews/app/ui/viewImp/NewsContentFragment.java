@@ -20,12 +20,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lxw.dailynews.R;
+import com.lxw.dailynews.app.api.ZhihuDaily;
 import com.lxw.dailynews.app.bean.NewsContentBean;
 import com.lxw.dailynews.app.bean.NewsStoryExtraBean;
 import com.lxw.dailynews.app.presenter.NewsContentPresenter;
 import com.lxw.dailynews.app.ui.view.INewsContentView;
 import com.lxw.dailynews.framework.base.BaseMvpFragment;
 import com.lxw.dailynews.framework.image.ImageManager;
+import com.lxw.dailynews.framework.log.LoggerHelper;
 import com.lxw.dailynews.framework.util.HtmlUtil;
 import com.lxw.dailynews.framework.util.StringUtil;
 import com.lxw.dailynews.framework.util.ValueUtil;
@@ -157,6 +159,9 @@ public class NewsContentFragment extends BaseMvpFragment<INewsContentView, NewsC
         webview.setWebChromeClient(new WebChromeClient(){
 
         });
+
+        webview.addJavascriptInterface(new ZhihuDaily(NewsContentFragment.this.getActivity()), "ZhihuDaily");
+
         //webview内容自适应
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             webview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING);

@@ -36,7 +36,7 @@ public class HtmlUtil {
                 "}" +
                 "})()" +
                 "</script>";
-        return "<html>" + head + "<body>" + bodyHTML + script + "</body></html>";
+        return "<html>" + head + "<body className=\"\" onload=\"onLoaded()\">" + bodyHTML + script + "</body></html>";
     }
 //    public static String getHtmlData(String bodyHTML){
 //        String head = "<head>" +
