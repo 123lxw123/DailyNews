@@ -29,7 +29,9 @@
     <string name="comment_empty">深度长评虚位以待</string>
     <string name="comment_reply_to">//%1$s：</string>
     <string name="comment_reply_to_delete">抱歉，原点评已经被删除</string>
-    <string name="menu_save_photo">menu_save_photo</string>
+    <string name="menu_save_photo">保存</string>
+    <string name="save_photo_success">图片保存成功</string>
+    <string name="save_photo_failure">图片保存失败</string>
 
 
 </resources>

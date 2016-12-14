@@ -21,8 +21,10 @@ public class Constant {
     public static String PATH__SD_CARD = Environment.getExternalStorageDirectory().toString() + "/";
     /** APP文件夹路径**/
     public static String PATH_APP = PATH__SD_CARD + "DailyNews/";
+    /** 保存图片文件夹路径**/
+    public static String PATH_SAVE_PICTURE = PATH_APP + "pictures/";
     /** 启动页图片文件夹路径**/
-    public static String PATH_SPLASH_PICTURE = PATH_APP + "picture/";
+    public static String PATH_SPLASH_PICTURE = PATH_APP + "splash/";
     /** 启动页图片路径**/
     public static String PATH_SPLASH_PICTURE_PNG = "splash_picture.png";
 

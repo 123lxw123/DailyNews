@@ -18,13 +18,13 @@ function onLoaded() {
 }
 
 function onImageClick(pImage) {
-ZhihuDaily.clickToLoadImage();
-	console.log(pImage);
-	if (pImage.src == DEFAULT_LOADING_IMAGE_URI) {
-		ZhihuDaily.clickToLoadImage(pImage.getAttribute("zhimg-src"));
-	} else {
-		ZhihuDaily.openImage(pImage.getAttribute("zhimg-src"));
-	}
+    ZhihuDaily.clickToLoadImage(pImage);
+//	console.log(pImage);
+//	if (pImage.src == DEFAULT_LOADING_IMAGE_URI) {
+//		ZhihuDaily.clickToLoadImage(pImage.getAttribute("zhimg-src"));
+//	} else {
+//		ZhihuDaily.openImage(pImage.getAttribute("zhimg-src"));
+//	}
 };
 
 function onImageLoadingComplete(pOldUrl, pNewUrl) {

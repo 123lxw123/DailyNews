@@ -1,5 +1,12 @@
 package com.lxw.dailynews.framework.util;
 
+import com.lxw.dailynews.framework.log.LoggerHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static android.R.attr.name;
 import static android.R.attr.width;
 import static android.R.string.no;
@@ -11,11 +18,18 @@ import static android.R.string.no;
 public class HtmlUtil {
     /**
      * 给HTML body添加头部
-     *
-     * @param bodyHTML HTML body
+     * 给图片添加点击事件
+     * 替换图片地址
+     * @param htmlBody HTML body
      * @return
      */
-    public static String getHtmlData(String bodyHTML) {
+    public static String getHtmlData(String htmlBody) {
+        String body = htmlBody;
+        List<String> imgUrlList = getImgUrlList(htmlBody);
+        for (int i = 0; i < imgUrlList.size(); i++){
+            body = body.replaceAll(imgUrlList.get(i), imgUrlList.get(i) + "\" onclick = \"onImageClick(\'" + imgUrlList.get(i) + "\')");
+        }
+
         String head = "<head>" +
                 "<meta charset='utf-8'>" +
                 "<meta name='viewport' content='width=device-width,user-scalable=no'>" +
@@ -36,14 +50,36 @@ public class HtmlUtil {
                 "}" +
                 "})()" +
                 "</script>";
-        return "<html>" + head + "<body className=\"\" onload=\"onLoaded()\">" + bodyHTML + script + "</body></html>";
+        return "<html>" + head + "<body className=\"\" onload=\"onLoaded()\">" + body + script + "</body></html>";
     }
-//    public static String getHtmlData(String bodyHTML){
-//        String head = "<head>" +
-//                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\"> " +
-//                "<style>img{max-width: 100%; width:auto; height:auto;}</style>" +
-//                "</head>" +
-//                "<style type='text/css'> body{word-wrap:break-word;font-family:Arial}</style>";
-//        return "<html>" + head + "<body>" + bodyHTML + "</body></html>";
-//    }
+
+
+
+    /**
+     * @param htmlBody
+     * @return 获得图片地址
+     */
+
+    public static List<String> getImgUrlList(String htmlBody) {
+        ArrayList<String> pics = new ArrayList<>();
+        String img = "";
+        Pattern p_image;
+        Matcher m_image;
+        //     String regEx_img = "<img.*src=(.*?)[^>]*?>"; //图片链接地址
+        String regEx_img = "<img.*src\\s*=\\s*(.*?)[^>]*?>";
+        p_image = Pattern.compile
+                (regEx_img, Pattern.CASE_INSENSITIVE);
+        m_image = p_image.matcher(htmlBody);
+        while (m_image.find()) {
+            // 得到<img />数据
+            img = m_image.group();
+            // 匹配<img>中的src数据
+            Matcher m = Pattern.compile("src\\s*=\\s*\"?(.*?)(\"|>|\\s+)").matcher(img);
+            while (m.find()) {
+                pics.add(m.group(1));
+            }
+        }
+        return pics;
+    }
+
 }
