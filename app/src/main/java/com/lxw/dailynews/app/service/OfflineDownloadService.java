@@ -100,6 +100,11 @@ public class OfflineDownloadService extends Service {
                         totalSize = totalSize + latestNewsBeans.get(i).getTop_stories().size();
                     }
                 }
+                if(newsThemeBean != null && newsThemeBean.getOthers() != null){
+                    for(int i = 0; i < newsThemeBean.getOthers().size(); i++){
+                        newsThemeBean.getOthers().get(i).setFrag_select(false);
+                    }
+                }
                 realm.copyToRealm(newsThemeBean);
             }
         });
