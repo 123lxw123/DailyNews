@@ -116,29 +116,46 @@ public class ImageManager {
      * 常规下载图片
      *
      * @param context
-     * @param imgUrl  图片地址
-     * @param path    图片保存路径
+     * @param imgUrl   图片地址
+     * @param path     图片保存路径
+     * @param fileName 图片保存文件名
      */
     public void downloadImage(Context context, String imgUrl, String path, String fileName) {
+        downloadImage(context, imgUrl, path, fileName, false);
+    }
+
+    /**
+     * 常规下载图片
+     *
+     * @param context
+     * @param imgUrl     图片地址
+     * @param path       图片保存路径
+     * @param fileName   图片保存文件名
+     * @param isOverride 是否覆盖下载
+     */
+    public void downloadImage(Context context, String imgUrl, String path, String fileName, boolean isOverride) {
         try {
             File file = null;
+            if (FileUtil.isFileExists(path + fileName)) {
+                if (!isOverride) {
+                    return;
+                }
+                file = new File(path + fileName);
+                file.delete();
+            } else {
+                if (!FileUtil.isFileExists(path)) {
+                    new File(path).mkdirs();
+                }
+            }
+            if (file == null) {
+                file = new File(path + fileName);
+            }
             Bitmap bitmap = Glide.with(context)
                     .load(imgUrl)
                     .asBitmap()
                     .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .get();
             if (bitmap != null) {
-                if (FileUtil.isFileExists(path + fileName)) {
-                    file = new File(path + fileName);
-                    file.delete();
-                } else {
-                    if (!FileUtil.isFileExists(path)) {
-                        new File(path).mkdirs();
-                    }
-                }
-                if (file == null) {
-                    file = new File(path + fileName);
-                }
                 file.createNewFile();
                 FileOutputStream fos = new FileOutputStream(file);
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);

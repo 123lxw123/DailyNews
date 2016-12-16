@@ -23,7 +23,11 @@ public class NewsContentPresenter extends BaseMvpPresenter<INewsContentView> {
 
     //获取消息内容
     public void getNewsContent(String newsId) {
-        if (checkNetword()) {
+        if(MainPresenter.frag_offline){
+            if(newsContentModel.getOfflineNewsContent(newsId) != null){
+                getView().setNewContent(newsContentModel.getOfflineNewsContent(newsId));
+            }
+        }else if (checkNetword()) {
             newsContentModel.getNewsContent(newsId, new HttpListener<NewsContentBean>() {
                 @Override
                 public void onSuccess(NewsContentBean response) {

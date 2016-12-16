@@ -13,6 +13,8 @@ public interface ISplashModel {
     void getSplashPictureInfo(HttpListener<SplashPictureInfoBean> httpListener);
 
     void getLatestNews(HttpListener<LatestNewsBean> httpListener);
+    LatestNewsBean getOfflineLatestNews(String date);
 
     void getNewsThemes(HttpListener<NewsThemeBean> httpListener);
+    NewsThemeBean getOfflineNewsThemes();
 }

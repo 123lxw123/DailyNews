@@ -16,6 +16,5 @@ public interface IMainModel {
 
     void getThemeContent(String themeId, HttpListener<ThemeContentBean> httpListener);
 
-
     void getBeforeThemeContent(String themeId, String newsId, HttpListener<BeforeThemeContentBean> httpListener);
 }

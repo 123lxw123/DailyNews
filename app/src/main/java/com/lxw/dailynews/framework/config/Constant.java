@@ -2,6 +2,11 @@ package com.lxw.dailynews.framework.config;
 
 import android.os.Environment;
 
+import com.lxw.dailynews.app.bean.RealmLatestNewsBean;
+import com.lxw.dailynews.app.bean.RealmNewsThemeBean;
+
+import java.util.List;
+
 /**
  * Created by lxw9047 on 2016/10/12.
  */
@@ -23,6 +28,8 @@ public class Constant {
     public static String PATH_APP = PATH__SD_CARD + "DailyNews/";
     /** 保存图片文件夹路径**/
     public static String PATH_SAVE_PICTURE = PATH_APP + "pictures/";
+    /** 离线图片文件夹路径**/
+    public static String PATH_OFFLINE_PICTURE = PATH_APP + "download/";
     /** 启动页图片文件夹路径**/
     public static String PATH_SPLASH_PICTURE = PATH_APP + "splash/";
     /** 启动页图片路径**/
@@ -34,9 +41,20 @@ public class Constant {
     public static String COMMENTS_TYPE_EMPTY = "empty-comments";
 
     /** 通用状态值**/
-
     public static final String STATUS_0 = "0";
     public static final String STATUS_1 = "1";
     public static final String STATUS_2 = "2";
     public static final String STATUS_3 = "3";
+
+    /** 离线下载传递数据**/
+    public static RealmNewsThemeBean realmNewsThemeBeen;
+    public static List<RealmLatestNewsBean> realmLatestNewsBeens;
+
+    /** 离线下载热闻与新闻的文件夹**/
+    public static String STORIES_TYPE_COMMON = "stories/";
+    public static String STORIES_TYPE_TOP = "stories_top/";
+
+    public static String getDownloadFilePath(String date, String storiesType, int newsId, String fileName){
+        return "file://" + PATH_OFFLINE_PICTURE + date + "/" + storiesType + newsId + "/" + fileName;
+    }
 }

@@ -1,16 +1,18 @@
 package com.lxw.dailynews.app.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by lxw9047 on 2016/12/14.
  */
 
-public class RealmLatestNewsBean extends RealmObject{
-
+public class RealmLatestNewsBean extends RealmObject implements Serializable {
+    @PrimaryKey
     private String date;
 
     private RealmList<RealmStoriesBean> stories;
@@ -18,21 +20,22 @@ public class RealmLatestNewsBean extends RealmObject{
     private RealmList<RealmTopStoriesBean> top_stories;
 
     public RealmLatestNewsBean(){}
-    public RealmLatestNewsBean(LatestNewsBean latestNewsBean, List<LatestNewsBean.StoriesBean> storiesBeens){
-        this.date = latestNewsBean.getDate();
-        this.top_stories = new RealmList<>();
-        if(latestNewsBean != null && latestNewsBean.getTop_stories() != null){
-            for(int m = 0; m < latestNewsBean.getTop_stories().size(); m++){
-                top_stories.add(new RealmTopStoriesBean(latestNewsBean.getTop_stories().get(m)));
+    public RealmLatestNewsBean(LatestNewsBean latestNewsBean){
+        if(latestNewsBean != null){
+            this.date = latestNewsBean.getDate();
+            if(latestNewsBean != null && latestNewsBean.getTop_stories() != null){
+                this.top_stories = new RealmList<>();
+                for(int m = 0; m < latestNewsBean.getTop_stories().size(); m++){
+                    top_stories.add(new RealmTopStoriesBean(latestNewsBean.getTop_stories().get(m)));
+                }
+            }
+            if(latestNewsBean != null && latestNewsBean.getStories() != null){
+                this.stories = new RealmList<>();
+                for(int n = 0; n < latestNewsBean.getStories().size(); n++){
+                    stories.add(new RealmStoriesBean(latestNewsBean.getStories().get(n)));
+                }
             }
         }
-        this.stories = new RealmList<>();
-        if(storiesBeens != null){
-            for(int n = 0; n < storiesBeens.size(); n++){
-                stories.add(new RealmStoriesBean(storiesBeens.get(n)));
-            }
-        }
-
     }
 
     public String getDate() {

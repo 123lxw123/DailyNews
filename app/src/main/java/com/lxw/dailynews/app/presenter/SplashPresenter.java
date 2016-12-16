@@ -41,7 +41,7 @@ public class SplashPresenter extends BaseMvpPresenter<ISplashView> {
                         Observable.create(new Observable.OnSubscribe<String>() {
                             @Override
                             public void call(Subscriber<? super String> subscriber) {
-                                ImageManager.getInstance().downloadImage(BaseApplication.appContext, response.img, Constant.PATH_SPLASH_PICTURE, Constant.PATH_SPLASH_PICTURE_PNG);
+                                ImageManager.getInstance().downloadImage(BaseApplication.appContext, response.img, Constant.PATH_SPLASH_PICTURE, Constant.PATH_SPLASH_PICTURE_PNG, true);
                             }
                         }).subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())

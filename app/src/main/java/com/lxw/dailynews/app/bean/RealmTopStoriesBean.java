@@ -9,7 +9,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by lxw9047 on 2016/12/14.
  */
 
-public class RealmTopStoriesBean extends RealmObject {
+public class RealmTopStoriesBean extends RealmObject implements Serializable{
     private String image;
     private int type;
     @PrimaryKey
@@ -19,11 +19,13 @@ public class RealmTopStoriesBean extends RealmObject {
 
     public RealmTopStoriesBean(){}
     public RealmTopStoriesBean(LatestNewsBean.TopStoriesBean topStoriesBean){
-        this.title = topStoriesBean.getTitle();
-        this.ga_prefix = topStoriesBean.getGa_prefix();
-        this.type = topStoriesBean.getType();
-        this.id = topStoriesBean.getId();
-        this.image = topStoriesBean.getImage();
+        if(topStoriesBean != null){
+            this.title = topStoriesBean.getTitle();
+            this.ga_prefix = topStoriesBean.getGa_prefix();
+            this.type = topStoriesBean.getType();
+            this.id = topStoriesBean.getId();
+            this.image = topStoriesBean.getImage();
+        }
     }
 
     public String getImage() {

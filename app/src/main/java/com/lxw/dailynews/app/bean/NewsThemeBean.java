@@ -1,7 +1,10 @@
 package com.lxw.dailynews.app.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.RealmObject;
 
 /**
  * Created by lxw9047 on 2016/11/2.
@@ -18,6 +21,7 @@ public class NewsThemeBean implements Serializable {
 
     private int limit;
     private List<OthersBean> subscribed;
+    private List<OthersBean> others;
     /**
      * color : 15007
      * thumbnail : http://pic3.zhimg.com/0e71e90fd6be47630399d63c58beebfc.jpg
@@ -26,7 +30,16 @@ public class NewsThemeBean implements Serializable {
      * name : 日常心理学
      */
 
-    private List<OthersBean> others;
+    public NewsThemeBean(){}
+    public NewsThemeBean(RealmNewsThemeBean realmNewsThemeBean){
+        if(realmNewsThemeBean != null){
+            this.limit = realmNewsThemeBean.getLimit();
+            this.others = new ArrayList<>();
+            for(int i = 0; i < realmNewsThemeBean.getOthers().size(); i++){
+                this.others.add(new OthersBean(realmNewsThemeBean.getOthers().get(i)));
+            }
+        }
+    }
 
     public int getLimit() {
         return limit;
@@ -59,6 +72,18 @@ public class NewsThemeBean implements Serializable {
         private int id;
         private String name;
         private boolean frag_select = false;//是否选中的标识，
+
+        public OthersBean(){}
+        public OthersBean(RealmOthersBean realmOthersBean){
+            if(realmOthersBean != null){
+                this.color = realmOthersBean.getColor();
+                this.thumbnail = realmOthersBean.getThumbnail();
+                this.description = realmOthersBean.getDescription();
+                this.id = realmOthersBean.getId();
+                this.name = realmOthersBean.getName();
+                this.frag_select = realmOthersBean.isFrag_select();
+            }
+        }
 
         public int getColor() {
             return color;

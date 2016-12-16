@@ -47,7 +47,12 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".app.ui.viewImp.ThemeEditorActivity" />
         <activity android:name=".app.ui.viewImp.NewsCommentActivity" />
-        <activity android:name=".app.ui.viewImp.PhotoPreviewActivity"></activity>
+        <activity android:name=".app.ui.viewImp.PhotoPreviewActivity" />
+
+        <service
+            android:name=".app.service.OfflineDownloadService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

@@ -8,13 +8,13 @@ var DEFAULT_IMAGE_URI = "file:///android_asset/default_pic_content_image_loading
 var DEFAULT_LOADING_IMAGE_URI = "file:///android_asset/default_pic_content_image_download_light.png";
 
 function onLoaded() {
-	var allImage = document.querySelectorAll("img");
-	allImage = Array.prototype.slice.call(allImage, 0);
-	allImage.forEach(function(image) {
-		if (image.src == DEFAULT_IMAGE_URI) {
-			ZhihuDaily.loadImage(image.getAttribute("zhimg-src"));
-		}
-	});
+//	var allImage = document.querySelectorAll("img");
+//	allImage = Array.prototype.slice.call(allImage, 0);
+//	allImage.forEach(function(image) {
+//		if (image.src == DEFAULT_IMAGE_URI) {
+//			ZhihuDaily.loadImage(image.getAttribute("zhimg-src"));
+//		}
+//	});
 }
 
 function onImageClick(pImage) {

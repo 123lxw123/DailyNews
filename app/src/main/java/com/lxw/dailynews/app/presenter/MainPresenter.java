@@ -13,6 +13,7 @@ import com.lxw.dailynews.app.ui.view.IMainView;
 import com.lxw.dailynews.framework.application.BaseApplication;
 import com.lxw.dailynews.framework.base.BaseMvpPresenter;
 import com.lxw.dailynews.framework.http.HttpListener;
+import com.lxw.dailynews.framework.util.TimeUtil;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ import java.util.List;
 public class MainPresenter extends BaseMvpPresenter<IMainView> {
     private IMainModel mainModel;
     private ISplashModel splashModel;
+    public static boolean frag_offline = false;//离线阅读的标志
 
     public MainPresenter() {
         mainModel = new MainModel();
@@ -32,8 +34,8 @@ public class MainPresenter extends BaseMvpPresenter<IMainView> {
     //获取最新热闻
     public void getLatestNews() {
         if (isNetworkAvailable()) {
+            frag_offline = false;
             splashModel.getLatestNews(new HttpListener<LatestNewsBean>() {
-
                 @Override
                 public void onSuccess(LatestNewsBean response) {
                     if (response != null) {
@@ -46,19 +48,27 @@ public class MainPresenter extends BaseMvpPresenter<IMainView> {
 
                 @Override
                 public void onFailure(Throwable error) {
-                    //展示上次加载的消息
                     getView().stopRefreshAnimation();
+                    showMessage(error.getMessage());
                 }
             });
         } else {
             //展示上次加载的消息
+            if(splashModel.getOfflineLatestNews(null) != null){
+                getView().setLatestNewsBean(splashModel.getOfflineLatestNews(null));
+                frag_offline = true;
+            }
             getView().stopRefreshAnimation();
         }
     }
 
     //获取之前某一天的热闻
     public void getBeforeNews(String beforeDate) {
-        if (checkNetword()) {
+        if(frag_offline){
+            if(splashModel.getOfflineLatestNews(TimeUtil.getBeforeDate(beforeDate, 1)) != null){
+                getView().setLatestNewsBean(splashModel.getOfflineLatestNews(TimeUtil.getBeforeDate(beforeDate, 1)));
+            }
+        }else if (checkNetword()) {
             mainModel.getBeforeNews(beforeDate, new HttpListener<LatestNewsBean>() {
                 @Override
                 public void onSuccess(LatestNewsBean response) {
@@ -95,9 +105,13 @@ public class MainPresenter extends BaseMvpPresenter<IMainView> {
                 public void onFailure(Throwable error) {
                     showMessage(error.getMessage());
                     getView().stopRefreshAnimation();
+                    showMessage(error.getMessage());
                 }
             });
         }else{
+            if(splashModel.getOfflineNewsThemes() != null){
+                getView().setNewsThemeBean(splashModel.getOfflineNewsThemes());
+            }
             getView().stopRefreshAnimation();
         }
     }
@@ -123,6 +137,7 @@ public class MainPresenter extends BaseMvpPresenter<IMainView> {
                 }
             });
         }else{
+            showMessage(BaseApplication.appContext.getString(R.string.error_network_failure));
             getView().stopRefreshAnimation();
         }
     }

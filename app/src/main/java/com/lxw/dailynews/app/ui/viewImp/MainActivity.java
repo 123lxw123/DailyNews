@@ -1,7 +1,11 @@
 package com.lxw.dailynews.app.ui.viewImp;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
@@ -17,6 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.lxw.dailynews.R;
@@ -25,16 +31,21 @@ import com.lxw.dailynews.app.adapter.LatestNewsDiffCallBack;
 import com.lxw.dailynews.app.bean.BeforeThemeContentBean;
 import com.lxw.dailynews.app.bean.LatestNewsBean;
 import com.lxw.dailynews.app.bean.NewsThemeBean;
+import com.lxw.dailynews.app.bean.RealmLatestNewsBean;
+import com.lxw.dailynews.app.bean.RealmNewsThemeBean;
 import com.lxw.dailynews.app.bean.ThemeContentBean;
 import com.lxw.dailynews.app.presenter.MainPresenter;
+import com.lxw.dailynews.app.service.OfflineDownloadService;
 import com.lxw.dailynews.app.ui.view.IMainView;
 import com.lxw.dailynews.framework.base.BaseCommonAdapter;
 import com.lxw.dailynews.framework.base.BaseMultiItemTypeAdapter;
 import com.lxw.dailynews.framework.base.BaseMvpActivity;
+import com.lxw.dailynews.framework.config.Constant;
 import com.lxw.dailynews.framework.image.ImageManager;
 import com.lxw.dailynews.framework.log.LoggerHelper;
 import com.lxw.dailynews.framework.util.StringUtil;
 import com.lxw.dailynews.framework.util.TimeUtil;
+import com.lxw.dailynews.framework.util.ToastUtil;
 import com.lxw.dailynews.framework.util.ValueUtil;
 import com.lxw.dailynews.framework.widget.MyLinearLayoutManager;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
@@ -54,6 +65,8 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+
+import static android.R.attr.filter;
 
 public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> implements IMainView {
     @BindView(R.id.toolbar)
@@ -90,8 +103,12 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     private HeaderAndFooterWrapper drawerHeaderAndFooterWrapper;
     private View drawerHeaderView;
     private LinearLayout ll_drawer_home;
+    private RelativeLayout drawer_download;
+    private TextView txt_download;
     private BaseCommonAdapter<NewsThemeBean.OthersBean> drawerAdapter;
     private List<NewsThemeBean.OthersBean> otherNewThemes = new ArrayList<NewsThemeBean.OthersBean>();
+    private NewsThemeBean.OthersBean currentTheme;
+    private int currentPosition;
     //回到顶部、底部
     private View.OnClickListener backToTopListener;
     private View.OnClickListener backToBottomListener;
@@ -111,6 +128,10 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     private LinearLayout layout_editor;
     private LinearLayout ll_editor;
     private List<LatestNewsBean.StoriesBean> stories_theme = new ArrayList<LatestNewsBean.StoriesBean>();
+    //监听广播更新离线下载进度
+    private IntentFilter filter;
+    private ProgressBroadCastReceiver receiver;
+    private List<RealmLatestNewsBean> realmLatestNewsBeans = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +141,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         ButterKnife.bind(this);
         latestNewsBean = (LatestNewsBean) getIntent().getSerializableExtra("latestNewsBean");
         newsThemeBean = (NewsThemeBean) getIntent().getSerializableExtra("newsThemeBean");
+        receiver = new ProgressBroadCastReceiver();
         initView();
         if (latestNewsBean == null || newsThemeBean == null) {
             prepareData();
@@ -127,6 +149,19 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
             rePrepareData();
             initNewThemeList();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // 注册与service交互的广播
+        registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(receiver);
     }
 
     public void setLatestNewsBean(LatestNewsBean latestNewsBean) {
@@ -379,16 +414,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                 holder.setOnClickListener(R.id.rl_news_theme, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        themeId = newThemeBean.getId() + "";
-                        for (int i = 0; i < otherNewThemes.size(); i++) {
-                            if (i == position - 1) {
-                                otherNewThemes.get(i).setFrag_select(true);
-                            } else {
-                                otherNewThemes.get(i).setFrag_select(false);
-                            }
-                        }
-                        drawerHeaderAndFooterWrapper.notifyDataSetChanged();
-                        ll_drawer_home.setBackgroundColor(MainActivity.this.getResources().getColor(R.color.color_FFFFFF));
+                        currentPosition = position - 1;
                         initThemeView(newThemeBean);
                     }
                 });
@@ -398,10 +424,24 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         drawerHeaderView = getLayoutInflater().inflate(R.layout.header_drawer, null);
         ll_drawer_home = (LinearLayout) drawerHeaderView.findViewById(R.id.drawer_home);
         ll_drawer_home.setBackgroundColor(MainActivity.this.getResources().getColor(R.color.color_DDDDDD));
+        //离线下载
+        drawer_download = (RelativeLayout) drawerHeaderView.findViewById(R.id.drawer_download);
+        txt_download = (TextView) drawerHeaderView.findViewById(R.id.txt_download);
+        drawer_download.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                txt_download.setText(0 + "%");
+                Constant.realmLatestNewsBeens = MainActivity.this.realmLatestNewsBeans;
+                Constant.realmNewsThemeBeen = new RealmNewsThemeBean(MainActivity.this.newsThemeBean);
+                Intent intent = new Intent(MainActivity.this, OfflineDownloadService.class);
+                startService(intent);
+            }
+        });
         drawerHeaderView.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         ));
+        //点击首页
         ll_drawer_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -409,10 +449,6 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                 refreshFlag = true;
                 getLatestNews();
                 getNewsThemes();
-                ll_drawer_home.setBackgroundColor(MainActivity.this.getResources().getColor(R.color.color_DDDDDD));
-                if (layoutDrawer.isDrawerOpen(findViewById(R.id.ll_drawer))) {
-                    layoutDrawer.closeDrawers();
-                }
             }
         });
         drawerHeaderAndFooterWrapper.addHeaderView(drawerHeaderView);
@@ -485,6 +521,9 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                 }
             }
         });
+
+        filter = new IntentFilter();
+        filter.addAction("offline_download_progress");
     }
 
     //主题日報界面初始化
@@ -492,11 +531,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     public void initThemeView(NewsThemeBean.OthersBean newsThemeBean) {
         frag_content_type = false;
         refreshFlag = true;
-        toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.toolbar_main_theme);//设置右上角的填充菜单
-        String name = newsThemeBean.getName();
-        toolbar.setTitle(newsThemeBean.getName());
-
+        currentTheme = newsThemeBean;
         mainThemeAdapter = new BaseMultiItemTypeAdapter(MainActivity.this, stories_theme);
         mainThemeAdapter.addItemViewDelegate(new ItemViewDelegate<LatestNewsBean.StoriesBean>() {//热点新闻item
             @Override
@@ -548,7 +583,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         layout_editor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(themeContentBean != null && themeContentBean.getEditors() != null && themeContentBean.getEditors().size() > 0) {
+                if (themeContentBean != null && themeContentBean.getEditors() != null && themeContentBean.getEditors().size() > 0) {
                     Intent intent = new Intent(MainActivity.this, ThemeEditorActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("editorsBean", (Serializable) themeContentBean.getEditors());
@@ -576,7 +611,19 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     @Override
     public void rePrepareThemeData() {
         if (refreshFlag) {
-
+            toolbar.getMenu().clear();
+            toolbar.inflateMenu(R.menu.toolbar_main_theme);//设置右上角的填充菜单
+            toolbar.setTitle(currentTheme.getName());
+            themeId = currentTheme.getId() + "";
+            for (int i = 0; i < otherNewThemes.size(); i++) {
+                if (i == currentPosition) {
+                    otherNewThemes.get(i).setFrag_select(true);
+                } else {
+                    otherNewThemes.get(i).setFrag_select(false);
+                }
+            }
+            drawerHeaderAndFooterWrapper.notifyDataSetChanged();
+            ll_drawer_home.setBackgroundColor(MainActivity.this.getResources().getColor(R.color.color_FFFFFF));
             //初始化头部图片
             ImageManager.getInstance().loadImage(MainActivity.this, kenBurnsView, themeContentBean.getBackground(), true);
 
@@ -639,15 +686,22 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
     public void rePrepareData() {
 
         if (refreshFlag) {
+            toolbar.getMenu().clear();
+            toolbar.inflateMenu(R.menu.toolbar_main);//设置右上角的填充菜单
+            ll_drawer_home.setBackgroundColor(MainActivity.this.getResources().getColor(R.color.color_DDDDDD));
+            if (layoutDrawer.isDrawerOpen(findViewById(R.id.ll_drawer))) {
+                layoutDrawer.closeDrawers();
+            }
             currentDate = latestNewsBean.getDate();//应用的当前日期
             count = 0;//前N天初始化为0
             top_stories.clear();
             top_stories.addAll(latestNewsBean.getTop_stories());
             stories.clear();
             stories_only.clear();
+            realmLatestNewsBeans.clear();
             toolbar.setTitle(getString(R.string.toolbar_title));
             initDots();
-            if(subscription == null){
+            if (subscription == null) {
                 //热闻轮播操作
                 subscription = Observable.interval(4, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Long>() {
                     @Override
@@ -692,6 +746,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         stories.add(storie);
         stories.addAll(latestNewsBean.getStories());
         stories_only.addAll(latestNewsBean.getStories());
+        realmLatestNewsBeans.add(new RealmLatestNewsBean(latestNewsBean));
 
         //刷新列表
         if (refreshFlag) {
@@ -712,12 +767,18 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         }).subscribe(new Action1<DiffUtil.DiffResult>() {
 
             @Override
-            public void call(DiffUtil.DiffResult diffResult) {
-                diffResult.dispatchUpdatesTo(loadMoreWrapper);
-                mainAdapter.setData(stories);
+            public void call(final DiffUtil.DiffResult diffResult) {
+                Handler handler = new Handler();
+                final Runnable r = new Runnable() {
+                    public void run() {
+                        diffResult.dispatchUpdatesTo(loadMoreWrapper);
+                        mainAdapter.setData(stories);
+                    }
+                };
+                handler.post(r);
+
             }
         });
-
 
         stopRefreshAnimation();
     }
@@ -759,6 +820,27 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         //停止刷新小圈圈动画
         if (refreshFlag && layoutSwipeRefresh.isRefreshing()) {
             layoutSwipeRefresh.setRefreshing(false);
+        }
+    }
+
+    class ProgressBroadCastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int progress = intent.getIntExtra("progress", -1);
+            if (progress < 0) {
+                ToastUtil.showMessage(context, context.getString(R.string.download_failure));
+                Intent intent1 = new Intent(MainActivity.this, OfflineDownloadService.class);
+                stopService(intent1);
+            } else {
+                txt_download.setText(progress + "%");
+            }
+            if (progress == 100) {
+                txt_download.setText(context.getString(R.string.drawer_download));
+                ToastUtil.showMessage(context, context.getString(R.string.download_success));
+                Intent intent2 = new Intent(MainActivity.this, OfflineDownloadService.class);
+                stopService(intent2);
+            }
         }
     }
 }

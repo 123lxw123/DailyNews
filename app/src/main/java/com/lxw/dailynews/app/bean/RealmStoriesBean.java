@@ -1,5 +1,6 @@
 package com.lxw.dailynews.app.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 import io.realm.RealmObject;
@@ -9,7 +10,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by lxw9047 on 2016/12/14.
  */
 
-public class RealmStoriesBean extends RealmObject{
+public class RealmStoriesBean extends RealmObject implements Serializable {
     private String title;
     private String ga_prefix;
     private boolean multipic = false;//消息是否包含多张图片（仅出现在包含多图的新闻中）默认否
@@ -21,14 +22,16 @@ public class RealmStoriesBean extends RealmObject{
 
     public RealmStoriesBean(){}
     public RealmStoriesBean(LatestNewsBean.StoriesBean storiesBean){
-        this.title = storiesBean.getTitle();
-        this.ga_prefix = storiesBean.getGa_prefix();
-        this.multipic = storiesBean.isMultipic();
-        this.type = storiesBean.getType();
-        this.id = storiesBean.getId();
-        this.headerTitle = storiesBean.getHeaderTitle();
-        if(storiesBean.getImages() != null && storiesBean.getImages().size() > 0){
-            this.image = storiesBean.getImages().get(0);
+        if(storiesBean != null){
+            this.title = storiesBean.getTitle();
+            this.ga_prefix = storiesBean.getGa_prefix();
+            this.multipic = storiesBean.isMultipic();
+            this.type = storiesBean.getType();
+            this.id = storiesBean.getId();
+            this.headerTitle = storiesBean.getHeaderTitle();
+            if(storiesBean.getImages() != null && storiesBean.getImages().size() > 0){
+                this.image = storiesBean.getImages().get(0);
+            }
         }
     }
 

@@ -11,6 +11,7 @@ import com.lxw.dailynews.framework.http.HttpListener;
 public interface INewsContentModel {
 
     void getNewsContent(String newsId, HttpListener<NewsContentBean> httpListener);
+    NewsContentBean getOfflineNewsContent(String newsId);
 
     void getNewsStoryExtra(String newsId, HttpListener<NewsStoryExtraBean> httpListener);
 }

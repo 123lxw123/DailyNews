@@ -54,8 +54,8 @@ public class NetUtil {
         NetworkInfo networkinfo = con.getActiveNetworkInfo();
         if (networkinfo == null || !networkinfo.isAvailable()) {
             // 当前网络不可用
-            Toast.makeText(context.getApplicationContext(), "请先连接Internet！",
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context.getApplicationContext(), "请先连接Internet！",
+//                    Toast.LENGTH_SHORT).show();
             return false;
         }
 //        boolean wifi = con.getNetworkInfo(ConnectivityManager.TYPE_WIFI)

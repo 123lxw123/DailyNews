@@ -1,7 +1,10 @@
 package com.lxw.dailynews.app.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+
+import static android.media.CamcorderProfile.get;
 
 /**
  * Created by Zion on 2016/11/12.
@@ -35,6 +38,24 @@ public class NewsContentBean implements Serializable {
     private List<?> js;
     private List<String> images;
     private List<String> css;
+
+    public NewsContentBean() {
+    }
+
+    public NewsContentBean(RealmNewsContentBean realmNewsContentBean) {
+        if(realmNewsContentBean != null){
+            this.body = realmNewsContentBean.getBody();
+            this.image_source = realmNewsContentBean.getImage_source();
+            this.title = realmNewsContentBean.getTitle();
+            this.image = realmNewsContentBean.getImage();
+            this.share_url = realmNewsContentBean.getShare_url();
+            this.ga_prefix = realmNewsContentBean.getGa_prefix();
+            this.type = realmNewsContentBean.getType();
+            this.id = realmNewsContentBean.getId();
+            this.images = new ArrayList<>();
+            this.images.add(realmNewsContentBean.getImages());
+        }
+    }
 
     public String getBody() {
         return body;

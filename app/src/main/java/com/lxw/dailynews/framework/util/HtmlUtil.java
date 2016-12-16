@@ -82,4 +82,11 @@ public class HtmlUtil {
         return pics;
     }
 
+    //提取imgUrl最后一段作为保存图片的文件名
+    public static String getFileName(String imgUrl) {
+        String[] strings = imgUrl.split("/");
+        String fileName = strings[strings.length - 1];
+        return fileName;
+    }
+
 }
