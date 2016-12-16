@@ -2,13 +2,44 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:gravity="center_vertical"
+    android:paddingLeft="@dimen/dp_10"
+    android:paddingRight="@dimen/dp_10"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-   <ProgressBar
-       android:id="@+id/progressbar"
-       style="?android:attr/progressBarStyleHorizontal"
-       android:progressDrawable="@drawable/drawable_progressbar"
+   <ImageView
+       android:src="@mipmap/ic_circle_logo"
+       android:layout_width="@dimen/dp_40"
+       android:layout_height="@dimen/dp_40" />
+   <LinearLayout
+       android:layout_marginLeft="@dimen/dp_10"
+       android:gravity="center_vertical"
+       android:orientation="vertical"
        android:layout_width="match_parent"
-       android:layout_height="wrap_content" />
+       android:layout_height="match_parent">
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+         <TextView
+             android:id="@+id/txt_title"
+             android:textColor="@color/color_000000"
+             android:textSize="@dimen/sp_16"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content" />
+         <TextView
+             android:id="@+id/txt_progress"
+             android:layout_alignParentRight="true"
+             android:textColor="@color/color_999999"
+             android:textSize="@dimen/sp_12"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content" />
+      </RelativeLayout>
+      <ProgressBar
+          android:id="@+id/progressbar"
+          android:layout_marginTop="@dimen/dp_10"
+          style="@style/ProgressBar_Mini"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content" />
+
+   </LinearLayout>
 
 </LinearLayout>

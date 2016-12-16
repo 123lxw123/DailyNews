@@ -43,6 +43,7 @@ import com.lxw.dailynews.framework.base.BaseMvpActivity;
 import com.lxw.dailynews.framework.config.Constant;
 import com.lxw.dailynews.framework.image.ImageManager;
 import com.lxw.dailynews.framework.log.LoggerHelper;
+import com.lxw.dailynews.framework.util.NetUtil;
 import com.lxw.dailynews.framework.util.StringUtil;
 import com.lxw.dailynews.framework.util.TimeUtil;
 import com.lxw.dailynews.framework.util.ToastUtil;
@@ -405,17 +406,24 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                 holder.setText(R.id.txt_drawer_theme_title, newThemeBean.getName());
                 holder.setImageResource(R.id.img_drawer_follow_state, R.mipmap.ic_follow);
                 if (newThemeBean.isFrag_select()) {
-                    holder.getView(R.id.rl_news_theme).setBackgroundColor(MainActivity.this.getResources().getColor(R.color.color_DDDDDD));
+                    holder.getView(R.id.rl_news_theme).setSelected(true);
                 } else {
-                    holder.getView(R.id.rl_news_theme).setBackgroundColor(MainActivity.this.getResources().getColor(R.color.color_FFFFFF));
+                    holder.getView(R.id.rl_news_theme).setSelected(false);
                 }
 
                 //点击日报主题监听
                 holder.setOnClickListener(R.id.rl_news_theme, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        currentPosition = position - 1;
-                        initThemeView(newThemeBean);
+                        if(NetUtil.isNetworkAvailable(MainActivity.this)) {
+                            currentPosition = position - 1;
+                            initThemeView(newThemeBean);
+                        }else{
+                            if (layoutDrawer.isDrawerOpen(findViewById(R.id.ll_drawer))) {
+                                layoutDrawer.closeDrawers();
+                            }
+                            ToastUtil.showMessage(MainActivity.this, MainActivity.this.getResources().getString(R.string.error_network_failure));
+                        }
                     }
                 });
             }
@@ -423,7 +431,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         drawerHeaderAndFooterWrapper = new HeaderAndFooterWrapper(drawerAdapter);
         drawerHeaderView = getLayoutInflater().inflate(R.layout.header_drawer, null);
         ll_drawer_home = (LinearLayout) drawerHeaderView.findViewById(R.id.drawer_home);
-        ll_drawer_home.setBackgroundColor(MainActivity.this.getResources().getColor(R.color.color_DDDDDD));
+        ll_drawer_home.setSelected(true);
         //离线下载
         drawer_download = (RelativeLayout) drawerHeaderView.findViewById(R.id.drawer_download);
         txt_download = (TextView) drawerHeaderView.findViewById(R.id.txt_download);
@@ -445,10 +453,17 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         ll_drawer_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                frag_content_type = true;
-                refreshFlag = true;
-                getLatestNews();
-                getNewsThemes();
+                if(NetUtil.isNetworkAvailable(MainActivity.this)){
+                    frag_content_type = true;
+                    refreshFlag = true;
+                    getLatestNews();
+                    getNewsThemes();
+                }else{
+                    if (layoutDrawer.isDrawerOpen(findViewById(R.id.ll_drawer))) {
+                        layoutDrawer.closeDrawers();
+                    }
+                    ToastUtil.showMessage(MainActivity.this, MainActivity.this.getResources().getString(R.string.error_network_failure));
+                }
             }
         });
         drawerHeaderAndFooterWrapper.addHeaderView(drawerHeaderView);
@@ -623,7 +638,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
                 }
             }
             drawerHeaderAndFooterWrapper.notifyDataSetChanged();
-            ll_drawer_home.setBackgroundColor(MainActivity.this.getResources().getColor(R.color.color_FFFFFF));
+            ll_drawer_home.setSelected(false);
             //初始化头部图片
             ImageManager.getInstance().loadImage(MainActivity.this, kenBurnsView, themeContentBean.getBackground(), true);
 
@@ -688,7 +703,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         if (refreshFlag) {
             toolbar.getMenu().clear();
             toolbar.inflateMenu(R.menu.toolbar_main);//设置右上角的填充菜单
-            ll_drawer_home.setBackgroundColor(MainActivity.this.getResources().getColor(R.color.color_DDDDDD));
+            ll_drawer_home.setSelected(true);
             if (layoutDrawer.isDrawerOpen(findViewById(R.id.ll_drawer))) {
                 layoutDrawer.closeDrawers();
             }
@@ -829,6 +844,7 @@ public class MainActivity extends BaseMvpActivity<IMainView, MainPresenter> impl
         public void onReceive(Context context, Intent intent) {
             int progress = intent.getIntExtra("progress", -1);
             if (progress < 0) {
+                txt_download.setText(context.getString(R.string.drawer_download));
                 ToastUtil.showMessage(context, context.getString(R.string.download_failure));
                 Intent intent1 = new Intent(MainActivity.this, OfflineDownloadService.class);
                 stopService(intent1);

@@ -65,6 +65,7 @@ public class OfflineDownloadService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        rv = new RemoteViews(getPackageName(), R.layout.layout_download_notifition);
         onShowNotification();
     }
 
@@ -170,13 +171,7 @@ public class OfflineDownloadService extends Service {
                                     @Override
                                     public void onError(Throwable e) {
                                         //离线下载失败
-                                        doCount++;
-                                        if (doCount == totalSize) {
-                                            Intent intent = new Intent();
-                                            intent.setAction("offline_download_progress");
-                                            intent.putExtra("progress", -1);
-                                            sendBroadcast(intent);
-                                        }
+                                        downloadFailure();
                                     }
                                 });
                     }
@@ -184,13 +179,7 @@ public class OfflineDownloadService extends Service {
                     @Override
                     public void onFailure(Throwable error) {
                         //离线下载失败
-                        doCount++;
-                        if (doCount == totalSize) {
-                            Intent intent = new Intent();
-                            intent.setAction("offline_download_progress");
-                            intent.putExtra("progress", -1);
-                            sendBroadcast(intent);
-                        }
+                        downloadFailure();
                     }
                 });
             }
@@ -241,9 +230,6 @@ public class OfflineDownloadService extends Service {
                                             count++;
                                             doCount++;
                                             updateProgressBar(count * 100 / totalSize);
-                                            if (count == totalSize) {
-//                                        notification.
-                                            }
                                             Intent intent = new Intent();
                                             intent.setAction("offline_download_progress");
                                             intent.putExtra("progress", count * 100 / totalSize);
@@ -256,26 +242,14 @@ public class OfflineDownloadService extends Service {
 
                                         @Override
                                         public void onError(Throwable e) {
-                                            doCount++;
-                                            if (doCount == totalSize) {
-                                                Intent intent = new Intent();
-                                                intent.setAction("offline_download_progress");
-                                                intent.putExtra("progress", -1);
-                                                sendBroadcast(intent);
-                                            }
+                                            downloadFailure();
                                         }
                                     });
                         }
 
                         @Override
                         public void onFailure(Throwable error) {
-                            doCount++;
-                            if (doCount == totalSize) {
-                                Intent intent = new Intent();
-                                intent.setAction("offline_download_progress");
-                                intent.putExtra("progress", -1);
-                                sendBroadcast(intent);
-                            }
+                            downloadFailure();
                         }
                     });
                 }
@@ -291,8 +265,10 @@ public class OfflineDownloadService extends Service {
     }
 
     public void onShowNotification() {
-        rv = new RemoteViews(getPackageName(), R.layout.layout_download_notifition);
+
         rv.setProgressBar(R.id.progressbar, 100, 0, false);
+        rv.setTextViewText(R.id.txt_title, getString(R.string.drawer_download));
+        rv.setTextViewText(R.id.txt_progress, "0%");
         //创建通知详细信息
         Notification.Builder mBuilder = new Notification.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -312,7 +288,7 @@ public class OfflineDownloadService extends Service {
         nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         //构建通知
         notification = mBuilder.build();
-        notification.flags = Notification.FLAG_NO_CLEAR;// 不能够自动清除
+        notification.flags = Notification.FLAG_AUTO_CANCEL;//自动清除
         //显示通知
         nm.notify(0, notification);
         //启动为前台服务
@@ -320,7 +296,24 @@ public class OfflineDownloadService extends Service {
     }
 
     public void updateProgressBar(int progress) {
+        if(progress == 100){
+            notification.contentView.setTextViewText(R.id.txt_title, getString(R.string.download_success));
+        }
         notification.contentView.setProgressBar(R.id.progressbar, 100, progress, false);
+        notification.contentView.setTextViewText(R.id.txt_progress, progress + "%");
         nm.notify(0, notification);
+    }
+
+    public void downloadFailure(){
+        doCount++;
+        if (doCount == totalSize) {
+            notification.contentView.setTextViewText(R.id.txt_title, getString(R.string.download_failure));
+            notification.contentView.setTextColor(R.id.txt_title, getResources().getColor(R.color.color_F94D54));
+            nm.notify(0, notification);
+            Intent intent = new Intent();
+            intent.setAction("offline_download_progress");
+            intent.putExtra("progress", -1);
+            sendBroadcast(intent);
+        }
     }
 }

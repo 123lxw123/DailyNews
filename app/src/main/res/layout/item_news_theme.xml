@@ -4,7 +4,7 @@
     android:id="@+id/rl_news_theme"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_50"
-    android:background="@color/color_FFFFFF"
+    android:background="@drawable/selector_background"
     android:gravity="center_vertical">
 
     <TextView

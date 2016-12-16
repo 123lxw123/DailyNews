@@ -19,7 +19,7 @@ public class BaseMvpPresenter<V extends MvpView> extends MvpBasePresenter<V> {
         return NetUtil.note_Intent(BaseApplication.appContext);
     }
 
-    //判断手机是否联网，联网失败toast提示
+    //判断手机是否联网，
     public boolean isNetworkAvailable(){
         return NetUtil.isNetworkAvailable(BaseApplication.appContext);
     }
