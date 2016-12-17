@@ -1,4 +1,4 @@
-package com.lxw.dailynews.app.service;
+﻿package com.lxw.dailynews.app.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -276,7 +276,7 @@ public class OfflineDownloadService extends Service {
         rv.setTextViewText(R.id.txt_progress, "0%");
         //创建通知详细信息
         Notification.Builder mBuilder = new Notification.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.mipmap.ic_circle_logo)
                 .setContentTitle(getResources().getString(R.string.drawer_download))
                 .setContentText(String.format(getResources().getString(R.string.notification_downloading), 0 + "%"))
                 .setContent(rv);
