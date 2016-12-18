@@ -1,4 +1,4 @@
-﻿package com.lxw.dailynews.app.service;
+package com.lxw.dailynews.app.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -42,7 +42,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 public class OfflineDownloadService extends Service {
 

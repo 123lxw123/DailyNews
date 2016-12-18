@@ -54,6 +54,10 @@ public class Constant {
     public static String STORIES_TYPE_COMMON = "stories/";
     public static String STORIES_TYPE_TOP = "stories_top/";
 
+    /** 保存离线下载图片的文件夹的个数，用于删除旧的文件**/
+    public static int OFFLINE_DOWNLOAD_SIZE = 1;
+
+    /** 获取离线下载图片的地址**/
     public static String getDownloadFilePath(String date, String storiesType, int newsId, String fileName){
         return "file://" + PATH_OFFLINE_PICTURE + date + "/" + storiesType + newsId + "/" + fileName;
     }

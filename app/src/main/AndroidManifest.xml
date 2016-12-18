@@ -53,6 +53,10 @@
             android:name=".app.service.OfflineDownloadService"
             android:enabled="true"
             android:exported="true"></service>
+        <service
+            android:name=".app.service.ClearOfflineCachService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
